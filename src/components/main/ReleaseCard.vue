@@ -11,6 +11,14 @@
         leave="fadeOut"
       >
         <div v-show="releasesLoaded">
+          <div>
+            <dl class="horizontal">
+              <dt>Відкритих рекламацій:</dt>
+              <dd>{{release.openedIssues}}</dd>
+              <dt>Закрито рекламацій:</dt>
+              <dd>{{release.closedIssues}}</dd>
+            </dl>
+          </div>
           <div v-if="release.lastBuildNumber">
             <p>Остання збірка: {{release.lastBuildNumber}} від {{release.lastBuildDate}}</p>
             <p><a :href="rtype === 'stable' ? stableUrl : betaUrl" target="_blank">Завантажити з Google диску</a></p>

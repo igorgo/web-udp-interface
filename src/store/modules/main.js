@@ -10,21 +10,19 @@ import { formatDate } from '../routines'
 function makeCurReleases (cursor) {
   function makeRelease (rownum) {
     return rownum !== -1 ? {
-      version: cursor[rownum]['VER'],
-      releaseNumber: cursor[rownum]['RELNUMB'],
       releaseName: cursor[rownum]['RELNAME'],
       releaseDate: formatDate(cursor[rownum]['RELDATE']),
       lastBuildNumber: cursor[rownum]['BLDNUMB'],
-      lastBuildName: cursor[rownum]['BLDNAME'],
-      lastBuildDate: formatDate(cursor[rownum]['DBUILDATE'])
+      lastBuildDate: formatDate(cursor[rownum]['DBUILDATE']),
+      openedIssues: cursor[rownum]['OPENED'],
+      closedIssues: cursor[rownum]['CLOSED']
     } : {
-      version: null,
-      releaseNumber: null,
       releaseName: null,
       releaseDate: null,
       lastBuildNumber: null,
-      lastBuildName: null,
-      lastBuildDate: null
+      lastBuildDate: null,
+      openedIssues: null,
+      closedIssues: null
     }
   }
   return {
