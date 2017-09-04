@@ -12,9 +12,11 @@ const routes = [
   {path: '/rrr', component: load('Hello')},
   {
     path: '/',
-    component: load('Main'),
+    component: load('Index'),
     children: [
-      {path: '/login', component: load('Login')}
+      {path: '', component: load('Main')},
+      {path: '/login', component: load('Login')},
+      {path: '/main', component: load('Main')}
     ]
   },
   /*
@@ -34,10 +36,12 @@ const routes = [
 
 const Router = new VueRouter({routes})
 
+/*
 Router.beforeEach((to, from, next) => {
   document.documentElement.scrollTop = 0
   document.body.scrollTop = 0
   next()
 })
+*/
 
 export default Router

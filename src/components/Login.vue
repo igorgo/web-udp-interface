@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div v-show="!logged">
     <q-card>
-      <q-card-title>
+      <q-card-title class="bg-light">
         Вхід в систему
+        <span slot="subtitle" class="text-negative">{{authError}}</span>
       </q-card-title>
       <q-card-main>
         <form>
@@ -28,8 +29,8 @@
         </form>
       </q-card-main>
       <q-card-actions>
-        <q-btn flat color="primary" :click="doLogin()">ОК</q-btn>
-        <q-btn flat color="primary">Скасування</q-btn>
+        <q-btn flat color="primary" @click="doLogin()">ОК</q-btn>
+        <q-btn flat color="primary" @click="doCancel()">Скасування</q-btn>
       </q-card-actions>
     </q-card>
   </div>
@@ -59,13 +60,31 @@
     },
     methods: {
       doLogin () {
-        this.$socket.emit('authentication', {
+        const message = {
           user: this.username,
           pass: this.userpass
-        })
+        }
+        this.$socket.emit('authenticate', message)
+      },
+      doCancel () {
+        this.$router.back()
+      }
+    },
+    computed: {
+      authError () {
+        return this.$store.getters.authError
+      },
+      logged () {
+        return this.$store.getters.authorized
+      }
+    },
+    watch: {
+      logged (value) {
+        if (value) {
+          this.$router.back()
+        }
       }
     }
-
   }
 </script>
 

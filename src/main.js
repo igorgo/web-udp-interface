@@ -13,18 +13,20 @@ require(`quasar/dist/quasar.${__THEME}.css`)
 import Vue from 'vue'
 import Quasar from 'quasar'
 import router from './router'
+import store from './store'
 import VueSocketio from 'vue-socket.io'
+import c from './constants'
 
 Vue.config.productionTip = false
 Vue.use(Quasar) // Install Quasar Framework
-Vue.use(VueSocketio, 'http://192.168.3.182:8716')
+Vue.use(VueSocketio, c.SERVER_URL, store)
 
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
 import 'quasar-extras/material-icons'
 // import 'quasar-extras/ionicons'
-// import 'quasar-extras/fontawesome'
+import 'quasar-extras/fontawesome'
 // import 'quasar-extras/animate'
 
 Quasar.start(() => {
@@ -32,6 +34,7 @@ Quasar.start(() => {
   new Vue({
     el: '#q-app',
     router,
+    store,
     render: h => h(require('./App'))
   })
 })
