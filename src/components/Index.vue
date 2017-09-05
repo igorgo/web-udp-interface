@@ -31,6 +31,10 @@
           <q-item-side icon="fa-home"/>
           <q-item-main label="Головна"></q-item-main>
         </q-side-link>
+        <q-side-link item to="/filters" exact v-show="logged">
+          <q-item-side icon="filter list"/>
+          <q-item-main label="Управління фільтрами"></q-item-main>
+        </q-side-link>
         <q-item-separator v-show="logged" />
         <q-item @click="logoff()" v-show="logged">
           <q-item-side icon="fa-sign-out"/>
@@ -86,14 +90,14 @@
       }
     },
     methods: {
-      login (val) {
+      login () {
         this.$refs.layout.toggleLeft()
         this.$router.push({path: '/login', query: {redirect: 'test'}})
       },
-      logoff (val) {
+      logoff () {
         // this.$refs.layout.toggleLeft()
         this.$router.push('/main')
-        this.$socket.emit('logoff', {sessionID: this.$store.getters.sessionID})
+        this.$socket.emit('logoff')
       }
     },
     mounted: function () {

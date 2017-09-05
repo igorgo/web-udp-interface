@@ -7,8 +7,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import auth from './modules/auth'
 import main from './modules/main'
+import filters from './modules/filters'
 // import * as types from './mutation-types'
-import { SessionStorage } from 'quasar'
+import { SessionStorage, Toast } from 'quasar'
 
 Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
@@ -22,9 +23,13 @@ export default new Vuex.Store({
   state,
   modules: {
     auth,
-    main
+    main,
+    filters
   },
   actions: {
+    socket_oraExecError (ctx, msg) {
+      Toast.create.negative(msg.message)
+    }
   },
   getters: {
   },
