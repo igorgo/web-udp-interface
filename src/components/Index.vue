@@ -31,6 +31,10 @@
           <q-item-side icon="fa-home"/>
           <q-item-main label="Головна"></q-item-main>
         </q-side-link>
+        <q-side-link item to="/claims" exact v-show="logged">
+          <q-item-side icon="whatshot"/>
+          <q-item-main label="Рекламації"></q-item-main>
+        </q-side-link>
         <q-side-link item to="/filters" exact v-show="logged">
           <q-item-side icon="filter list"/>
           <q-item-main label="Управління фільтрами"></q-item-main>

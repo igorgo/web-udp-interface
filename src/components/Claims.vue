@@ -6,6 +6,9 @@
 export default {
   data () {
     return {}
+  },
+  mounted: function () {
+    this.$socket.emit('get_claim_list', {})
   }
 }
 </script>

@@ -11,6 +11,7 @@
  */
 export default {
   created () {
+    console.log('created')
     if (this.$store.getters.sessionID) {
       this.$socket.emit('validate_session', {sessionID: this.$store.getters.sessionID})
     }

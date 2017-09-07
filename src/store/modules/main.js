@@ -51,7 +51,6 @@ const mutations = {
 }
 const actions = {
   socket_setCurReleases: (ctx, msg) => {
-    console.log(msg)
     ctx.rootState.storage.set('curReleases', makeCurReleases(msg))
   }
 }

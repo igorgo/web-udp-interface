@@ -2,7 +2,7 @@
   <q-card>
     <q-card-title :class="'text-' + colorT">
       {{rtype === 'stable' ? 'Стабільниий' : 'Бета'}}
-      <span slot="subtitle" v-show="releasesLoaded">{{release.releaseName}} (розпочато {{release.releaseDate}})</span>
+      <span slot="subtitle" v-show="releasesLoaded">{{release['releaseName']}} (розпочато {{release['releaseDate']}})</span>
     </q-card-title>
     <q-card-main>
       <q-transition
@@ -14,13 +14,13 @@
           <div>
             <dl class="horizontal">
               <dt>Відкритих рекламацій:</dt>
-              <dd>{{release.openedIssues}}</dd>
+              <dd>{{release['openedIssues']}}</dd>
               <dt>Закрито рекламацій:</dt>
-              <dd>{{release.closedIssues}}</dd>
+              <dd>{{release['closedIssues']}}</dd>
             </dl>
           </div>
           <div v-if="release.lastBuildNumber">
-            <p>Остання збірка: {{release.lastBuildNumber}} від {{release.lastBuildDate}}</p>
+            <p>Остання збірка: {{release['lastBuildNumber']}} від {{release['lastBuildDate']}}</p>
             <p><a :href="rtype === 'stable' ? stableUrl : betaUrl" target="_blank">Завантажити з Google диску</a></p>
           </div>
           <div v-else>Збірка не здійснювалась</div>
@@ -68,7 +68,7 @@
         return this.$props.rtype === 'stable' ? 'positive' : 'warning'
       },
       release () {
-        return this.$store.getters.releasesLoaded ? this.$store.getters.curReleases[this.$props.rtype] : null
+        return this.$store.getters.curReleases[this.$props.rtype]
       }
     },
     name: 'udp-release-card'
