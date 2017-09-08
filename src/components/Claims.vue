@@ -3,8 +3,6 @@
 </template>
 
 <script>
-  import {SessionStorage} from 'quasar'
-
   export default {
     data () {
       return {}

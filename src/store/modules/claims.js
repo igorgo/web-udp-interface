@@ -1,17 +1,5 @@
 import * as mts from '../mutation-types'
-import { SessionStorage } from 'quasar'
-import * as _ from 'lodash'
-
-const storage = SessionStorage
-
-function defaultCondition() {
-  if (storage.has('userData')) {
-    if (_.has(storage.get.item('userData'), 'LAST_COND')) {
-      return storage.get.item('userData')['LAST_COND']
-    }
-  }
-  return null
-}
+import cache from '../../cache'
 
 const state = {
   claimListPortion: {
@@ -20,7 +8,7 @@ const state = {
     page: 1,
     limit: 25
   },
-  currentCondition: defaultCondition()
+  currentCondition: cache.get(['userData', 'LAST_COND'], null)
 }
 
 const getters = {
@@ -36,7 +24,7 @@ const mutations = {
   }
 }
 const actions = {
-  setCurrentCondition
+  // setCurrentCondition
 }
 
 export default {

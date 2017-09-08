@@ -5,7 +5,8 @@
  */
 
 import * as types from '../mutation-types'
-import { SessionStorage, Toast } from 'quasar'
+import { Toast } from 'quasar'
+import cache from '../../cache'
 
 function parseUserData (data) {
   let result = {}
@@ -20,9 +21,9 @@ const storage = SessionStorage
 const state = {
   authError: '',
   authorized: false,
-  userFullName: storage.get.item('userFullName'),
-  sessionID: storage.get.item('sessionID'),
-  userData: storage.get.item('userData')
+  userFullName: cache.get('userFullName'),
+  sessionID: cache.get('sessionID'),
+  userData: cache.get('userData')
 }
 
 const mutations = {

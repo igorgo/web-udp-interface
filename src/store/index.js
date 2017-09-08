@@ -10,15 +10,13 @@ import main from './modules/main'
 import filters from './modules/filters'
 import claims from './modules/claims'
 // import * as types from './mutation-types'
-import { SessionStorage, Toast } from 'quasar'
+import { Toast } from 'quasar'
 
 Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
 
 const state = {
-  storage: SessionStorage,
-  connect: false,
-  emptyStorage: true
+  connect: false
 }
 export default new Vuex.Store({
   state,

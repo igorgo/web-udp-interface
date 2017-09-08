@@ -49,5 +49,18 @@ export default {
     else {
       storage.set(path, value)
     }
+  },
+  has: path => {
+    if (path.isArray) {
+      if (path.length > 1) {
+        return storage.has(path[0])
+      }
+      else {
+        return storage.has(path[0]) && _.has(storage.get.item(path[0]), path.slice(1))
+      }
+    }
+    else {
+      return storage.has(path)
+    }
   }
 }

@@ -5,8 +5,9 @@
  */
 
 import * as mts from '../mutation-types'
-import { SessionStorage } from 'quasar'
-import { formatDate } from '../routines'
+import cache from '../../cache'
+import {formatDate} from '../routines'
+
 function makeCurReleases (cursor) {
   function makeRelease (rownum) {
     return rownum !== -1 ? {
@@ -25,17 +26,16 @@ function makeCurReleases (cursor) {
       closedIssues: null
     }
   }
+
   return {
     beta: makeRelease(cursor.length > 0 ? 0 : -1),
     stable: makeRelease(cursor.length > 1 ? 1 : -1)
   }
 }
 
-const storage = SessionStorage
-
 const state = {
-  curReleases: storage.has('curReleases') ? storage.get.item('curReleases') : makeCurReleases([]),
-  releasesLoaded: storage.has('curReleases')
+  curReleases: cache.get('curReleases', makeCurReleases([])),
+  releasesLoaded: cache.has('curReleases')
 }
 
 const getters = {
@@ -47,12 +47,11 @@ const mutations = {
   [mts.SET_CUR_RELEASES] (state, result) {
     state.curReleases = makeCurReleases(result)
     state.releasesLoaded = true
+    cache.set('curReleases', makeCurReleases(result))
   }
 }
+
 const actions = {
-  socket_setCurReleases: (ctx, msg) => {
-    ctx.rootState.storage.set('curReleases', makeCurReleases(msg))
-  }
 }
 
 export default {
