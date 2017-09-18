@@ -14,11 +14,11 @@ const routes = [
     path: '/',
     component: load('Index'),
     children: [
-      {path: '', component: load('Main')},
+      {path: '', component: load('main/Main')},
       {path: '/login', component: load('Login')},
-      {path: '/filters', component: load('CondFilters')},
-      {path: '/claims', component: load('Claims')},
-      {path: '/main', component: load('Main')}
+      {path: '/filters', component: load('filters/CondFilters')},
+      {path: '/claims', component: load('claims/Claims')},
+      {path: '/main', component: load('main/Main')}
     ]
   },
   /*

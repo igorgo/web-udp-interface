@@ -6,7 +6,7 @@ const state = {
     claims: [],
     allCnt: 0,
     page: 1,
-    limit: 25
+    limit: 25000
   },
   currentCondition: cache.get(['userData', 'LAST_COND'], null)
 }
@@ -15,7 +15,8 @@ const getters = {
   claimList: state => state.claimListPortion.claims,
   claimsCount: state => state.claimListPortion.allCnt,
   claimListPage: state => state.claimListPortion.page,
-  claimListLimit: state => state.claimListPortion.limit
+  claimListLimit: state => state.claimListPortion.limit,
+  currentCondition: state => state.currentCondition
 }
 
 const mutations = {
@@ -24,7 +25,10 @@ const mutations = {
   }
 }
 const actions = {
-  // setCurrentCondition
+  setCurrentCondition (nCond) {
+    state.currentCondition = nCond
+    cache.set(['userData', 'LAST_COND'], nCond)
+  }
 }
 
 export default {

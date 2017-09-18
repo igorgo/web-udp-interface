@@ -11,7 +11,7 @@ export default {
 
   get: (path, defaultValue = null) => {
     if (path.isArray) {
-      if (storage.has(path[0])) {
+      if (path.length > 0 && storage.has(path[0])) {
         let val = storage.get.item(path[0])
         if (path.length > 1) {
           return _.get(val, path.slice(1), defaultValue)
@@ -24,7 +24,7 @@ export default {
         return defaultValue
       }
     }
-    else {
+    else if (_.isString(path)) {
       if (storage.has(path)) {
         return storage.get.item(path)
       }
@@ -32,21 +32,24 @@ export default {
         return defaultValue
       }
     }
+    else {
+      return defaultValue
+    }
   },
   set: (path, value) => {
     if (path.isArray) {
-      let val
       if (path.length > 1) {
+        let val
         if (storage.has(path[0])) val = storage.get.item(path[0])
         else val = {}
         _.set(val, path.slice(1), value)
+        storage.set(path[0], val)
       }
-      else {
-        val = value
+      else if (path.length === 1) {
+        storage.set(path[0], value)
       }
-      storage.set(path[0], val)
     }
-    else {
+    else if (_.isString(path)) {
       storage.set(path, value)
     }
   },
@@ -55,12 +58,38 @@ export default {
       if (path.length > 1) {
         return storage.has(path[0])
       }
-      else {
+      else if (path.length === 1) {
         return storage.has(path[0]) && _.has(storage.get.item(path[0]), path.slice(1))
       }
+      else {
+        return false
+      }
     }
-    else {
+    else if (_.isString(path)) {
       return storage.has(path)
     }
+    else {
+      return false
+    }
+  },
+  unset: path => {
+    if (path.isArray) {
+      if (path.length > 1) {
+        if (storage.has(path[0])) {
+          let val = storage.get.item(path[0])
+          _.unset(val, path.slice(1))
+          storage.set(path[0], val)
+        }
+      }
+      else if (path.length === 1) {
+        storage.remove(path[0])
+      }
+    }
+    else if (_.isString(path)) {
+      storage.remove(path)
+    }
+  },
+  clear: () => {
+    storage.clear()
   }
 }

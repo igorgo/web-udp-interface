@@ -14,7 +14,7 @@
 
 <script>
   import { QList, QFixedPosition, QIcon, QBtn } from 'quasar'
-  import CondFilter from './filters/CondFilter.vue'
+  import CondFilter from './CondFilter.vue'
 
   export default {
     data () {

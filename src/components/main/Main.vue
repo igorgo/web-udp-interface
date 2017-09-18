@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ReleaseCard from './main/ReleaseCard.vue'
+import ReleaseCard from './ReleaseCard.vue'
 export default {
   data () {
     return {

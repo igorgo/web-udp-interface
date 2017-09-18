@@ -17,7 +17,6 @@ function parseUserData (data) {
   return result
 }
 
-const storage = SessionStorage
 const state = {
   authError: '',
   authorized: false,
@@ -32,6 +31,7 @@ const mutations = {
     state.authorized = false
     state.userFullName = ''
     state.sessionID = ''
+    cache.clear()
     if (msg && msg.message) Toast.create.negative(msg.message)
   },
   [types.AUTH_ERROR] (state, msg) {
@@ -39,22 +39,28 @@ const mutations = {
     state.authorized = false
     state.userFullName = ''
     state.sessionID = ''
+    cache.unset('sessionID')
+    cache.unset('userFullName')
   },
   [types.AUTHORIZED] (state, msg) {
     state.authorized = true
     state.userFullName = msg.userFullName
     state.sessionID = msg.sessionID
+    cache.set('sessionID', msg.sessionID)
+    cache.set('userFullName', msg.userFullName)
   },
   [types.SESSION_NOT_VALID] (state) {
     state.authorized = false
     state.userFullName = ''
     state.sessionID = ''
+    cache.clear()
   },
   [types.SESSION_VALIDATED] (state) {
     state.authorized = true
   },
   [types.USER_DATA_LOADED] (state, msg) {
     state.userData = parseUserData(msg)
+    cache.set('userData', parseUserData(msg))
   }
 }
 const getters = {
@@ -65,23 +71,6 @@ const getters = {
 }
 
 const actions = {
-  socket_authError: (ctx) => {
-    ctx.rootState.storage.remove('sessionID')
-    ctx.rootState.storage.remove('userFullName')
-  },
-  socket_authorized: (ctx, msg) => {
-    ctx.rootState.storage.set('sessionID', msg.sessionID)
-    ctx.rootState.storage.set('userFullName', msg.userFullName)
-  },
-  socket_unauthorized: (ctx) => {
-    ctx.rootState.storage.clear()
-  },
-  socket_sessionNotValid: (ctx) => {
-    ctx.rootState.storage.clear()
-  },
-  socket_userDataLoaded: (ctx, msg) => {
-    ctx.rootState.storage.set('userData', parseUserData(msg))
-  }
 }
 
 export default {
