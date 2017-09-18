@@ -1,16 +1,20 @@
 <template>
   <div>
-    <claim-header slot="header"/>
-    <q-scroll-area style="height: auto" class="row">
-      <claim-row v-for="iClaim in claimList" :key="iClaim['id']" :claimRec="iClaim"/>
+    <claim-header class="claimheader"/>
+    <q-scroll-area class="claimbody">
+      <q-list>
+        <claim-row v-for="iClaim in claimList" :key="iClaim['id']" :claimRec="iClaim"/>
+      </q-list>
     </q-scroll-area>
+    <div class="claimfooter text-center">Пагінатор</div>
   </div>
 </template>
 
 <script>
   import ClaimHeader from './ClaimsHeader.vue'
   import ClaimRow from './ClaimRow.vue'
-  import {QScrollArea} from 'quasar'
+  import {QScrollArea, QList} from 'quasar'
+
   export default {
     data () {
       return {}
@@ -18,7 +22,8 @@
     components: {
       ClaimHeader,
       QScrollArea,
-      ClaimRow
+      ClaimRow,
+      QList
     },
     computed: {
       currentCondition () {
@@ -50,4 +55,23 @@
 </script>
 
 <style>
+  .claimheader {
+    height: 50px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: relative;
+  }
+
+  .claimbody {
+    height: calc(100vh - 150px);
+  }
+
+  .claimfooter {
+    height: 50px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    position: relative;
+  }
 </style>

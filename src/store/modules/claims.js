@@ -6,7 +6,7 @@ const state = {
     claims: [],
     allCnt: 0,
     page: 1,
-    limit: 25000
+    limit: 25
   },
   currentCondition: cache.get(['userData', 'LAST_COND'], null)
 }
