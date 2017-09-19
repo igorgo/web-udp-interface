@@ -1,33 +1,42 @@
 <template>
   <q-item>
-    <div>
-      <div class="row">
-        <div class="col-1"><big>
-          <q-icon :name="clicon" :class="clcolor"></q-icon>
-        </big>
+    <q-card class="full-width text-black" :color="clBcolor">
+      <q-card-main>
+        <div>
+          <big class="row justify-start">
+            <div class="col-sm-1 col-xs-2">
+              <q-icon :name="clicon" :class="clcolor"></q-icon>
+            </div>
+            <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
+          </big>
         </div>
-        <div class="col-11">{{clTitle}}</div>
-      </div>
-      <div class="row">
-        <div class="strong col-lg-3 col-xs-4">№ <span class="token bg-blue-grey">{{claimRec.numb}}</span></div>
-        <div class="col-lg-5 col-xs-8">від <span class="token bg-blue-grey">{{regDate}}</span></div>
-        <div class="col-lg-4 col-xs-8">Автор <span class="token bg-blue-grey">{{claimRec.author}}</span></div>
-        <div class="col-12">
-          <q-chip :color="clStatusColor" small :icon="clStatusIcon" class="text-center float-right">
-            {{claimRec.status}}<br/>{{changeDate}}
-          </q-chip>
+      </q-card-main>
+      <q-card-separator/>
+      <q-card-main>
+        <div class="row items-center justify-around sm-gutter">
+          <div class="col-xl-3 col-sm-6 col-xs-12">№ <span class="token bg-blue-grey">{{claimRec.numb}}</span></div>
+          <div class="col-xl-3 col-sm-6 col-xs-12">від <span class="token bg-blue-grey">{{regDate}}</span></div>
+          <div class="col-xl-3 col-sm-6 col-xs-12">Автор <span class="token bg-blue-grey">{{claimRec.author}}</span></div>
+          <div class="col-xl-3 col-sm-6 col-xs-12">
+            <q-chip :color="clStatusColor" small :icon="clStatusIcon" class="text-center">
+              {{claimRec.status}}<br/>{{changeDate}}
+            </q-chip>
+          </div>
         </div>
+        <q-card-separator style="margin-top: 10px"/>
+        <div class="row">
+          <p class="ellipsis-3-lines text-faded light-paragraph">{{claimRec.description}}</p>
+        </div>
+      </q-card-main>
+      <div v-if="claimRec.executor || claimRec.hasBuildTo">
+        <q-card-separator style="margin-bottom: 10px"/>
+        <q-card-main class="row justify-around sm-gutter">
+          <span class="col-sm-6 col-xs-12" v-if="claimRec.executor">Виконавець <span class="token bg-teal-14">{{claimRec.executor}}</span></span>
+          <span class="col-sm-6 col-xs-12" v-if="claimRec.hasBuildTo || claimRec.hasReleaseTo">{{isClosed}} <span
+            class="token bg-teal-14">{{claimRec.closedInBuild}}</span></span>
+        </q-card-main>
       </div>
-      <div class="row">
-        <p class="ellipsis-2-lines text-faded light-paragraph">{{claimRec.description}}</p>
-      </div>
-      <div class="row" v-if="claimRec.executor || claimRec.hasBuildTo">
-        <q-card-separator/>
-        <span v-if="claimRec.executor">Виконавець <span class="token bg-teal-14">{{claimRec.executor}}</span></span>
-        <span v-if="claimRec.hasBuildTo || claimRec.hasReleaseTo">{{isClosed}} <span
-          class="token bg-teal-14">{{claimRec.closedInBuild}}</span></span>
-      </div>
-    </div>
+    </q-card>
   </q-item>
 </template>
 
@@ -83,6 +92,16 @@
             return 'text-warning'
           case 3:
             return 'text-negative'
+        }
+      },
+      clBcolor () {
+        switch (this.$props.claimRec.claimType) {
+          case 1:
+            return 'green-1'
+          case 2:
+            return 'yellow-1'
+          case 3:
+            return 'red-1'
         }
       },
       clStatusColor () {

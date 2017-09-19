@@ -45,6 +45,7 @@
     mounted: function () {
       this.$socket.emit('get_claim_list', {
         conditionId: this.currentCondition,
+        // todo: sortorder
         sortOrder: null,
         page: this.claimListPage,
         limit: this.claimListLimit,
@@ -56,7 +57,7 @@
 
 <style>
   .claimheader {
-    height: 50px;
+    height: 70px;
     width: 100%;
     top: 0;
     left: 0;
@@ -64,7 +65,7 @@
   }
 
   .claimbody {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 170px);
   }
 
   .claimfooter {

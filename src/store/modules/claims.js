@@ -22,12 +22,24 @@ const getters = {
 const mutations = {
   [mts.CLAIM_LIST] (state, result) {
     state.claimListPortion = result
+  },
+  [mts.CLAIMS_FILTER_CHANGE] (state, playload) {
+    state.currentCondition = playload.value
+    playload.socket.emit('get_claim_list', {
+      conditionId: playload.value,
+      // todo: sortorder
+      sortOrder: null,
+      page: 1,
+      limit: this.claimListLimit,
+      newClaimId: null
+    })
   }
 }
 const actions = {
-  setCurrentCondition (nCond) {
-    state.currentCondition = nCond
-    cache.set(['userData', 'LAST_COND'], nCond)
+  setCurrentCondition (context, playload) {
+    context.commit(mts.CLAIMS_FILTER_CHANGE, playload)
+    // state.currentCondition = nCond
+    cache.set(['userData', 'LAST_COND'], playload.value)
   }
 }
 
