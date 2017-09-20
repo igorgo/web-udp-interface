@@ -1,39 +1,47 @@
 <template>
-  <q-item>
+  <q-item multiline class="no-padding">
     <q-card class="full-width text-black" :color="clBcolor">
       <q-card-main>
-        <div>
-          <big class="row justify-start">
-            <div class="col-sm-1 col-xs-2">
-              <q-icon :name="clicon" :class="clcolor"></q-icon>
-            </div>
-            <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
-          </big>
+        <div class="row justify-start cl-title">
+          <div class="col-sm-1 col-xs-2">
+            <q-icon :name="clicon" :class="clcolor"></q-icon>
+            <q-icon v-if="claimRec.hasDocs" name="attach file"></q-icon>
+          </div>
+          <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
         </div>
       </q-card-main>
       <q-card-separator/>
       <q-card-main>
-        <div class="row items-center justify-around sm-gutter">
-          <div class="col-xl-3 col-sm-6 col-xs-12">№ <span class="token bg-blue-grey">{{claimRec.numb}}</span></div>
-          <div class="col-xl-3 col-sm-6 col-xs-12">від <span class="token bg-blue-grey">{{regDate}}</span></div>
-          <div class="col-xl-3 col-sm-6 col-xs-12">Автор <span class="token bg-blue-grey">{{claimRec.author}}</span></div>
-          <div class="col-xl-3 col-sm-6 col-xs-12">
+        <div class="claim-row-c">
+          <div class="fl-3-6-12">№&nbsp;<span class="gray-token">{{claimRec.numb}}</span></div>
+          <div class="fl-3-6-12">від&nbsp;<span class="gray-token">{{regDate}}</span></div>
+          <div class="fl-3-6-12">Автор&nbsp;<span class="gray-token">{{claimRec.author}}</span></div>
+          <div class="fl-3-6-12">
             <q-chip :color="clStatusColor" small :icon="clStatusIcon" class="text-center">
               {{claimRec.status}}<br/>{{changeDate}}
             </q-chip>
           </div>
         </div>
         <q-card-separator style="margin-top: 10px"/>
-        <div class="row">
+        <div class="claim-row group text-left">
           <p class="ellipsis-3-lines text-faded light-paragraph">{{claimRec.description}}</p>
         </div>
       </q-card-main>
       <div v-if="claimRec.executor || claimRec.hasBuildTo">
         <q-card-separator style="margin-bottom: 10px"/>
-        <q-card-main class="row justify-around sm-gutter">
-          <span class="col-sm-6 col-xs-12" v-if="claimRec.executor">Виконавець <span class="token bg-teal-14">{{claimRec.executor}}</span></span>
-          <span class="col-sm-6 col-xs-12" v-if="claimRec.hasBuildTo || claimRec.hasReleaseTo">{{isClosed}} <span
-            class="token bg-teal-14">{{claimRec.closedInBuild}}</span></span>
+        <q-card-main>
+          <div class="claim-row-c">
+            <div class="col-sm-6 col-xs-12" v-if="claimRec.executor">
+              Виконавець&nbsp;<span class="token bg-teal-14">{{claimRec.executor}}</span>
+            </div>
+            <div
+              class="col-sm-6 col-xs-12"
+              v-if="claimRec.hasBuildTo || claimRec.hasReleaseTo"
+            >
+              {{isClosed}}&nbsp;
+              <span class="token bg-teal-14">{{claimRec.closedInBuild}}</span>
+            </div>
+          </div>
         </q-card-main>
       </div>
     </q-card>
@@ -75,8 +83,8 @@
         return formatDateTime(this.$props.claimRec.regDate)
       },
       isClosed () {
-        if (this.$props.claimRec.hasBuildTo) return 'Виконано в збірці '
-        else return 'Буде виконано в релізі '
+        if (this.$props.claimRec.hasBuildTo) return 'Виконано в збірці'
+        else return 'Буде виконано в релізі'
       },
       changeDate () {
         return formatDateTime(this.$props.claimRec.changeDate)
@@ -138,5 +146,24 @@
   }
 </script>
 
-<style>
+<style lang="styl">
+  @import '~variables'
+  @import '~quasar-framework/dist/quasar.mat.styl'
+
+  .fl-3-6-12
+    @extends .col-xl-3
+    @extends .col-sm-6
+    @extends .col-xs-12
+  .gray-token
+    @extends .token
+    @extends .bg-blue-grey
+  .claim-row
+    @extends .row
+    @extends .sm-gutter
+  .claim-row-c
+    @extends .claim-row
+    @extends .justify-around
+    @extends .items-center
+  .cl-title
+    font-size: 1.2rem
 </style>

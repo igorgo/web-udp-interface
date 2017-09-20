@@ -9,7 +9,9 @@ const state = {
     page: 1,
     limit: 25
   },
-  currentCondition: cache.get(['userData', 'LAST_COND'], 1)
+  currentCondition: cache.get(['userData', 'LAST_COND'], 1),
+  currentClaimLimit: cache.get(['userData', 'LIST_LIMIT'], 25),
+  currentClaimPage: cache.get('claimListPage', 1)
 }
 
 const getters = {
@@ -25,24 +27,26 @@ const mutations = {
     state.claimListPortion = result
   },
   [mts.CLAIMS_FILTER_CHANGE] (state, playload) {
+    cache.set(['userData', 'LAST_COND'], playload.value)
     state.currentCondition = playload.value
+    cache.set('claimListPage', 1)
     if (_.has(playload, 'socket')) {
       playload.socket.emit('get_claim_list', {
         conditionId: playload.value,
         // todo: sortorder
         sortOrder: null,
         page: 1,
-        limit: this.claimListLimit,
+        limit: cache.get(['userData', 'LIST_LIMIT'], 25),
         newClaimId: null
       })
     }
+  },
+  [mts.CLAIMS_LIMIT_CHANGE] (state, pl) {
   }
 }
 const actions = {
   setCurrentCondition (context, playload) {
     context.commit(mts.CLAIMS_FILTER_CHANGE, playload)
-    // state.currentCondition = nCond
-    cache.set(['userData', 'LAST_COND'], playload.value)
   }
 }
 

@@ -1,14 +1,15 @@
 <template>
   <div class="row items-center justify-around">
-    <div class="col-6 text-center">
+    <div class="col-6">
       <q-select
-        stack-label="Фільтр"
+        float-label="Фільтр"
         inverted
         color="amber"
         separator
         :options="filterOptions"
         v-model="currCondition"
         @change="onFilterChange"
+        class="no-margin"
       />
     </div>
     <div class="col-6 text-center">Сортування</div>
@@ -17,7 +18,7 @@
 
 <script>
   import {QSelect} from 'quasar'
-
+  import * as mts from '../../store/mutation-types'
   export default {
     data () {
       return {}
@@ -45,11 +46,12 @@
     },
     methods: {
       onFilterChange (val) {
-        this.$store.dispatch('setCurrentCondition', {value: val, socket: this.$socket})
+        this.$store.commit(mts.CLAIMS_FILTER_CHANGE, {value: val, socket: this.$socket})
+        // this.$store.dispatch('setCurrentCondition', {value: val, socket: this.$socket})
       }
     }
   }
 </script>
 
-<style>
+<style lang="styl">
 </style>
