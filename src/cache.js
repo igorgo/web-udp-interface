@@ -10,7 +10,7 @@ import * as _ from 'lodash'
 export default {
 
   get: (path, defaultValue = null) => {
-    if (path.isArray) {
+    if (Array.isArray(path)) {
       if (path.length > 0 && storage.has(path[0])) {
         let val = storage.get.item(path[0])
         if (path.length > 1) {
@@ -37,7 +37,7 @@ export default {
     }
   },
   set: (path, value) => {
-    if (path.isArray) {
+    if (Array.isArray(path)) {
       if (path.length > 1) {
         let val
         if (storage.has(path[0])) val = storage.get.item(path[0])
@@ -54,7 +54,7 @@ export default {
     }
   },
   has: path => {
-    if (path.isArray) {
+    if (Array.isArray(path)) {
       if (path.length > 1) {
         return storage.has(path[0])
       }
@@ -73,7 +73,7 @@ export default {
     }
   },
   unset: path => {
-    if (path.isArray) {
+    if (Array.isArray(path)) {
       if (path.length > 1) {
         if (storage.has(path[0])) {
           let val = storage.get.item(path[0])

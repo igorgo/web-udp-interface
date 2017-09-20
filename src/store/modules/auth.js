@@ -71,6 +71,9 @@ const getters = {
 }
 
 const actions = {
+  socket_userDataLoaded (context, pl) {
+    context.commit(types.CLAIMS_FILTER_CHANGE, {value: cache.get(['userData', 'LAST_COND'], 1)})
+  }
 }
 
 export default {

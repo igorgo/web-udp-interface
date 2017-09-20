@@ -1,5 +1,6 @@
 import * as mts from '../mutation-types'
 import cache from '../../cache'
+import * as _ from 'lodash'
 
 const state = {
   claimListPortion: {
@@ -8,7 +9,7 @@ const state = {
     page: 1,
     limit: 25
   },
-  currentCondition: cache.get(['userData', 'LAST_COND'], null)
+  currentCondition: cache.get(['userData', 'LAST_COND'], 1)
 }
 
 const getters = {
@@ -25,14 +26,16 @@ const mutations = {
   },
   [mts.CLAIMS_FILTER_CHANGE] (state, playload) {
     state.currentCondition = playload.value
-    playload.socket.emit('get_claim_list', {
-      conditionId: playload.value,
-      // todo: sortorder
-      sortOrder: null,
-      page: 1,
-      limit: this.claimListLimit,
-      newClaimId: null
-    })
+    if (_.has(playload, 'socket')) {
+      playload.socket.emit('get_claim_list', {
+        conditionId: playload.value,
+        // todo: sortorder
+        sortOrder: null,
+        page: 1,
+        limit: this.claimListLimit,
+        newClaimId: null
+      })
+    }
   }
 }
 const actions = {
