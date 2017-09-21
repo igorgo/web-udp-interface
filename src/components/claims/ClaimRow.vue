@@ -2,16 +2,13 @@
   <q-item multiline class="no-padding">
     <q-card class="full-width text-black" :color="clBcolor">
       <q-card-main>
-        <div class="row justify-start cl-title">
+        <div class="row justify-start cl-title" style="margin-bottom: 10px">
           <div class="col-sm-1 col-xs-2">
             <q-icon :name="clicon" :class="clcolor"></q-icon>
             <q-icon v-if="claimRec.hasDocs" name="attach file"></q-icon>
           </div>
           <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
         </div>
-      </q-card-main>
-      <q-card-separator/>
-      <q-card-main>
         <div class="claim-row-c">
           <div class="fl-3-6-12">№&nbsp;<span class="gray-token">{{claimRec.numb}}</span></div>
           <div class="fl-3-6-12">від&nbsp;<span class="gray-token">{{regDate}}</span></div>
@@ -26,10 +23,9 @@
         <div class="claim-row group text-left">
           <p class="ellipsis-3-lines text-faded light-paragraph">{{claimRec.description}}</p>
         </div>
-      </q-card-main>
+      <!--/q-card-main-->
       <div v-if="claimRec.executor || claimRec.hasBuildTo">
-        <q-card-separator style="margin-bottom: 10px"/>
-        <q-card-main>
+        <!--q-card-main-->
           <div class="claim-row-c">
             <div class="col-sm-6 col-xs-12" v-if="claimRec.executor">
               Виконавець&nbsp;<span class="token bg-teal-14">{{claimRec.executor}}</span>
@@ -42,8 +38,8 @@
               <span class="token bg-teal-14">{{claimRec.closedInBuild}}</span>
             </div>
           </div>
-        </q-card-main>
       </div>
+      </q-card-main>
     </q-card>
   </q-item>
 </template>
@@ -168,3 +164,4 @@
   .cl-title
     font-size: 1.2rem
 </style>
+cfvsqctrhtnysqgfhjkm

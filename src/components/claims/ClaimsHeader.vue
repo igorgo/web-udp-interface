@@ -34,6 +34,7 @@
       <q-checkbox
         v-model="currSortOrder"
         @change="onSortOrderChange"
+        class="cb-large"
         checked-icon="arrow drop down"
         unchecked-icon="arrow drop up"
         color="purple"
@@ -92,14 +93,10 @@
 </script>
 
 <style lang="styl">
-  .q-checkbox-unchecked
-    height: 54px
-    width: 30px
-    font-size: 54px
   .q-checkbox-checked
-    height: 54px
-    width: 30px
-    font-size: 54px
-  .ch-large
-    font-size: 2rem
+  .q-checkbox-unchecked
+  .cb-large
+    height: 54px !important
+    width: 30px !important
+    font-size: 54px !important
 </style>
