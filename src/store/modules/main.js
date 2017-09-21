@@ -6,7 +6,7 @@
 
 import * as mts from '../mutation-types'
 import cache from '../../cache'
-import {formatDate} from '../routines'
+import {formatDate} from '../../routines'
 
 function makeCurReleases (cursor) {
   function makeRelease (rownum) {

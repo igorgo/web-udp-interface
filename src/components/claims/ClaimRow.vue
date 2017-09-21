@@ -53,7 +53,7 @@
     QItem, QCard, QCardTitle, QIcon, QCardMain, QChip,
     QCardSeparator
   } from 'quasar'
-  import {formatDateTime} from '../../store/routines'
+  import {formatDateTime} from '../../routines'
 
   export default {
     data () {
@@ -90,7 +90,8 @@
         return formatDateTime(this.$props.claimRec.changeDate)
       },
       clTitle () {
-        return this.$props.claimRec.unit.replace(/;/g, ', ')
+        if (this.$props.claimRec.unit) return this.$props.claimRec.unit.replace(/;/g, ', ')
+        return 'Рекламація'
       },
       clcolor () {
         switch (this.$props.claimRec.claimType) {
