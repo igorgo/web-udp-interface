@@ -1,33 +1,9 @@
 import * as mts from '../mutation-types'
 import cache from '../../cache'
 import * as _ from 'lodash'
-
-const sorts = [
-  {
-    label: '',
-    field: ''
-  },
-  {
-    label: 'Дата реєстрації',
-    field: 'REG_DATE'
-  },
-  {
-    label: 'Дата зміни',
-    field: 'CHANGE_DATE'
-  },
-  {
-    label: 'Виконавець',
-    field: 'EXECUTOR'
-  },
-  {
-    label: 'Автор',
-    field: 'INITIATOR'
-  },
-  {
-    label: 'Пріоритет',
-    field: 'PRIORITY'
-  }
-]
+import {claimsRequest} from '../../routines'
+import * as c from '../../constants'
+import { Events } from 'quasar'
 
 const state = {
   allClaimsCount: 0,
@@ -35,45 +11,32 @@ const state = {
   currentCondition: cache.get(['userData', 'LAST_COND'], 1),
   currentClaimLimit: cache.get(['userData', 'LIST_LIMIT'], 25),
   currentClaimPage: cache.get('claimListPage', 1),
-  currentClaimSort: cache.get(['userData', 'CLAIM_SORT'], 0),
-  claimSortDesc: cache.get(['userData', 'CLAIM_SORT_ORDER'], 0)
+  currentClaimSort: cache.get(['userData', 'CLAIM_SORT'], 2),
+  claimSortDesc: cache.get(['userData', 'CLAIM_SORT_ORDER'], 1)
 }
 
 const getters = {
   claimsCount: state => state.allClaimsCount,
   claimListPage: state => state.currentClaimPage,
+  claimListPages: state => Math.floor(state.allClaimsCount / state.currentClaimLimit) + 1,
   claimListLimit: state => state.currentClaimLimit,
   currentCondition: state => state.currentCondition,
   allClaimsCount: state => state.allClaimsCount,
   claimList: state => state.claimList,
-  sortsList: () => sorts.map((item, ind) => { return {label: item.label, value: ind} }),
+  sortsList: () => c.SORT_OPTIONS.map((item, ind) => { return {label: item.label, value: ind} }),
   claimSortDesc: state => !!state.claimSortDesc,
   claimSort: state => state.currentClaimSort
-}
-
-function claimsRequest (socket, cond, sort, sortOrd, page, limit, newId) {
-  let sortStr = ''
-  if (sort > 0) {
-    sortStr = sorts[sort].field
-    if (sortOrd) sortStr += ' DESC'
-  }
-  socket.emit('get_claim_list', {
-    conditionId: cond,
-    sortOrder: sortStr,
-    page: page,
-    limit: limit,
-    newClaimId: newId
-  })
 }
 
 const mutations = {
   [mts.CLAIM_LIST] (state, result) {
     state.claimList = result.claims
-    state.claimsCount = result.allCnt
+    state.allClaimsCount = result.allCnt
     state.currentClaimLimit = result.limit
     state.currentClaimPage = result.page
     cache.set('claimListPage', result.page)
     cache.set(['userData', 'LIST_LIMIT'], result.limit)
+    Events.$emit('new-portion')
   },
   [mts.CLAIMS_FILTER_CHANGE] (state, playload) {
     cache.set(['userData', 'LAST_COND'], playload.value)
@@ -113,6 +76,19 @@ const mutations = {
         dataType: 'N',
         value: playload.value
       })
+    }
+  },
+  [mts.CLAIMS_PAGE_CHANGE]  (state, playload) {
+    if (_.has(playload, 'socket')) {
+      claimsRequest(
+        playload.socket,
+        state.currentCondition,
+        state.currentClaimSort,
+        state.claimSortDesc,
+        playload.value,
+        state.currentClaimLimit,
+        null
+      )
     }
   },
   [mts.CLAIMS_SORT_ORDER_CHANGE]  (state, playload) {

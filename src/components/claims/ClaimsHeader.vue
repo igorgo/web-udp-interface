@@ -1,6 +1,6 @@
 <template>
   <div class="row items-center justify-around">
-    <div class="col-5">
+    <div class="col-xl-5 col-9">
       <q-select
         float-label="Фільтр"
         inverted
@@ -12,7 +12,7 @@
         class="no-margin"
       />
     </div>
-    <div class="col-1">
+    <div class="col-xl-1 col-3">
       <q-btn
         small
         color="amber"
@@ -20,7 +20,7 @@
         @click="onNewFilterClick"
       >Новий</q-btn>
     </div>
-    <div class="col-5"><q-select
+    <div class="col-xl-5 col-9"><q-select
       float-label="Сортування"
       inverted
       color="purple"
@@ -30,7 +30,7 @@
       @change="onSortChange"
       class="no-margin"
     /></div>
-    <div class="col-1">
+    <div class="col-xl-1 col-3">
       <q-checkbox
         v-model="currSortOrder"
         @change="onSortOrderChange"

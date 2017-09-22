@@ -3,11 +3,12 @@
     <q-card class="full-width text-black" :color="clBcolor">
       <q-card-main>
         <div class="row justify-start cl-title" style="margin-bottom: 10px">
+          <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
           <div class="col-sm-1 col-xs-2">
-            <q-icon :name="clicon" :class="clcolor"></q-icon>
+            <!--q-icon :name="clicon" :class="clcolor"></q-icon-->
+            <q-chip :color="clPriorColor" class="text-primary-dark">!{{claimRec.priority}}</q-chip>
             <q-icon v-if="claimRec.hasDocs" name="attach file"></q-icon>
           </div>
-          <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
         </div>
         <div class="claim-row-c">
           <div class="fl-3-6-12">№&nbsp;<span class="gray-token">{{claimRec.numb}}</span></div>
@@ -136,6 +137,18 @@
           case 4:
             return 'fa-times-circle-o'
         }
+      },
+      clPriorColor () {
+        const p = this.$props.claimRec.priority
+        if (p === 5) {
+          return 'tertiary'
+        }
+        else if (p < 5) {
+          return 'light-blue-' + (5 + (p - 1))
+        }
+        else if (p > 5) {
+          return 'red-' + p
+        }
       }
     },
     props: ['claimRec'],
@@ -164,4 +177,4 @@
   .cl-title
     font-size: 1.2rem
 </style>
-cfvsqctrhtnysqgfhjkm
+
