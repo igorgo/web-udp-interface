@@ -43,7 +43,7 @@
     QInnerLoading
   } from 'quasar'
   import c from '../../constants'
-
+  import { mapState } from 'vuex'
   export default {
     data () {
       return {
@@ -61,14 +61,14 @@
       QInnerLoading
     },
     computed: {
-      releasesLoaded () {
-        return this.$store.getters.releasesLoaded
-      },
+      ...mapState({
+        releasesLoaded: state => state.main.releasesLoaded
+      }),
       colorT () {
         return this.$props.rtype === 'stable' ? 'positive' : 'warning'
       },
       release () {
-        return this.$store.getters.curReleases[this.$props.rtype]
+        return this.$store.state.main.curReleases[this.$props.rtype]
       }
     },
     name: 'udp-release-card'

@@ -1,5 +1,5 @@
 <template>
-  <div v-show="!logged">
+  <div v-show="!authorized">
     <q-card>
       <q-card-title class="bg-light">
         Вхід в систему
@@ -41,6 +41,7 @@
     QCard, QCardTitle, QCardMain, QField, QInput, QCardActions,
     QBtn
   } from 'quasar'
+  import { mapState } from 'vuex'
 
   export default {
     components: {
@@ -71,17 +72,15 @@
       }
     },
     computed: {
-      authError () {
-        return this.$store.getters.authError
-      },
-      logged () {
-        return this.$store.getters.authorized
-      }
+      ...mapState({
+        authError: state => state.auth.authError,
+        authorized: state => state.auth.authorized
+      })
     },
     watch: {
-      logged (value) {
+      authorized (value) {
         if (value) {
-          this.$router.back()
+          this.$router.push('/claims')
         }
       }
     }

@@ -1,36 +1,34 @@
 <template>
   <div>
     <q-pagination
-      v-model="claimListPage"
+      v-model="currentClaimPage"
       :max="claimListPages"
-      @change="goto"
+      @change="goToPage"
     />
   </div>
 </template>
 
 <script>
-  import {QPagination} from 'quasar'
-  import * as mts from '../../store/mutation-types'
+  import { QPagination } from 'quasar'
+  import { CLAIMS_PAGE_CHANGE } from '../../store/mutation-types'
+  import { mapGetters, mapState } from 'vuex'
 
   export default {
     name: 'claims-paginator',
-    data () {
-      return {}
-    },
     components: {
       QPagination
     },
     computed: {
-      claimListPages () {
-        return this.$store.getters.claimListPages
-      },
-      claimListPage () {
-        return this.$store.getters.claimListPage
-      }
+      ...mapState({
+        currentClaimPage: state => state.claims.currentClaimPage
+      }),
+      ...mapGetters([
+        'claimListPages'
+      ])
     },
     methods: {
-      goto (value) {
-        this.$store.commit(mts.CLAIMS_PAGE_CHANGE, {value: value, socket: this.$socket})
+      goToPage (value) {
+        this.$store.commit(CLAIMS_PAGE_CHANGE, {value: value, socket: this.$socket})
       }
     }
   }

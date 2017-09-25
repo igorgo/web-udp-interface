@@ -2,7 +2,7 @@
   <div class="cl-content">
     <q-scroll-area ref="scroll" class="claimbody">
       <claim-header/>
-      <q-list no-border>
+      <q-list no-border highlight>
         <claim-row v-for="iClaim in claimList" :key="iClaim['id']" :claimRec="iClaim"/>
       </q-list>
       <q-fixed-position corner="bottom-right" :offset="[12, 68]" class="z-absolute">
@@ -17,6 +17,14 @@
       </q-fixed-position>
     </q-scroll-area>
     <claim-paginator class="claimfooter text-center"></claim-paginator>
+    <q-fixed-position corner="bottom-right" :offset="[12, 8]">
+      <q-btn round color="primary" @click="addClaim">
+        <q-icon name="add" />
+      </q-btn>
+    </q-fixed-position>
+    <!--q-inner-loading :visible="!claimsLoaded">
+      <q-spinner-gears size="50px" color="primary"></q-spinner-gears>
+    </q-inner-loading-->
   </div>
 </template>
 
@@ -24,54 +32,42 @@
   import ClaimHeader from './ClaimsHeader.vue'
   import ClaimRow from './ClaimRow.vue'
   import ClaimPaginator from './ClaimPaginator.vue'
-  import {QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop} from 'quasar'
-  import {claimsRequest} from '../../routines'
+  import { QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop } from 'quasar'
+  import { claimsRequest } from '../../routines'
+  import { mapGetters, mapState } from 'vuex'
 
   export default {
-    data () {
-      return {}
-    },
-    components: {
-      ClaimHeader,
-      QScrollArea,
-      ClaimRow,
-      QList,
-      QFixedPosition,
-      QBtn,
-      QIcon,
-      ClaimPaginator
-    },
+    components: { ClaimHeader, QScrollArea, ClaimRow, QList, QFixedPosition, QBtn, QIcon, ClaimPaginator },
     computed: {
-      currentCondition () {
-        return this.$store.getters.currentCondition
+      releasesLoaded$$$ () {
+        return this.$store.getters.releasesLoaded
       },
-      claimsCount () {
-        return this.$store.getters.claimsCount
-      },
-      claimListPage () {
-        return this.$store.getters.claimListPage
-      },
-      claimListLimit () {
-        return this.$store.getters.claimListLimit
-      },
-      claimList () {
-        return this.$store.getters.claimList
-      }
+      ...mapState({
+        currentCondition: state => state.claims.currentCondition,
+        currentClaimLimit: state => state.claims.currentClaimLimit,
+        claimList: state => state.claims.claimList
+      }),
+      ...mapGetters([
+      ])
     },
     mounted: function () {
       claimsRequest(
         this.$socket,
-        this.$store.getters.currentCondition,
-        this.$store.getters.claimSort,
+        this.$store.state.claims.currentCondition,
+        this.$store.state.claims.currentClaimSort,
         this.$store.getters.claimSortDesc,
-        this.$store.getters.claimListPage,
-        this.$store.getters.claimListLimit,
+        this.$store.state.claims.currentClaimPage,
+        this.$store.state.claims.currentClaimLimit,
         null
       )
     },
     methods: {
       newPortionHandler () {
         this.$refs.scroll.setScrollPosition(0)
+      },
+      addClaim () {
+        // todo: open form for add new claim
+        alert('todo: open form for add new claim')
       }
     },
     created () {

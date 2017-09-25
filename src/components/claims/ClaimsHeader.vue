@@ -7,7 +7,7 @@
         color="amber"
         separator
         :options="filterOptions"
-        v-model="currCondition"
+        v-model="currentCondition"
         @change="onFilterChange"
         class="no-margin"
       />
@@ -25,14 +25,14 @@
       inverted
       color="purple"
       separator
-      :options="sortOptions"
-      v-model="currSort"
+      :options="sortsList"
+      v-model="currentClaimSort"
       @change="onSortChange"
       class="no-margin"
     /></div>
     <div class="col-xl-1 col-3">
       <q-checkbox
-        v-model="currSortOrder"
+        v-model="claimSortDesc"
         @change="onSortOrderChange"
         class="cb-large"
         checked-icon="arrow drop down"
@@ -46,29 +46,24 @@
 <script>
   import {QSelect, QCheckbox, QBtn} from 'quasar'
   import * as mts from '../../store/mutation-types'
+  import { mapState, mapGetters } from 'vuex'
+
   export default {
-    data () {
-      return {}
-    },
     components: {
       QSelect,
       QCheckbox,
       QBtn
     },
     computed: {
-      filterOptions () {
-        // const filters = this.$store.getters.filters
-        return this.$store.getters.filters.map(f => {
-          return {
-            label: f['SNAME'],
-            value: f['RN']
-          }
-        })
-      },
-      currCondition () { return this.$store.getters.currentCondition },
-      sortOptions () { return this.$store.getters.sortsList },
-      currSort () { return this.$store.getters.claimSort },
-      currSortOrder () { return this.$store.getters.claimSortDesc }
+      ...mapState({
+        currentCondition: store => store.claims.currentCondition,
+        currentClaimSort: store => store.claims.currentClaimSort
+      }),
+      ...mapGetters([
+        'filterOptions',
+        'sortsList',
+        'claimSortDesc'
+      ])
     },
     name: 'claims-header',
     created: function () {
@@ -85,7 +80,7 @@
         this.$store.commit(mts.CLAIMS_SORT_ORDER_CHANGE, {value: !val, socket: this.$socket})
       },
       onNewFilterClick () {
-        console.log('todo: new filter redirect')
+        alert('todo: new filter redirect')
         // todo: new filter redirect
       }
     }

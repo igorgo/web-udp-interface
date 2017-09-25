@@ -64,10 +64,6 @@ const mutations = {
   }
 }
 const getters = {
-  authError: state => state.authError,
-  authorized: state => state.authorized,
-  sessionID: state => state.sessionID,
-  userFullName: state => state.userFullName
 }
 
 const actions = {

@@ -15,6 +15,7 @@
 <script>
   import { QList, QFixedPosition, QIcon, QBtn } from 'quasar'
   import CondFilter from './CondFilter.vue'
+  import {mapState} from 'vuex'
 
   export default {
     data () {
@@ -28,13 +29,14 @@
       QBtn
     },
     computed: {
-      filters () {
-        return this.$store.getters.filters
-      }
+      ...mapState({
+        filters: state => state.filters.filters
+      })
     },
     methods: {
       addFilter () {
-        alert('add')
+        // todo: add new filter
+        alert('todo: add new filter')
       }
     },
     mounted: function () {

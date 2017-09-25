@@ -3,7 +3,7 @@
     <q-item-main
       :label="filterRec['SNAME']"
     />
-    <q-item-side :icon="iconEdit" :color="iconColor"/>
+    <q-item-side :class="{'cursor-pointer': editable}" :icon="iconEdit" :color="iconColor" @click="editable && editFilter(filterRec['RN'])"/>
   </q-item>
 </template>
 
@@ -30,12 +30,16 @@
         return this.$props['filterRec']['EDITABLE'] === 'Y'
       },
       iconEdit () {
-        return this.$props['filterRec']['EDITABLE'] === 'Y'
-          ? 'edit' : 'lock'
+        return this.editable ? 'edit' : 'lock'
       },
       iconColor () {
-        return this.$props['filterRec']['EDITABLE'] === 'Y'
-          ? 'primary' : 'grey-6'
+        return this.editable ? 'primary' : 'grey-6'
+      }
+    },
+    methods: {
+      editFilter (rn) {
+        // todo: open filter edit form
+        alert('todo: open filter edit form ' + rn)
       }
     }
   }

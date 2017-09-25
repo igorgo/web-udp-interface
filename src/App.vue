@@ -11,8 +11,8 @@
  */
 export default {
   created () {
-    if (this.$store.getters.sessionID) {
-      this.$socket.emit('validate_session', {sessionID: this.$store.getters.sessionID})
+    if (this.$store.state.auth.sessionID) {
+      this.$socket.emit('validate_session', {sessionID: this.$store.state.auth.sessionID})
     }
   }
 }

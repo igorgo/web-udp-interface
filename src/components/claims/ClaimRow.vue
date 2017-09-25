@@ -1,11 +1,10 @@
 <template>
-  <q-item multiline class="no-padding">
+  <q-item multiline class="no-padding cursor-pointer">
     <q-card class="full-width text-black" :color="clBcolor">
-      <q-card-main>
+      <q-card-main @click="onClaimClick(claimRec.id)">
         <div class="row justify-start cl-title" style="margin-bottom: 10px">
           <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
           <div class="col-sm-1 col-xs-2">
-            <!--q-icon :name="clicon" :class="clcolor"></q-icon-->
             <q-chip :color="clPriorColor" class="text-primary-dark">!{{claimRec.priority}}</q-chip>
             <q-icon v-if="claimRec.hasDocs" name="attach file"></q-icon>
           </div>
@@ -24,9 +23,7 @@
         <div class="claim-row group text-left">
           <p class="ellipsis-3-lines text-faded light-paragraph">{{claimRec.description}}</p>
         </div>
-      <!--/q-card-main-->
       <div v-if="claimRec.executor || claimRec.hasBuildTo">
-        <!--q-card-main-->
           <div class="claim-row-c">
             <div class="col-sm-6 col-xs-12" v-if="claimRec.executor">
               Виконавець&nbsp;<span class="token bg-teal-14">{{claimRec.executor}}</span>
@@ -46,25 +43,11 @@
 </template>
 
 <script>
-  import {
-    QItem, QCard, QCardTitle, QIcon, QCardMain, QChip,
-    QCardSeparator
-  } from 'quasar'
+  import { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator } from 'quasar'
   import {formatDateTime} from '../../routines'
 
   export default {
-    data () {
-      return {}
-    },
-    components: {
-      QItem,
-      QCard,
-      QCardTitle,
-      QIcon,
-      QCardMain,
-      QChip,
-      QCardSeparator
-    },
+    components: { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator },
     computed: {
       clicon () {
         switch (this.$props.claimRec.claimType) {
@@ -152,7 +135,13 @@
       }
     },
     props: ['claimRec'],
-    name: 'claim-row'
+    name: 'claim-row',
+    methods: {
+      onClaimClick (id) {
+        // todo: open claim form
+        alert('todo: open claim form ' + id)
+      }
+    }
   }
 </script>
 

@@ -39,8 +39,6 @@ const state = {
 }
 
 const getters = {
-  curReleases: state => state.curReleases,
-  releasesLoaded: (state) => state.releasesLoaded
 }
 
 const mutations = {

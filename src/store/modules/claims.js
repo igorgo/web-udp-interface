@@ -16,16 +16,9 @@ const state = {
 }
 
 const getters = {
-  claimsCount: state => state.allClaimsCount,
-  claimListPage: state => state.currentClaimPage,
   claimListPages: state => Math.floor(state.allClaimsCount / state.currentClaimLimit) + 1,
-  claimListLimit: state => state.currentClaimLimit,
-  currentCondition: state => state.currentCondition,
-  allClaimsCount: state => state.allClaimsCount,
-  claimList: state => state.claimList,
   sortsList: () => c.SORT_OPTIONS.map((item, ind) => { return {label: item.label, value: ind} }),
-  claimSortDesc: state => !!state.claimSortDesc,
-  claimSort: state => state.currentClaimSort
+  claimSortDesc: state => !!state.claimSortDesc
 }
 
 const mutations = {

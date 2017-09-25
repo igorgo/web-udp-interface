@@ -5,7 +5,12 @@ const state = {
 }
 
 const getters = {
-  filters: state => state.filters
+  filterOptions: state => state.filters.map(f => {
+    return {
+      label: f['SNAME'],
+      value: f['RN']
+    }
+  })
 }
 
 const mutations = {
