@@ -51,7 +51,7 @@ const mutations = {
       })
     }
   },
-  [mts.CLAIMS_SORT_CHANGE]  (state, playload) {
+  [mts.CLAIMS_SORT_CHANGE] (state, playload) {
     cache.set(['userData', 'CLAIM_SORT'], playload.value)
     state.currentClaimSort = playload.value
     if (_.has(playload, 'socket')) {

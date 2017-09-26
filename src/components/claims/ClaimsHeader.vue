@@ -4,7 +4,7 @@
       <q-select
         float-label="Фільтр"
         inverted
-        color="amber"
+        color="amber-8"
         separator
         :options="filterOptions"
         v-model="currentCondition"
@@ -15,7 +15,7 @@
     <div class="col-xl-1 col-3">
       <q-btn
         small
-        color="amber"
+        color="amber-8"
         style="margin-left: 5px"
         @click="onNewFilterClick"
       >Новий</q-btn>

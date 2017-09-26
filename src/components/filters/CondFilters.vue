@@ -36,7 +36,7 @@
     methods: {
       addFilter () {
         // todo: add new filter
-        alert('todo: add new filter')
+        this.$router.push('/filter')
       }
     },
     mounted: function () {

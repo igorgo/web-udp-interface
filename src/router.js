@@ -16,6 +16,7 @@ const routes = [
     children: [
       {path: '', component: load('main/Main')},
       {path: '/login', component: load('Login')},
+      {path: '/filter', component: load('filters/CondFilterEdit')},
       {path: '/filters', component: load('filters/CondFilters')},
       {path: '/claims', component: load('claims/Claims')},
       {path: '/main', component: load('main/Main')}
