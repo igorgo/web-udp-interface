@@ -2,7 +2,8 @@
   <q-card>
     <q-card-title :class="'text-' + colorT">
       {{rtype === 'stable' ? 'Стабільниий' : 'Бета'}}
-      <span slot="subtitle" v-show="releasesLoaded">{{release['releaseName']}} (розпочато {{release['releaseDate']}})</span>
+      <span slot="subtitle"
+            v-show="releasesLoaded">{{release['releaseName']}} (розпочато {{release['releaseDate']}})</span>
     </q-card-title>
     <q-card-main>
       <q-transition
@@ -11,14 +12,16 @@
         leave="fadeOut"
       >
         <div v-show="releasesLoaded">
-          <div>
-            <dl class="horizontal">
-              <dt>Відкритих рекламацій:</dt>
-              <dd>{{release['openedIssues']}}</dd>
-              <dt>Закрито рекламацій:</dt>
-              <dd>{{release['closedIssues']}}</dd>
-            </dl>
-          </div>
+          <table style="margin-bottom: 10px;">
+            <tr>
+              <td class="text-bold">Відкритих рекламацій:</td>
+              <td class="text-right">{{release['openedIssues']}}</td>
+            </tr>
+            <tr>
+              <td class="text-bold">Закрито рекламацій:</td>
+              <td class="text-right">{{release['closedIssues']}}</td>
+            </tr>
+          </table>
           <div v-if="release.lastBuildNumber">
             <p>Остання збірка: {{release['lastBuildNumber']}} від {{release['lastBuildDate']}}</p>
             <p><a :href="rtype === 'stable' ? stableUrl : betaUrl" target="_blank">Завантажити з Google диску</a></p>
@@ -43,7 +46,8 @@
     QInnerLoading
   } from 'quasar'
   import c from '../../constants'
-  import { mapState } from 'vuex'
+  import {mapState} from 'vuex'
+
   export default {
     data () {
       return {

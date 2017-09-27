@@ -8,7 +8,7 @@ import { Events } from 'quasar'
 const state = {
   allClaimsCount: 0,
   claimList: [],
-  currentCondition: cache.get(['userData', 'LAST_COND'], 1),
+  currentCondition: cache.get(['userData', 'LAST_COND'], null),
   currentClaimLimit: cache.get(['userData', 'LIST_LIMIT'], 25),
   currentClaimPage: cache.get('claimListPage', 1),
   currentClaimSort: cache.get(['userData', 'CLAIM_SORT'], 2),

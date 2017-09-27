@@ -4,6 +4,7 @@
       :class="clsTitle"
     >
       {{title}}
+    <div slot="subtitle" v-if="subtitle" :class="clsTitle">{{subtitle}}</div>
     <div slot="right" v-show="hasTitleActions">
       <q-icon
         v-for="iAction in titleActions"
@@ -15,7 +16,7 @@
       />
     </div>
     </q-card-title>
-    <q-card-main :class="clsSlot">
+    <q-card-main ref="form-body" :class="clsSlot">
       <slot></slot>
     </q-card-main>
     <q-card-actions v-show="hasBottomActions" class="justify-end">
@@ -46,11 +47,11 @@
         return cls.join(' ')
       },
       clsSlot () {
-        let cls = []
+        /* let cls = []
         if (this.color) {
           cls.push('text-' + this.color)
         }
-        return cls.join(' ')
+        return cls.join(' ') */
       },
       hasTitleActions () {
         return this.titleActions && (this.titleActions.length > 0)
@@ -68,7 +69,8 @@
       },
       bottomActions: {
         type: Array
-      }
+      },
+      subtitle: String
     },
     data () {
       return {}

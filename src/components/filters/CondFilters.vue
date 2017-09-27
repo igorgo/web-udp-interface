@@ -35,7 +35,7 @@
     },
     methods: {
       addFilter () {
-        // todo: add new filter
+        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: null})
         this.$router.push('/filter')
       }
     },

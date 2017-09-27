@@ -4,7 +4,7 @@
       <q-select
         float-label="Фільтр"
         inverted
-        color="amber-8"
+        color="amber-9"
         separator
         :options="filterOptions"
         v-model="currentCondition"
@@ -15,7 +15,7 @@
     <div class="col-xl-1 col-3">
       <q-btn
         small
-        color="amber-8"
+        color="amber-9"
         style="margin-left: 5px"
         @click="onNewFilterClick"
       >Новий</q-btn>
@@ -80,8 +80,8 @@
         this.$store.commit(mts.CLAIMS_SORT_ORDER_CHANGE, {value: !val, socket: this.$socket})
       },
       onNewFilterClick () {
-        alert('todo: new filter redirect')
-        // todo: new filter redirect
+        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: null})
+        this.$router.push('/filter')
       }
     }
   }

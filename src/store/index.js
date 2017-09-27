@@ -11,7 +11,6 @@ import filters from './modules/filters'
 import claims from './modules/claims'
 // import * as types from './mutation-types'
 import { Toast } from 'quasar'
-
 Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
 

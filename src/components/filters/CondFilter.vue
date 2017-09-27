@@ -38,8 +38,8 @@
     },
     methods: {
       editFilter (rn) {
-        // todo: open filter edit form
-        alert('todo: open filter edit form ' + rn)
+        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: rn})
+        this.$router.push('/filter')
       }
     }
   }
