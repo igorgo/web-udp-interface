@@ -22,3 +22,8 @@ export const claimsRequest = (socket, cond, sort, sortOrd, page, limit, newId) =
     newClaimId: newId
   })
 }
+
+export const inclFilter = (what, { field, list }) => {
+  const needle = what.toLowerCase()
+  return list.filter(item => item[field].toLowerCase().indexOf(needle) > -1)
+}

@@ -9,6 +9,7 @@ import auth from './modules/auth'
 import main from './modules/main'
 import filters from './modules/filters'
 import claims from './modules/claims'
+import staticDicts from './modules/staticDicts'
 // import * as types from './mutation-types'
 import { Toast } from 'quasar'
 Vue.use(Vuex)
@@ -23,7 +24,8 @@ export default new Vuex.Store({
     auth,
     main,
     filters,
-    claims
+    claims,
+    staticDicts
   },
   actions: {
     socket_oraExecError (ctx, msg) {

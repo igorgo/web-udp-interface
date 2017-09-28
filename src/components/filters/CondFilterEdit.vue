@@ -21,12 +21,22 @@
           :value="filter.claimUnit"
           @input="updateFilter('claimUnit', $event)"
           float-label="Розділ"
-        />
+        >
+          <q-autocomplete
+            :staticData="unitsAutoComplete"
+            :filter="inclFilter"
+          />
+        </q-input>
         <q-input
           :value="filter.claimApp"
           @input="updateFilter('claimApp', $event)"
           float-label="Застосунок"
-        />
+        >
+          <q-autocomplete
+            :staticData="appsAutoComplete"
+            :filter="inclFilter"
+          />
+        </q-input>
       </af-field-set>
       <af-field-set caption="Реліз">
         <q-input
@@ -52,7 +62,7 @@
           label="Я - виконавець"
         />
         <q-checkbox
-          :value="!!filter.imExecutor"
+          :value="!!filter.imInitiator"
           @input="updateFilter('imInitiator', $event)"
           label="Я - автор"
         />
@@ -70,9 +80,10 @@
 
 <script>
   import {AfForm, AfFieldSet, AfLoadCover} from '../base'
-  import {QCardTitle, QField, QInput, QCheckbox} from 'quasar'
-  import {mapState} from 'vuex'
+  import {QCardTitle, QField, QInput, QCheckbox, QAutocomplete} from 'quasar'
+  import { mapState, mapGetters } from 'vuex'
   import {CLAIM_CONDITION_MODIFY} from '../../store/mutation-types'
+  import { inclFilter } from '../../routines'
 
   export default {
     components: {
@@ -82,7 +93,8 @@
       AfLoadCover,
       QField,
       QInput,
-      QCheckbox
+      QCheckbox,
+      QAutocomplete
     },
     data () {
       return {
@@ -126,13 +138,18 @@
       },
       updateFilter (key, value) {
         this.$store.commit(CLAIM_CONDITION_MODIFY, {key, value})
-      }
+      },
+      inclFilter
     },
     computed: {
       ...mapState({
         mutex: state => state.filters.get_filter_mutex,
         filter: state => state.filters.currentFilter
-      })
+      }),
+      ...mapGetters([
+        'unitsAutoComplete',
+        'appsAutoComplete'
+      ])
     }
   }
 </script>

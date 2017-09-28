@@ -40,7 +40,8 @@
     mounted () {
       this.txtColor = dom.style(this.$el, 'color')
     },
-    methods: {}
+    methods: {
+    }
   }
 </script>
 
