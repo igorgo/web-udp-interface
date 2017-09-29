@@ -39,10 +39,11 @@
         </q-input>
       </af-field-set>
       <af-field-set caption="Реліз">
-        <q-input
-          :value="filter.claimVersion"
-          @input="updateFilter('claimVersion', $event)"
+        <q-select
           float-label="Версія"
+          :value="filter.claimVersion"
+          :options="versionSelectList"
+          @change="updateFilter('claimVersion', $event)"
         />
         <q-input
           :value="filter.claimRelease"
@@ -79,10 +80,10 @@
 </template>
 
 <script>
-  import {AfForm, AfFieldSet, AfLoadCover} from '../base'
-  import {QCardTitle, QField, QInput, QCheckbox, QAutocomplete} from 'quasar'
+  import { AfForm, AfFieldSet, AfLoadCover } from '../base'
+  import { QCardTitle, QField, QInput, QCheckbox, QAutocomplete, QSelect } from 'quasar'
   import { mapState, mapGetters } from 'vuex'
-  import {CLAIM_CONDITION_MODIFY} from '../../store/mutation-types'
+  import { CLAIM_CONDITION_MODIFY } from '../../store/mutation-types'
   import { inclFilter } from '../../routines'
 
   export default {
@@ -94,7 +95,8 @@
       QField,
       QInput,
       QCheckbox,
-      QAutocomplete
+      QAutocomplete,
+      QSelect
     },
     data () {
       return {
@@ -148,7 +150,8 @@
       }),
       ...mapGetters([
         'unitsAutoComplete',
-        'appsAutoComplete'
+        'appsAutoComplete',
+        'versionSelectList'
       ])
     }
   }
