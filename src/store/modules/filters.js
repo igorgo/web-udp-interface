@@ -4,6 +4,7 @@ import {
   CLAIM_CONDITION_GET,
   CLAIM_CONDITION_MODIFY
 } from '../mutation-types'
+import * as _ from 'lodash'
 
 const state = {
   filters: [],
@@ -20,7 +21,7 @@ const state = {
     imExecutor: null,
     claimContent: ''
   },
-  get_filter_mutex: false
+  get_filter_progress: false
 }
 
 const getters = {
@@ -37,6 +38,13 @@ const getters = {
       })
     })
     return result
+  },
+  currentFilter: state => {
+    let cv = _.assignIn({}, state.currentFilter)
+    cv.claimVersion = state.currentFilter.claimVersion ? state.currentFilter.claimVersion.split(';') : []
+    cv.imInitiator = !!state.currentFilter.imInitiator
+    cv.imExecutor = !!state.currentFilter.imExecutor
+    return cv
   }
 }
 
@@ -49,7 +57,7 @@ const mutations = {
       rn: result['P_RN'],
       name: result['P_FILTER_NAME'],
       claimNumb: result['P_CLAIM_NUMB'],
-      claimVersion: result['P_CLAIM_VERS'],
+      claimVersion: (result['P_CLAIM_VERS']),
       claimRelease: result['P_CLAIM_RELEASE'],
       claimBuild: result['P_CLAIM_BUILD'],
       claimUnit: result['P_CLAIM_UNIT'],
@@ -58,13 +66,14 @@ const mutations = {
       imExecutor: result['P_CLAIM_IM_PERF'],
       claimContent: result['P_CLAIM_CONTENT']
     }
-    state.get_filter_mutex = false
+    state.get_filter_progress = false
   },
   [CLAIM_CONDITION_GET] (state) {
-    state.get_filter_mutex = true
+    state.get_filter_progress = true
   },
   [CLAIM_CONDITION_MODIFY] (state, pl) {
     if (['imInitiator', 'imExecutor'].includes(pl.key)) state.currentFilter[pl.key] = pl.value ? 1 : 0
+    else if (_.includes(['claimVersion'], pl.key)) state.currentFilter[pl.key] = pl.value.join(';')
     else state.currentFilter[pl.key] = pl.value
   }
 }

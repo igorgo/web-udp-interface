@@ -5,20 +5,20 @@
       color="amber-9"
       :titleActions="tActions"
       :bottomActions="bActions"
-      :subtitle="filter.name"
+      :subtitle="currentFilter.name"
       style="max-width: 800px;"
       class="col"
     >
       <af-field-set caption="Реквізити">
         <q-input
-          :value="filter.claimNumb"
+          :value="currentFilter.claimNumb"
           @input="updateFilter('claimNumb', $event)"
           float-label="Номер рекламації"
         />
       </af-field-set>
       <af-field-set caption="Система">
         <q-input
-          :value="filter.claimUnit"
+          :value="currentFilter.claimUnit"
           @input="updateFilter('claimUnit', $event)"
           float-label="Розділ"
         >
@@ -28,7 +28,7 @@
           />
         </q-input>
         <q-input
-          :value="filter.claimApp"
+          :value="currentFilter.claimApp"
           @input="updateFilter('claimApp', $event)"
           float-label="Застосунок"
         >
@@ -41,41 +41,42 @@
       <af-field-set caption="Реліз">
         <q-select
           float-label="Версія"
-          :value="filter.claimVersion"
+          :value="currentFilter.claimVersion"
           :options="versionSelectList"
+          multiple
           @change="updateFilter('claimVersion', $event)"
         />
         <q-input
-          :value="filter.claimRelease"
+          :value="currentFilter.claimRelease"
           @input="updateFilter('claimRelease', $event)"
           float-label="Реліз"
         />
         <q-input
-          :value="filter.claimBuild"
+          :value="currentFilter.claimBuild"
           @input="updateFilter('claimBuild', $event)"
           float-label="Збірка"
         />
       </af-field-set>
       <af-field-set caption="Власне">
         <q-checkbox
-          :value="!!filter.imExecutor"
+          :value="currentFilter.imExecutor"
           @input="updateFilter('imExecutor', $event)"
           label="Я - виконавець"
         />
         <q-checkbox
-          :value="!!filter.imInitiator"
+          :value="currentFilter.imInitiator"
           @input="updateFilter('imInitiator', $event)"
           label="Я - автор"
         />
       </af-field-set>
       <af-field-set caption="Зміст">
         <q-input
-          :value="filter.claimContent"
+          :value="currentFilter.claimContent"
           @input="updateFilter('claimContent', $event)"
         />
       </af-field-set>
     </af-form>
-    <af-load-cover :mutex="mutex"/>
+    <af-load-cover :progress="progress"/>
   </div>
 </template>
 
@@ -145,13 +146,13 @@
     },
     computed: {
       ...mapState({
-        mutex: state => state.filters.get_filter_mutex,
-        filter: state => state.filters.currentFilter
+        progress: state => state.filters.get_filter_progress
       }),
       ...mapGetters([
         'unitsAutoComplete',
         'appsAutoComplete',
-        'versionSelectList'
+        'versionSelectList',
+        'currentFilter'
       ])
     }
   }

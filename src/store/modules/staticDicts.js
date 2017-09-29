@@ -43,7 +43,8 @@ const mutations = {
 const getters = {
   unitsAutoComplete: state => array2AutoComplete(state.unitsNames),
   appsAutoComplete: state => array2AutoComplete(state.appsNames),
-  versionSelectList: state => [{label: '', value: ''}].concat(state.allBuilds.map(item => { return {label: item.version, value: item.version} }))
+  // versionSelectList: state => [{label: '', value: ''}].concat(state.allBuilds.map(item => { return {label: item.version, value: item.version} }))
+  versionSelectList: state => state.allBuilds.map(item => { return {label: item.version, value: item.version} })
 }
 
 export default {

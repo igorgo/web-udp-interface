@@ -88,9 +88,8 @@
 </script>
 
 <style lang="styl">
-  .q-checkbox-checked
-  .q-checkbox-unchecked
-  .cb-large
+  .cb-large .q-checkbox-checked
+  .cb-large .q-checkbox-unchecked
     height: 54px !important
     width: 30px !important
     font-size: 54px !important

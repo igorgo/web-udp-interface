@@ -23,10 +23,4 @@ export default {
 </script>
 
 <style>
-  .content {
-    margin: 10px auto 0 15px;
-  }
-  h5 {
-    color: #ff6e40;
-  }
 </style>
