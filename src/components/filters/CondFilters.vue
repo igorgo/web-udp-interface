@@ -35,7 +35,7 @@
     },
     methods: {
       addFilter () {
-        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: null})
+        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: null, from: 'filters'})
         this.$router.push('/filter')
       }
     },

@@ -2,7 +2,7 @@
   <div class="row items-center justify-around">
     <div class="col-xl-5 col-9">
       <q-select
-        float-label="Фільтр"
+        stack-label="Фільтр"
         inverted
         color="amber-9"
         separator
@@ -15,13 +15,15 @@
     <div class="col-xl-1 col-3">
       <q-btn
         small
+        round
+        flat
         color="amber-9"
-        style="margin-left: 5px"
         @click="onNewFilterClick"
-      >Новий</q-btn>
+        icon="fa-filter"
+      />
     </div>
     <div class="col-xl-5 col-9"><q-select
-      float-label="Сортування"
+      stack-label="Сортування"
       inverted
       color="purple"
       separator
@@ -34,7 +36,7 @@
       <q-checkbox
         v-model="claimSortDesc"
         @change="onSortOrderChange"
-        class="cb-large"
+        class="sort-icon"
         checked-icon="arrow drop down"
         unchecked-icon="arrow drop up"
         color="purple"
@@ -44,8 +46,7 @@
 </template>
 
 <script>
-  import {QSelect, QCheckbox, QBtn} from 'quasar'
-  import * as mts from '../../store/mutation-types'
+  import {QSelect, QCheckbox, QBtn} from 'quasar-framework'
   import { mapState, mapGetters } from 'vuex'
 
   export default {
@@ -70,27 +71,28 @@
       this.$socket.emit('get_claim_conditions_list')
     },
     methods: {
-      onFilterChange (val) {
-        this.$store.commit(mts.CLAIMS_FILTER_CHANGE, {value: val, socket: this.$socket})
+      onFilterChange (value) {
+        void this.$store.dispatch('setCurrentCondition', {value, socket: this.$socket})
       },
-      onSortChange (val) {
-        this.$store.commit(mts.CLAIMS_SORT_CHANGE, {value: val, socket: this.$socket})
+      onSortChange (value) {
+        void this.$store.dispatch('setCurrentSort', {value, socket: this.$socket})
       },
-      onSortOrderChange (val) {
-        this.$store.commit(mts.CLAIMS_SORT_ORDER_CHANGE, {value: !val, socket: this.$socket})
+      onSortOrderChange (value) {
+        void this.$store.dispatch('setCurrentClaimSortOrder', {value: !value, socket: this.$socket})
       },
       onNewFilterClick () {
-        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: null})
+        void this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: null, from: 'claims'})
         this.$router.push('/filter')
       }
     }
   }
 </script>
 
-<style lang="styl">
-  .cb-large .q-checkbox-checked
-  .cb-large .q-checkbox-unchecked
+<style lang="stylus">
+  .sort-icon .q-checkbox-checked
+  .sort-icon .q-checkbox-unchecked
     height: 54px !important
     width: 30px !important
     font-size: 54px !important
+    margin-left: 5px
 </style>

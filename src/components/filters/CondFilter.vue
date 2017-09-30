@@ -38,7 +38,7 @@
     },
     methods: {
       editFilter (rn) {
-        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: rn})
+        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: rn, from: 'filters'})
         this.$router.push('/filter')
       }
     }

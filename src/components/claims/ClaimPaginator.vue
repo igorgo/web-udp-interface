@@ -10,7 +10,6 @@
 
 <script>
   import { QPagination } from 'quasar'
-  import { CLAIMS_PAGE_CHANGE } from '../../store/mutation-types'
   import { mapGetters, mapState } from 'vuex'
 
   export default {
@@ -28,7 +27,7 @@
     },
     methods: {
       goToPage (value) {
-        this.$store.commit(CLAIMS_PAGE_CHANGE, {value: value, socket: this.$socket})
+        void this.$store.dispatch('setCurrentClaimPage', {value, socket: this.$socket})
       }
     }
   }

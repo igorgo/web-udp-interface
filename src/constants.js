@@ -10,7 +10,7 @@ c.SERVER_URL = 'http://localhost:8716'
 // c.SERVER_URL = 'http://192.168.3.182:8716'
 c.SORT_OPTIONS = [
   {
-    label: '',
+    label: 'без сортування',
     field: ''
   },
   {

@@ -5,20 +5,20 @@
       color="amber-9"
       :titleActions="tActions"
       :bottomActions="bActions"
-      :subtitle="currentFilter.name"
+      :subtitle="currentFilterEdit.name"
       style="max-width: 800px;"
       class="col"
     >
       <af-field-set caption="Реквізити">
         <q-input
-          :value="currentFilter.claimNumb"
+          :value="currentFilterEdit.claimNumb"
           @input="updateFilter('claimNumb', $event)"
           float-label="Номер рекламації"
         />
       </af-field-set>
       <af-field-set caption="Система">
         <q-input
-          :value="currentFilter.claimUnit"
+          :value="currentFilterEdit.claimUnit"
           @input="updateFilter('claimUnit', $event)"
           float-label="Розділ"
         >
@@ -28,7 +28,7 @@
           />
         </q-input>
         <q-input
-          :value="currentFilter.claimApp"
+          :value="currentFilterEdit.claimApp"
           @input="updateFilter('claimApp', $event)"
           float-label="Застосунок"
         >
@@ -41,37 +41,43 @@
       <af-field-set caption="Реліз">
         <q-select
           float-label="Версія"
-          :value="currentFilter.claimVersion"
+          v-model="currentFilterEdit.claimVersion"
           :options="versionSelectList"
           multiple
           @change="updateFilter('claimVersion', $event)"
         />
-        <q-input
-          :value="currentFilter.claimRelease"
-          @input="updateFilter('claimRelease', $event)"
+        <q-select
           float-label="Реліз"
+          :value="currentFilterEdit.claimRelease.value"
+          :options="releaseSelectList"
+          multiple
+          :disable="currentFilterEdit.claimRelease.disable"
+          @change="updateFilter('claimRelease', $event)"
         />
-        <q-input
-          :value="currentFilter.claimBuild"
-          @input="updateFilter('claimBuild', $event)"
+        <q-select
           float-label="Збірка"
+          :value="currentFilterEdit.claimBuild.value"
+          :options="buildsSelectList"
+          multiple
+          :disable="currentFilterEdit.claimBuild.disable"
+          @change="updateFilter('claimBuild', $event)"
         />
       </af-field-set>
       <af-field-set caption="Власне">
         <q-checkbox
-          :value="currentFilter.imExecutor"
+          :value="currentFilterEdit.imExecutor"
           @input="updateFilter('imExecutor', $event)"
           label="Я - виконавець"
         />
         <q-checkbox
-          :value="currentFilter.imInitiator"
+          :value="currentFilterEdit.imInitiator"
           @input="updateFilter('imInitiator', $event)"
           label="Я - автор"
         />
       </af-field-set>
       <af-field-set caption="Зміст">
         <q-input
-          :value="currentFilter.claimContent"
+          :value="currentFilterEdit.claimContent"
           @input="updateFilter('claimContent', $event)"
         />
       </af-field-set>
@@ -81,11 +87,10 @@
 </template>
 
 <script>
-  import { AfForm, AfFieldSet, AfLoadCover } from '../base'
-  import { QCardTitle, QField, QInput, QCheckbox, QAutocomplete, QSelect } from 'quasar'
-  import { mapState, mapGetters } from 'vuex'
-  import { CLAIM_CONDITION_MODIFY } from '../../store/mutation-types'
-  import { inclFilter } from '../../routines'
+  import {AfForm, AfFieldSet, AfLoadCover} from '../base'
+  import {QCardTitle, QField, QInput, QCheckbox, QAutocomplete, QSelect} from 'quasar'
+  import {mapState, mapGetters, mapActions} from 'vuex'
+  import {inclFilter} from '../../routines'
 
   export default {
     components: {
@@ -101,18 +106,6 @@
     },
     data () {
       return {
-        tActions: [
-          {
-            icon: 'save',
-            action: 'saveFilter',
-            handler: this.saveFilter
-          },
-          {
-            icon: 'fa-eraser',
-            action: 'clearForm',
-            handler: this.clearForm
-          }
-        ],
         bActions: [
           {
             caption: 'OK',
@@ -133,27 +126,47 @@
       saveFilter () {
         alert('saveFilter')
       },
-      clearForm () {
-        alert('clearForm')
-      },
       cancel () {
         this.$router.back()
       },
       updateFilter (key, value) {
-        this.$store.commit(CLAIM_CONDITION_MODIFY, {key, value})
+        void this.$store.dispatch('modifyFilterField', { key, value })
       },
-      inclFilter
+      inclFilter,
+      ...mapActions([
+        'clearFilterForm'
+      ])
     },
     computed: {
       ...mapState({
-        progress: state => state.filters.get_filter_progress
+        progress: state => state.filters.getFilterInProgress,
+        invokedByClaims: state => state.filters.invokedByClaims
       }),
       ...mapGetters([
         'unitsAutoComplete',
         'appsAutoComplete',
         'versionSelectList',
-        'currentFilter'
-      ])
+        'releaseSelectList',
+        'buildsSelectList',
+        'currentFilterEdit'
+      ]),
+      tActions () {
+        let r = []
+        if (this.invokedByClaims) {
+          r.push({
+            icon: 'save',
+            action: 'saveFilter',
+            handler: this.saveFilter
+          })
+        }
+        r.push({
+          icon: 'fa-eraser',
+          action: 'clearForm',
+          handler: this.clearFilterForm
+        })
+        return r
+      }
+
     }
   }
 </script>
