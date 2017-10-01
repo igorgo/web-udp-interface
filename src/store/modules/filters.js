@@ -1,15 +1,19 @@
 import {
-  CLAIM_CONDITIONS_LIST,
-  CLAIM_CONDITION_GOT,
-  CLAIM_CONDITION_GET,
-  CLAIM_CONDITION_MODIFY,
-  CLAIM_CONDITION_CLEAR
+  FILTER_LIST,
+  FILTER_GOT,
+  FILTER_GET,
+  FILTER_MODIFY,
+  FILTER_CLEAR,
+  FILTER_COVER,
+  FILTER_SAVED,
+  FILTER_DELETED,
+  FILTER_LIST_SCROLL,
+  FILTER_SET_DO_NOT_UPDATE
 } from '../mutation-types'
-import * as _ from 'lodash'
+import { Events } from 'quasar-framework'
+import _ from 'lodash'
 
 const emptyFilter = {
-  rn: null,
-  name: '',
   claimNumb: '',
   claimVersion: '',
   claimRelease: '',
@@ -23,9 +27,15 @@ const emptyFilter = {
 
 const state = {
   filters: [],
-  currentFilter: _.assignIn({}, emptyFilter),
+  currentFilter: {
+    rn: null,
+    name: '',
+    ...emptyFilter
+  },
   getFilterInProgress: false,
-  invokedByClaims: false
+  invokedByClaims: false,
+  listIndex: -1,
+  doNotUpdate: false
 }
 
 const getters = {
@@ -44,7 +54,7 @@ const getters = {
     return result
   },
   currentFilterEdit: state => {
-    let cv = _.assignIn({}, state.currentFilter)
+    let cv = {...state.currentFilter}
     const ver = state.currentFilter.claimVersion ? state.currentFilter.claimVersion.split(';') : []
     const rel = state.currentFilter.claimRelease ? state.currentFilter.claimRelease.split(';') : []
     cv.claimVersion = ver
@@ -75,10 +85,20 @@ const getters = {
 }
 
 const mutations = {
-  [CLAIM_CONDITIONS_LIST] (state, result) {
+  [FILTER_LIST] (state, result) {
     state.filters = result
+    if (state.filters.length) {
+      if (state.currentFilter.rn) {
+        const i = _.findIndex(state.filters, f => f['RN'] === state.currentFilter.rn)
+        state.listIndex = (i > -1) ? i : 0
+      }
+      else state.listIndex = 0
+    }
   },
-  [CLAIM_CONDITION_GOT] (state, result) {
+  [FILTER_LIST_SCROLL] (state, i) {
+    state.listIndex = i
+  },
+  [FILTER_GOT] (state, result) {
     state.currentFilter = {
       rn: result['P_RN'],
       name: result['P_FILTER_NAME'],
@@ -94,14 +114,29 @@ const mutations = {
     }
     state.getFilterInProgress = false
   },
-  [CLAIM_CONDITION_GET] (state, from) {
+  [FILTER_SAVED] (state, {P_OUT_RN}) {
+    state.currentFilter.rn = P_OUT_RN
+    state.getFilterInProgress = false
+    Events.$emit('filter:saved')
+  },
+  [FILTER_DELETED] () {
+    state.getFilterInProgress = false
+    Events.$emit('filter:deleted')
+  },
+  [FILTER_COVER] (state) {
     state.getFilterInProgress = true
+  },
+  [FILTER_GET] (state, from) {
     state.invokedByClaims = from === 'claims'
   },
-  [CLAIM_CONDITION_CLEAR] (state) {
-    _.assignIn(state.currentFilter, emptyFilter)
+  [FILTER_CLEAR] (state) {
+    state.currentFilter = {
+      rn: state.currentFilter.rn,
+      name: state.currentFilter.name,
+      ...emptyFilter
+    }
   },
-  [CLAIM_CONDITION_MODIFY] (state, {key, value}) {
+  [FILTER_MODIFY] (state, {key, value}) {
     switch (key) {
       case 'imInitiator':
       case 'imExecutor':
@@ -126,19 +161,44 @@ const mutations = {
       default:
         state.currentFilter[key] = value
     }
+  },
+  [FILTER_SET_DO_NOT_UPDATE] (state, value) {
+    state.doNotUpdate = value
   }
 }
 const actions = {
   getConditionFilter ({ commit }, { socket, conditionId, from }) {
-    commit(CLAIM_CONDITION_GET, from)
+    commit(FILTER_GET, from)
     if (!socket) return
+    commit(FILTER_COVER)
     socket.emit('get_claim_condition', { conditionId })
   },
   modifyFilterField ({commit}, {key, value}) {
-    commit(CLAIM_CONDITION_MODIFY, {key, value})
+    commit(FILTER_MODIFY, {key, value})
   },
   clearFilterForm ({commit}) {
-    commit(CLAIM_CONDITION_CLEAR)
+    commit(FILTER_CLEAR)
+  },
+  saveConditionFilter ({state}, {socket}) {
+    if (!socket) return
+    socket.emit('save_claim_condition', state.currentFilter)
+  },
+  deleteConditionFilter ({state, commit}, {socket}) {
+    if ((socket && state.currentFilter.rn)) {
+      console.log(2)
+      commit(FILTER_COVER)
+      socket.emit('delete_claim_condition', {rn: state.currentFilter.rn})
+    }
+  },
+  conditionListScroll ({ state, commit }, n) {
+    const i = state.listIndex + n
+    if ((i >= 0) && (i < state.filters.length)) commit(FILTER_LIST_SCROLL, i)
+  },
+  getConditionsList ({state, commit}, {socket}) {
+    if (state.doNotUpdate) commit(FILTER_SET_DO_NOT_UPDATE, false)
+    else {
+      socket.emit('get_claim_conditions_list')
+    }
   }
 }
 

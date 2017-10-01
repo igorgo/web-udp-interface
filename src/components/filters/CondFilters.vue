@@ -2,24 +2,32 @@
   <div class="content">
     <h5>Мої фільтри рекламацій</h5>
     <q-list no-border highlight>
-      <cond-filter v-for="iFilter in filters" :key="iFilter['RN']" :filterRec="iFilter"/>
+      <cond-filter :class="{'af-active-line':index===listIndex}" v-for="(item, index) in filters" :key="index"
+                   :filterRec="item"/>
     </q-list>
     <q-fixed-position corner="bottom-right" :offset="[18, 18]">
       <q-btn round color="primary" @click="addFilter">
-        <q-icon name="add" />
+        <q-icon name="add"/>
       </q-btn>
     </q-fixed-position>
   </div>
 </template>
 
 <script>
-  import { QList, QFixedPosition, QIcon, QBtn } from 'quasar'
+  import {QList, QFixedPosition, QIcon, QBtn} from 'quasar-framework'
   import CondFilter from './CondFilter.vue'
-  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
 
   export default {
     data () {
-      return {}
+      return {
+        eventMapper: {
+          'key:arrow:down': this.__onKeyArrowDown,
+          'key:arrow:up': this.__onKeyArrowUp,
+          'key:f2': this.__editFilter,
+          'key:insert': this.addFilter
+        }
+      }
     },
     components: {
       CondFilter,
@@ -30,20 +38,48 @@
     },
     computed: {
       ...mapState({
-        filters: state => state.filters.filters
+        filters: state => state.filters.filters,
+        listIndex: state => state.filters.listIndex
       })
     },
     methods: {
+      ...mapActions([
+        'conditionListScroll'
+      ]),
       addFilter () {
-        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: null, from: 'filters'})
+        void this.$store.dispatch('getConditionFilter', { socket: this.$socket, conditionId: null, from: 'filters' })
         this.$router.push('/filter')
+      },
+      __onKeyArrowDown () {
+        this.$store.dispatch('conditionListScroll', 1)
+      },
+      __onKeyArrowUp () {
+        this.$store.dispatch('conditionListScroll', -1)
+      },
+      __editFilter () {
+        if ((this.listIndex >= 0) && (this.filters[this.listIndex]['EDITABLE'] === 'Y')) {
+          void this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: this.filters[this.listIndex]['RN'], from: 'filters'})
+          this.$router.push('/filter')
+        }
       }
     },
     mounted: function () {
       this.$socket.emit('get_claim_conditions_list')
+    },
+    created () {
+      for (let i in this.eventMapper) {
+        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$on(i, this.eventMapper[i])
+      }
+    },
+    beforeDestroy () {
+      for (let i in this.eventMapper) {
+        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$off(i, this.eventMapper[i])
+      }
     }
   }
 </script>
 
-<style>
+<style lang="stylus">
+  .af-active-line
+    background-color #ef6c00
 </style>

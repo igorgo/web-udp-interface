@@ -26,7 +26,7 @@ const state = {
 }
 
 const mutations = {
-  [types.UNAUTHORIZED] (state, msg) {
+  [types.AUTH_UNAUTHORIZED] (state, msg) {
     state.authError = ''
     state.authorized = false
     state.userFullName = ''
@@ -42,23 +42,23 @@ const mutations = {
     cache.unset('sessionID')
     cache.unset('userFullName')
   },
-  [types.AUTHORIZED] (state, msg) {
+  [types.AUTH_AUTHORIZED] (state, msg) {
     state.authorized = true
     state.userFullName = msg.userFullName
     state.sessionID = msg.sessionID
     cache.set('sessionID', msg.sessionID)
     cache.set('userFullName', msg.userFullName)
   },
-  [types.SESSION_NOT_VALID] (state) {
+  [types.AUTH_SESSION_NOT_VALID] (state) {
     state.authorized = false
     state.userFullName = ''
     state.sessionID = ''
     cache.clear()
   },
-  [types.SESSION_VALIDATED] (state) {
+  [types.AUTH_SESSION_VALIDATED] (state) {
     state.authorized = true
   },
-  [types.USER_DATA_LOADED] (state, msg) {
+  [types.AUTH_USER_DATA_LOADED] (state, msg) {
     state.userData = parseUserData(msg)
     cache.set('userData', parseUserData(msg))
   }

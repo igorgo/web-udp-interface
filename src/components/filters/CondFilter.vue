@@ -3,7 +3,12 @@
     <q-item-main
       :label="filterRec['SNAME']"
     />
-    <q-item-side :class="{'cursor-pointer': editable}" :icon="iconEdit" :color="iconColor" @click="editable && editFilter(filterRec['RN'])"/>
+    <q-item-side
+      :class="{'cursor-pointer': editable}"
+      :icon="iconEdit"
+      :color="iconColor"
+      @click="editable && editFilter(filterRec['RN'])"
+    />
   </q-item>
 </template>
 
@@ -11,8 +16,9 @@
   import {
     QItem,
     QItemSide,
-    QItemMain
-  } from 'quasar'
+    QItemMain,
+    QTooltip
+  } from 'quasar-framework'
 
   export default {
     data () {
@@ -21,7 +27,8 @@
     components: {
       QItem,
       QItemSide,
-      QItemMain
+      QItemMain,
+      QTooltip
     },
     name: 'cond-filter',
     props: ['filterRec'],
@@ -38,7 +45,7 @@
     },
     methods: {
       editFilter (rn) {
-        this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: rn, from: 'filters'})
+        void this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: rn, from: 'filters'})
         this.$router.push('/filter')
       }
     }

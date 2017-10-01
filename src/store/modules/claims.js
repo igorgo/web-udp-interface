@@ -1,5 +1,5 @@
 import {
-  CLAIM_LIST,
+  CLAIMS_LIST,
   CLAIMS_FILTER_CHANGE,
   CLAIMS_SORT_CHANGE,
   CLAIMS_PAGE_CHANGE,
@@ -31,7 +31,7 @@ const getters = {
 }
 
 const mutations = {
-  [CLAIM_LIST] (state, result) {
+  [CLAIMS_LIST] (state, result) {
     state.claimList = result.claims
     state.allClaimsCount = result.allCnt
     state.currentClaimLimit = result.limit

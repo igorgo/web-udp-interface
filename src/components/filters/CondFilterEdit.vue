@@ -9,6 +9,14 @@
       style="max-width: 800px;"
       class="col"
     >
+      <q-btn
+        icon="edit"
+        small
+        round
+        flat
+        slot="after-subtitle"
+        @click="editName(true)"
+      />
       <af-field-set caption="Реквізити">
         <q-input
           :value="currentFilterEdit.claimNumb"
@@ -83,12 +91,21 @@
       </af-field-set>
     </af-form>
     <af-load-cover :progress="progress"/>
+    <q-modal ref="nameEditModal" minimized :content-css="{padding: '10px'}">
+      <h6>Найменуваня фільтра</h6>
+      <q-input
+        ref="nameEditInput"
+        v-model="filterName"
+      />
+      <q-btn flat color="positive" @click="setFilterName" :disable="!nameEditModalValidator">OK</q-btn>
+      <q-btn flat color="negative" @click="$refs['nameEditModal'].close()">Скасування</q-btn>
+    </q-modal>
   </div>
 </template>
 
 <script>
   import {AfForm, AfFieldSet, AfLoadCover} from '../base'
-  import {QCardTitle, QField, QInput, QCheckbox, QAutocomplete, QSelect} from 'quasar'
+  import {QCardTitle, QField, QInput, QCheckbox, QAutocomplete, QSelect, QBtn, QModal, Dialog} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {inclFilter} from '../../routines'
 
@@ -102,29 +119,43 @@
       QInput,
       QCheckbox,
       QAutocomplete,
-      QSelect
+      QSelect,
+      QBtn,
+      QModal
     },
     data () {
       return {
-        bActions: [
-          {
-            caption: 'OK',
-            action: 'ok',
-            handler: this.saveFilter,
-            color: 'primary'
-          },
-          {
-            caption: 'Скасування',
-            action: 'cancel',
-            handler: this.cancel,
-            color: 'negative'
-          }
-        ]
+        filterName: '',
+        justSave: true,
+        eventMapper: {
+          'filter:saved': this.onFilterSaved,
+          'filter:deleted': this.onFilterDeleted
+        }
       }
     },
     methods: {
-      saveFilter () {
-        alert('saveFilter')
+      apply () {
+        this.finishEdit()
+      },
+      saveApply () {
+        this.editName(false)
+      },
+      onFilterSaved () {
+        if (this.invokedByClaims) {
+          void this.$store.dispatch('setCurrentCondition', {
+            socket: null,
+            value: this.currentFilterEdit.name ? this.currentFilterEdit.rn : null
+          })
+        }
+        this.$router.back()
+      },
+      save () {
+        if (this.currentFilterEdit.name) {
+          this.finishEdit()
+        }
+        else {
+          this.editName(false)
+        }
       },
       cancel () {
         this.$router.back()
@@ -132,10 +163,48 @@
       updateFilter (key, value) {
         void this.$store.dispatch('modifyFilterField', { key, value })
       },
+      setFilterName () {
+        this.updateFilter('name', this.filterName)
+        this.$refs['nameEditModal'].close()
+        !this.justSave && this.finishEdit(this.invokedByClaims ? null : this.currentFilterEdit.rn)
+      },
+      finishEdit () {
+        void this.$store.dispatch('saveConditionFilter', {socket: this.$socket})
+      },
       inclFilter,
       ...mapActions([
         'clearFilterForm'
-      ])
+      ]),
+      editName (justSave) {
+        this.filterName = this.currentFilterEdit.name
+        this.justSave = justSave
+        this.$refs['nameEditModal'].open()
+      },
+      onFilterDeleted () {
+        this.$router.back()
+      },
+      doDelete () {
+        void this.$store.dispatch('deleteConditionFilter', {socket: this.$socket})
+      },
+      deleteFilter () {
+        Dialog.create({
+          title: 'Видалити',
+          message: `Ви дійсно бажаєте видалити фільтр «${this.currentFilterEdit.name}»?`,
+          buttons: [
+            {
+              label: 'Так',
+              color: 'positive',
+              flat: true,
+              handler: this.doDelete
+            },
+            {
+              label: 'Ні',
+              color: 'negative',
+              flat: true
+            }
+          ]
+        })
+      }
     },
     computed: {
       ...mapState({
@@ -150,13 +219,44 @@
         'buildsSelectList',
         'currentFilterEdit'
       ]),
-      tActions () {
+      bActions () {
         let r = []
         if (this.invokedByClaims) {
           r.push({
-            icon: 'save',
-            action: 'saveFilter',
-            handler: this.saveFilter
+            caption: 'Застосувати',
+            action: 'apply',
+            handler: this.apply,
+            color: 'primary'
+          }, {
+            caption: 'Зберегти та застосувати',
+            action: 'saveApply',
+            handler: this.saveApply,
+            color: 'primary'
+          })
+        }
+        else {
+          r.push({
+            caption: 'Зберегти',
+            action: 'save',
+            handler: this.save,
+            color: 'primary'
+          })
+        }
+        r.push({
+          caption: 'Скасування',
+          action: 'cancel',
+          handler: this.cancel,
+          color: 'negative'
+        })
+        return r
+      },
+      tActions () {
+        let r = []
+        if (!this.invokedByClaims) {
+          r.push({
+            icon: 'delete',
+            action: 'deleteFilter',
+            handler: this.deleteFilter
           })
         }
         r.push({
@@ -165,8 +265,20 @@
           handler: this.clearFilterForm
         })
         return r
+      },
+      nameEditModalValidator () {
+        return this.filterName && this.filterName.trim().length > 0
       }
-
+    },
+    created () {
+      for (let i in this.eventMapper) {
+        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$on(i, this.eventMapper[i])
+      }
+    },
+    beforeDestroy () {
+      for (let i in this.eventMapper) {
+        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$off(i, this.eventMapper[i])
+      }
     }
   }
 </script>

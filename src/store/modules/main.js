@@ -42,7 +42,7 @@ const getters = {
 }
 
 const mutations = {
-  [mts.SET_CUR_RELEASES] (state, result) {
+  [mts.MAIN_SET_CUR_RELEASES] (state, result) {
     state.curReleases = makeCurReleases(result)
     state.releasesLoaded = true
     cache.set('curReleases', makeCurReleases(result))

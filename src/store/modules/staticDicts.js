@@ -1,6 +1,6 @@
 'use strict'
 
-import { SOCKET_ALL_UNITNAMES_LOADED, SOCKET_ALL_APPNAMES_LOADED, SOCKET_ALL_BUILDS_LOADED } from '../mutation-types'
+import { STATIC_UNITNAMES_LOADED, STATIC_APPNAMES_LOADED, STATIC_BUILDS_LOADED } from '../mutation-types'
 import cache from '../../cache'
 import * as _ from 'lodash'
 
@@ -25,17 +25,17 @@ const state = {
 }
 
 const mutations = {
-  [SOCKET_ALL_UNITNAMES_LOADED] (state, pl) {
+  [STATIC_UNITNAMES_LOADED] (state, pl) {
     const unitsNames = pl.map(i => i['UNITNAME'])
     state.unitsNames = unitsNames
     cache.set('unitsNames', unitsNames)
   },
-  [SOCKET_ALL_APPNAMES_LOADED] (state, pl) {
+  [STATIC_APPNAMES_LOADED] (state, pl) {
     const appsNames = pl.map(i => i['APPNAME'])
     state.appsNames = appsNames
     cache.set('appsNames', appsNames)
   },
-  [SOCKET_ALL_BUILDS_LOADED] (state, pl) {
+  [STATIC_BUILDS_LOADED] (state, pl) {
     state.allBuilds = pl
     cache.set('allBuilds', pl)
   }

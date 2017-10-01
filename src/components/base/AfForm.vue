@@ -4,7 +4,14 @@
       :class="clsTitle"
     >
       {{title}}
-    <div slot="subtitle" v-if="subtitle" :class="clsTitle">{{subtitle}}</div>
+      <div slot="subtitle" v-if="subtitle" :class="clsTitle">
+        <div>
+          <span>{{subtitle}}</span><span><slot name="after-subtitle" /></span>
+        </div>
+        <div>
+          <slot name="under-subtitle" />
+        </div>
+      </div>
     <div slot="right" v-show="hasTitleActions">
       <q-icon
         v-for="iAction in titleActions"

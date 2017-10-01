@@ -18,13 +18,13 @@
     </q-toolbar>
     <div slot="left">
       <q-list no-border link inset-delimiter>
-        <q-list-header class="text-center">
-          <img height="24" src="~assets/logos_afina_color.png">
+        <q-list-header class="text-center af-header-title">
+          <img style="max-width: 80%;" src="~assets/logos_afina_color.png">
         </q-list-header>
-        <q-list-header class="text-center" v-show="authorized"><q-icon name="account circle" /> {{userFullName}} </q-list-header>
+        <q-list-header class="text-center af-header-title" v-show="authorized"><q-icon name="account circle" /> {{userFullName}} </q-list-header>
         <q-item-separator />
         <q-side-link item to="/login" exact v-show="!authorized">
-          <q-item-side icon="fa-sign-in"/>
+          <q-item-side style="font-size: 2em;" icon="fa-sign-in"/>
           <q-item-main label="Вхід"></q-item-main>
         </q-side-link>
         <q-side-link item to="/main" exact>
@@ -110,5 +110,6 @@
 </script>
 
 <style lang="stylus">
-
+  .af-header-title
+    padding-right: 16px;
 </style>
