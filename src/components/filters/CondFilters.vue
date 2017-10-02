@@ -2,7 +2,7 @@
   <div class="content">
     <h5>Мої фільтри рекламацій</h5>
     <q-list no-border>
-      <cond-filter :class="{'af-active-line':index===listIndex}" v-for="(item, index) in filters" :key="index"
+      <cond-filter :class="{'afina-bg':index===listIndex}" v-for="(item, index) in filters" :key="index"
                    :filterRec="item" :filterIndex="index"/>
     </q-list>
     <q-fixed-position corner="bottom-right" :offset="[18, 18]">

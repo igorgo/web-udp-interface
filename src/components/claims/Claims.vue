@@ -55,7 +55,8 @@
       },
       addClaim () {
         // todo: open form for add new claim
-        alert('todo: open form for add new claim')
+        // alert('todo: open form for add new claim')
+        this.$router.push('/claim/new')
       }
     },
     created () {

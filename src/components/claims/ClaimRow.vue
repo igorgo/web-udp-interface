@@ -139,13 +139,14 @@
     methods: {
       onClaimClick (id) {
         // todo: open claim form
-        alert('todo: open claim form ' + id)
+        this.$router.push('/claim/view')
+        // alert('todo: open claim form ' + id)
       }
     }
   }
 </script>
 
-<style lang="styl">
+<style lang="stylus">
   @import '~variables'
   @import '~quasar-framework/dist/quasar.mat.styl'
 

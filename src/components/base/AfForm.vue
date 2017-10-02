@@ -1,10 +1,10 @@
 <template>
   <q-card>
     <q-card-title
-      :class="clsTitle"
+      class="afinasql-bg"
     >
       {{title}}
-      <div slot="subtitle" v-if="subtitle" :class="clsTitle">
+      <div slot="subtitle" v-if="subtitle" class="afinasql-bg">
         <div>
           <span>{{subtitle}}</span><span><slot name="after-subtitle" /></span>
         </div>
@@ -12,7 +12,7 @@
           <slot name="under-subtitle" />
         </div>
       </div>
-    <div slot="right" :class="clsTitle" v-show="hasTitleActions">
+    <div slot="right" class="afinasql-bg" v-show="hasTitleActions">
       <q-btn
         v-for="iAction in titleActions"
         small

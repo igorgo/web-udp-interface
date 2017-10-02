@@ -18,12 +18,16 @@ export default {
 }
 </script>
 
-<style>
-  .content {
-    margin: 10px auto 0 15px;
-  }
-  h5 {
-    color: #ff6e40;
-  }
-
+<style lang="stylus">
+  @import '~variables'
+  .content
+    margin 10px auto 0 15px
+  h5
+    color: $afina
+  .afina-bg
+    background $afina !important
+    color white
+  .afinasql-bg
+    background $afinasql !important
+    color white
 </style>

@@ -7,8 +7,8 @@
 const c = module.exports
 
 // c.SERVER_URL = 'http://localhost:8716'
-// c.SERVER_URL = 'http://192.168.3.182:8716'
-c.SERVER_URL = 'http://192.168.1.116:8716'
+c.SERVER_URL = 'http://192.168.3.182:8716'
+// c.SERVER_URL = 'http://192.168.1.116:8716'
 c.SORT_OPTIONS = [
   {
     label: 'без сортування',

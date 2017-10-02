@@ -2,7 +2,6 @@
   <div class="row justify-center">
     <af-form
       title="Фільтр"
-      color="amber-9"
       :titleActions="tActions"
       :bottomActions="bActions"
       :subtitle="currentFilterEdit.name"
@@ -254,7 +253,7 @@
       },
       tActions () {
         let r = []
-        if (!this.invokedByClaims) {
+        if (this.currentFilterEdit.rn) {
           r.push({
             icon: 'delete',
             action: 'deleteFilter',
