@@ -129,10 +129,12 @@ const mutations = {
   [FILTER_GET] (state, from) {
     state.invokedByClaims = from === 'claims'
   },
-  [FILTER_CLEAR] (state) {
+  [FILTER_CLEAR] (state, isNew) {
+    const rn = isNew ? null : state.currentFilter.rn
+    const name = isNew ? '' : state.currentFilter.name
     state.currentFilter = {
-      rn: state.currentFilter.rn,
-      name: state.currentFilter.name,
+      rn,
+      name,
       ...emptyFilter
     }
   },
@@ -169,15 +171,20 @@ const mutations = {
 const actions = {
   getConditionFilter ({ commit }, { socket, conditionId, from }) {
     commit(FILTER_GET, from)
-    if (!socket) return
-    commit(FILTER_COVER)
-    socket.emit('get_claim_condition', { conditionId })
+    if ((from === 'filters') && (conditionId === null)) {
+      commit(FILTER_CLEAR, true)
+    }
+    else {
+      if (!socket) return
+      commit(FILTER_COVER)
+      socket.emit('get_claim_condition', { conditionId })
+    }
   },
   modifyFilterField ({commit}, {key, value}) {
     commit(FILTER_MODIFY, {key, value})
   },
   clearFilterForm ({commit}) {
-    commit(FILTER_CLEAR)
+    commit(FILTER_CLEAR, false)
   },
   saveConditionFilter ({state}, {socket}) {
     if (!socket) return
@@ -185,7 +192,6 @@ const actions = {
   },
   deleteConditionFilter ({state, commit}, {socket}) {
     if ((socket && state.currentFilter.rn)) {
-      console.log(2)
       commit(FILTER_COVER)
       socket.emit('delete_claim_condition', {rn: state.currentFilter.rn})
     }
@@ -194,7 +200,13 @@ const actions = {
     const i = state.listIndex + n
     if ((i >= 0) && (i < state.filters.length)) commit(FILTER_LIST_SCROLL, i)
   },
-  getConditionsList ({state, commit}, {socket}) {
+  conditionListPos ({ commit }, n) {
+    commit(FILTER_LIST_SCROLL, n)
+  },
+  conditionSetDoNotUpdate ({commit}, doNotUpdate) {
+    commit(FILTER_SET_DO_NOT_UPDATE, doNotUpdate)
+  },
+  getConditionsList ({state, commit}, socket) {
     if (state.doNotUpdate) commit(FILTER_SET_DO_NOT_UPDATE, false)
     else {
       socket.emit('get_claim_conditions_list')

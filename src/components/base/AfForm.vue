@@ -12,14 +12,16 @@
           <slot name="under-subtitle" />
         </div>
       </div>
-    <div slot="right" v-show="hasTitleActions">
-      <q-icon
+    <div slot="right" :class="clsTitle" v-show="hasTitleActions">
+      <q-btn
         v-for="iAction in titleActions"
+        small
+        round
+        flat
         :key="iAction.action"
-        :name="iAction.icon"
+        :icon="iAction.icon"
         @click="iAction.handler()"
-        class="cursor-pointer on-right"
-        :class="clsTitle"
+        class="float-right"
       />
     </div>
     </q-card-title>

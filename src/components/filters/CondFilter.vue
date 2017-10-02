@@ -1,5 +1,5 @@
 <template>
-  <q-item>
+  <q-item @click="conditionListPos(filterIndex)">
     <q-item-main
       :label="filterRec['SNAME']"
     />
@@ -19,7 +19,7 @@
     QItemMain,
     QTooltip
   } from 'quasar-framework'
-
+  import {mapActions} from 'vuex'
   export default {
     data () {
       return {}
@@ -31,7 +31,7 @@
       QTooltip
     },
     name: 'cond-filter',
-    props: ['filterRec'],
+    props: ['filterRec', 'filterIndex'],
     computed: {
       editable () {
         return this.$props['filterRec']['EDITABLE'] === 'Y'
@@ -44,6 +44,9 @@
       }
     },
     methods: {
+      ...mapActions([
+        'conditionListPos'
+      ]),
       editFilter (rn) {
         void this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: rn, from: 'filters'})
         this.$router.push('/filter')

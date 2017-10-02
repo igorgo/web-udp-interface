@@ -1,9 +1,9 @@
 <template>
   <div class="content">
     <h5>Мої фільтри рекламацій</h5>
-    <q-list no-border highlight>
+    <q-list no-border>
       <cond-filter :class="{'af-active-line':index===listIndex}" v-for="(item, index) in filters" :key="index"
-                   :filterRec="item"/>
+                   :filterRec="item" :filterIndex="index"/>
     </q-list>
     <q-fixed-position corner="bottom-right" :offset="[18, 18]">
       <q-btn round color="primary" @click="addFilter">
@@ -44,10 +44,11 @@
     },
     methods: {
       ...mapActions([
-        'conditionListScroll'
+        'conditionListScroll',
+        'getConditionsList'
       ]),
       addFilter () {
-        void this.$store.dispatch('getConditionFilter', { socket: this.$socket, conditionId: null, from: 'filters' })
+        void this.$store.dispatch('getConditionFilter', { conditionId: null, from: 'filters' })
         this.$router.push('/filter')
       },
       __onKeyArrowDown () {
@@ -64,7 +65,7 @@
       }
     },
     mounted: function () {
-      this.$socket.emit('get_claim_conditions_list')
+      this.getConditionsList(this.$socket)
     },
     created () {
       for (let i in this.eventMapper) {

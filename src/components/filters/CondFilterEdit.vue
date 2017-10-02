@@ -158,6 +158,7 @@
         }
       },
       cancel () {
+        this.conditionSetDoNotUpdate(true)
         this.$router.back()
       },
       updateFilter (key, value) {
@@ -173,7 +174,8 @@
       },
       inclFilter,
       ...mapActions([
-        'clearFilterForm'
+        'clearFilterForm',
+        'conditionSetDoNotUpdate'
       ]),
       editName (justSave) {
         this.filterName = this.currentFilterEdit.name
