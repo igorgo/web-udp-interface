@@ -30,6 +30,10 @@ export default new Vuex.Store({
   actions: {
     socket_oraExecError (ctx, msg) {
       Toast.create.negative(msg.message)
+    },
+    rootLogoff (ctx, {socket, router, route = '/main'}) {
+      router && router.push(route)
+      socket && socket.emit('logoff')
     }
   },
   getters: {

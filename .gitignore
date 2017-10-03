@@ -7,3 +7,5 @@ cordova/platforms
 cordova/plugins
 .idea/
 /package-lock.json
+/electron/
+/cordova/

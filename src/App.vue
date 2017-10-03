@@ -23,7 +23,7 @@ export default {
   .content
     margin 10px auto 0 15px
   h5
-    color: $afina
+    color: $afinasql
   .afina-bg
     background $afina !important
     color white

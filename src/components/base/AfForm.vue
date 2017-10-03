@@ -4,7 +4,7 @@
       class="afinasql-bg"
     >
       {{title}}
-      <div slot="subtitle" v-if="subtitle" class="afinasql-bg">
+      <div slot="subtitle" v-if="subtitle" :class="subtitleClass" class="afinasql-bg">
         <div>
           <span>{{subtitle}}</span><span><slot name="after-subtitle" /></span>
         </div>
@@ -73,13 +73,10 @@
       title: String,
       color: String,
       darktext: Boolean,
-      titleActions: {
-        type: Array
-      },
-      bottomActions: {
-        type: Array
-      },
-      subtitle: String
+      titleActions: Array,
+      bottomActions: Array,
+      subtitle: String,
+      subtitleClass: String
     },
     data () {
       return {}

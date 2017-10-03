@@ -4,7 +4,7 @@
     view="hHh Lpr lff"
     :left-class="{'bg-grey-2': true}"
   >
-    <q-toolbar class="afina-bg">
+    <q-toolbar class="afinasql-bg">
       <q-btn
         flat
         @click="$refs.layout.toggleLeft()"
@@ -17,34 +17,7 @@
       </q-toolbar-title>
     </q-toolbar>
     <div slot="left">
-      <q-list no-border link inset-delimiter>
-        <q-list-header class="text-center af-header-title">
-          <img style="max-width: 80%;" src="~assets/afina_sql_col.svg">
-        </q-list-header>
-        <q-list-header class="text-center af-header-title" v-show="authorized"><q-icon style="font-size: 2em" name="account circle" /> {{userFullName}} </q-list-header>
-        <q-item-separator />
-        <q-side-link item to="/login" exact v-show="!authorized">
-          <q-item-side icon="fa-sign-in"/>
-          <q-item-main label="Вхід"></q-item-main>
-        </q-side-link>
-        <q-side-link item to="/main" exact>
-          <q-item-side icon="fa-home"/>
-          <q-item-main label="Головна"></q-item-main>
-        </q-side-link>
-        <q-side-link item to="/claims" exact v-show="authorized">
-          <q-item-side icon="whatshot"/>
-          <q-item-main label="Рекламації"></q-item-main>
-        </q-side-link>
-        <q-side-link item to="/filters" exact v-show="authorized">
-          <q-item-side icon="filter list"/>
-          <q-item-main label="Управління фільтрами"></q-item-main>
-        </q-side-link>
-        <q-item-separator v-show="authorized" />
-        <q-item @click="logoff()" v-show="authorized">
-          <q-item-side icon="fa-sign-out"/>
-          <q-item-main label="Вихід"></q-item-main>
-        </q-item>
-      </q-list>
+      <main-menu/>
     </div>
     <router-view/>
   </q-layout>
@@ -56,16 +29,9 @@
     QToolbar,
     QBtn,
     QIcon,
-    QToolbarTitle,
-    QList,
-    QListHeader,
-    QItem,
-    QItemSide,
-    QItemMain,
-    QSideLink,
-    QItemSeparator
-  } from 'quasar'
-  import { mapState } from 'vuex'
+    QToolbarTitle
+  } from 'quasar-framework'
+  import mainMenu from './main-menu/MainMenu.vue'
 
   export default {
     components: {
@@ -74,43 +40,11 @@
       QBtn,
       QIcon,
       QToolbarTitle,
-      QList,
-      QListHeader,
-      QItem,
-      QItemSide,
-      QItemMain,
-      QSideLink,
-      QItemSeparator
-    },
-    data () {
-      return {
-      }
-    },
-    computed: {
-      ...mapState({
-        authorized: state => state.auth.authorized,
-        userFullName: state => state.auth.userFullName
-      })
-    },
-    methods: {
-      login () {
-        this.$refs.layout.toggleLeft()
-        this.$router.push({path: '/login', query: {redirect: 'test'}})
-      },
-      logoff () {
-        // this.$refs.layout.toggleLeft()
-        this.$router.push('/main')
-        this.$socket.emit('logoff')
-      }
-    },
-    mounted: function () {
-      // this.$refs.layout.hideLeft()
+      mainMenu
     }
   }
 </script>
 
 <style lang="stylus">
   @import '~variables'
-  .af-header-title
-    padding-right 16px
 </style>
