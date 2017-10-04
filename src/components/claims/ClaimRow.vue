@@ -1,7 +1,7 @@
 <template>
   <q-item multiline class="no-padding cursor-pointer">
     <q-card class="full-width text-black" :color="clBcolor">
-      <q-card-main @click="onClaimClick(claimRec.id)">
+      <q-card-main @click="onClaimClick(claimIdx)">
         <div class="row justify-start cl-title" style="margin-bottom: 10px">
           <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
           <div class="col-sm-1 col-xs-2">
@@ -134,13 +134,12 @@
         }
       }
     },
-    props: ['claimRec'],
+    props: ['claimRec', 'claimIdx'],
     name: 'claim-row',
     methods: {
-      onClaimClick (id) {
-        // todo: open claim form
+      onClaimClick (idx) {
+        this.$store.dispatch('getClaimRecord', {socket: this.$socket, idx})
         this.$router.push('/claim/view')
-        // alert('todo: open claim form ' + id)
       }
     }
   }

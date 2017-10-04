@@ -4,9 +4,8 @@
       :label="filterRec['SNAME']"
     />
     <q-item-side
-      :class="{'cursor-pointer': editable}"
+      :class="[{'cursor-pointer': editable}, iconClass]"
       :icon="iconEdit"
-      :color="iconColor"
       @click="editable && editFilter(filterRec['RN'])"
     />
   </q-item>
@@ -19,7 +18,8 @@
     QItemMain,
     QTooltip
   } from 'quasar-framework'
-  import {mapActions} from 'vuex'
+  import {mapActions, mapState} from 'vuex'
+
   export default {
     data () {
       return {}
@@ -33,14 +33,17 @@
     name: 'cond-filter',
     props: ['filterRec', 'filterIndex'],
     computed: {
+      ...mapState({
+        listIndex: state => state.filters.listIndex
+      }),
       editable () {
         return this.$props['filterRec']['EDITABLE'] === 'Y'
       },
       iconEdit () {
         return this.editable ? 'edit' : 'lock'
       },
-      iconColor () {
-        return this.editable ? 'primary' : 'grey-6'
+      iconClass () {
+        return `af-${this.editable ? 'en' : 'dis'}abled-${(this.listIndex === this.filterIndex) ? '' : 'non'}active`
       }
     },
     methods: {
@@ -48,12 +51,12 @@
         'conditionListPos'
       ]),
       editFilter (rn) {
-        void this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: rn, from: 'filters'})
+        void this.$store.dispatch('getConditionFilter', { socket: this.$socket, conditionId: rn, from: 'filters' })
         this.$router.push('/filter')
       }
     }
   }
 </script>
 
-<style>
+<style lang="stylus">
 </style>

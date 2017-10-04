@@ -1,53 +1,59 @@
 <template>
   <div class="row items-center justify-around">
-    <div class="col-xl-5 col-9">
-      <q-select
-        stack-label="Фільтр"
-        inverted
-        color="amber-9"
-        separator
-        :options="filterOptions"
-        v-model="currentCondition"
-        @change="onFilterChange"
-        class="no-margin"
-      />
+    <div class="col-md col-sm-12 row  items-center">
+      <div class="col-10">
+        <q-select
+          stack-label="Фільтр"
+          inverted
+          color="amber-9"
+          separator
+          :options="filterOptions"
+          v-model="currentCondition"
+          @change="onFilterChange"
+          class="no-margin"
+        />
+      </div>
+      <div class="col-2">
+        <q-btn
+          small
+          round
+          flat
+          color="amber-9"
+          @click="onNewFilterClick"
+          icon="fa-filter"
+        />
+      </div>
     </div>
-    <div class="col-xl-1 col-3">
-      <q-btn
-        small
-        round
-        flat
-        color="amber-9"
-        @click="onNewFilterClick"
-        icon="fa-filter"
-      />
-    </div>
-    <div class="col-xl-5 col-9"><q-select
-      stack-label="Сортування"
-      inverted
-      color="purple"
-      separator
-      :options="sortsList"
-      v-model="currentClaimSort"
-      @change="onSortChange"
-      class="no-margin"
-    /></div>
-    <div class="col-xl-1 col-3">
-      <q-checkbox
-        v-model="claimSortDesc"
-        @change="onSortOrderChange"
-        class="sort-icon"
-        checked-icon="arrow drop down"
-        unchecked-icon="arrow drop up"
-        color="purple"
-      />
+    <div class="col-md col-sm-12 row  items-center">
+      <div class="col-10">
+        <q-select
+          stack-label="Сортування"
+          inverted
+          color="purple"
+          separator
+          :options="sortsList"
+          v-model="currentClaimSort"
+          @change="onSortChange"
+          class="no-margin"
+        />
+      </div>
+      <div class="col-2">
+        <q-checkbox
+          v-model="claimSortDesc"
+          @change="onSortOrderChange"
+          class="sort-icon"
+          checked-icon="arrow drop down"
+          unchecked-icon="arrow drop up"
+          color="purple"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import {QSelect, QCheckbox, QBtn} from 'quasar-framework'
-  import { mapState, mapGetters } from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
 
   export default {
     components: {
@@ -72,16 +78,16 @@
     },
     methods: {
       onFilterChange (value) {
-        void this.$store.dispatch('setCurrentCondition', {value, socket: this.$socket})
+        void this.$store.dispatch('setCurrentCondition', { value, socket: this.$socket })
       },
       onSortChange (value) {
-        void this.$store.dispatch('setCurrentSort', {value, socket: this.$socket})
+        void this.$store.dispatch('setCurrentSort', { value, socket: this.$socket })
       },
       onSortOrderChange (value) {
-        void this.$store.dispatch('setCurrentClaimSortOrder', {value: !value, socket: this.$socket})
+        void this.$store.dispatch('setCurrentClaimSortOrder', { value: !value, socket: this.$socket })
       },
       onNewFilterClick () {
-        void this.$store.dispatch('getConditionFilter', {socket: this.$socket, conditionId: null, from: 'claims'})
+        void this.$store.dispatch('getConditionFilter', { socket: this.$socket, conditionId: null, from: 'claims' })
         this.$router.push('/filter')
       }
     }
@@ -91,8 +97,8 @@
 <style lang="stylus">
   .sort-icon .q-checkbox-checked
   .sort-icon .q-checkbox-unchecked
-    height: 54px !important
-    width: 30px !important
-    font-size: 54px !important
-    margin-left: 5px
+      height: 54px !important
+      width: 30px !important
+      font-size: 54px !important
+      margin-left: 5px
 </style>

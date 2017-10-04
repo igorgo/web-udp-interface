@@ -1,9 +1,9 @@
 <template>
-  <div class="cl-content">
+  <div class="content">
     <q-scroll-area ref="scroll" class="claim-body">
       <claim-header/>
       <q-list no-border highlight>
-        <claim-row v-for="iClaim in claimList" :key="iClaim['id']" :claimRec="iClaim"/>
+        <claim-row v-for="(item, index) in claimList" :key="item['id']" :claimRec="item" :claimIdx="index"/>
       </q-list>
       <q-fixed-position corner="bottom-right" :offset="[12, 68]" class="z-absolute">
         <q-btn
@@ -55,15 +55,14 @@
       },
       addClaim () {
         // todo: open form for add new claim
-        // alert('todo: open form for add new claim')
         this.$router.push('/claim/new')
       }
     },
     created () {
-      this.$q.events.$on('new-portion', this.newPortionHandler)
+      this.$q.events.$on('claims:new-portion', this.newPortionHandler)
     },
     beforeDestroy () {
-      this.$q.events.$off('new-portion', this.newPortionHandler)
+      this.$q.events.$off('claims:new-portion', this.newPortionHandler)
     },
     directives: {
       BackToTop
@@ -82,8 +81,5 @@
     bottom: 0;
     left: 0;
     position: relative;
-  }
-  .cl-content {
-    padding: 10px 10px 0 10px;
   }
 </style>

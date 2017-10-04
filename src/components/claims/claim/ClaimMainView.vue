@@ -1,20 +1,20 @@
 <template>
-  <div class="text-center">
-    <q-btn style="margin-top: 10px" color="primary"  icon="arrow back" v-go-back=" '/claims' ">До списку</q-btn>
-    <h1>Перегляд рекламації</h1>
-    <p>В процессі розробки…</p>
+  <div>
+    <af-under-consruct
+      title="Перегляд рекламації"
+      back-route="/claims"
+      back-text="До списку"
+    />
+    <claim-card></claim-card>
   </div>
 </template>
 
 <script>
-  import {QBtn, GoBack} from 'quasar-framework'
+  import AfUnderConsruct from '../../base/AfUnderConsruct.vue'
+  import ClaimCard from './ClaimCard.vue'
+
   export default {
-    components: {QBtn},
-    directives: {GoBack},
-    data () {
-      return {}
-    },
-    methods: {}
+    components: { AfUnderConsruct, ClaimCard }
   }
 </script>
 

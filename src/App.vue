@@ -21,7 +21,7 @@ export default {
 <style lang="stylus">
   @import '~variables'
   .content
-    margin 10px auto 0 15px
+    margin 10px 15px 0 15px
   h5
     color: $afinasql
   .afina-bg
@@ -30,4 +30,12 @@ export default {
   .afinasql-bg
     background $afinasql !important
     color white
+  .af-disabled-nonactive
+    color $af-disabled-fg
+  .af-disabled-active
+    color $af-disabled-fg-invert
+  .af-enabled-nonactive
+    color $af-enabled-fg
+  .af-enabled-active
+    color $af-enabled-fg-invert
 </style>

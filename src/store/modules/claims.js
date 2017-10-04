@@ -4,7 +4,9 @@ import {
   CLAIMS_SORT_CHANGE,
   CLAIMS_PAGE_CHANGE,
   CLAIMS_SORT_ORDER_CHANGE,
-  CLAIMS_START_REQUEST
+  CLAIMS_START_REQUEST,
+  CLAIMS_RECORD_GOT,
+  CLAIMS_START_RECORD_REQUEST
 } from '../mutation-types'
 import cache from '../../cache'
 import * as c from '../../constants'
@@ -19,7 +21,13 @@ const state = {
   currentClaimSort: cache.get(['userData', 'CLAIM_SORT'], 2),
   claimSortDesc: cache.get(['userData', 'CLAIM_SORT_ORDER'], 1),
   getClaimsInProgress: false,
-  newAddedClaimId: null
+  newAddedClaimId: null,
+  claimRecord: {id: null},
+  claimRecordIndexActive: null,
+  claimRecordIndexRequested: null,
+  claimRecordIndexWait: null,
+  isFirstRecord: false,
+  isLastRecord: false
 }
 
 const getters = {
@@ -39,7 +47,7 @@ const mutations = {
     state.getClaimsInProgress = false
     cache.set('claimListPage', result.page)
     cache.set(['userData', 'LIST_LIMIT'], result.limit)
-    Events.$emit('new-portion')
+    Events.$emit('claims:new-portion')
   },
   [CLAIMS_FILTER_CHANGE] (state, val) {
     state.currentCondition = val
@@ -55,6 +63,17 @@ const mutations = {
   },
   [CLAIMS_START_REQUEST] (state) {
     state.getClaimsInProgress = true
+  },
+  [CLAIMS_START_RECORD_REQUEST] (state, idx) {
+    state.getClaimsInProgress = true
+    state.claimRecordIndexRequested = idx
+  },
+  [CLAIMS_RECORD_GOT] (state, record) {
+    state.claimRecord = record
+    state.getClaimsInProgress = false
+    state.claimRecordIndexActive = state.claimRecordIndexRequested
+    state.claimRecordIndexRequested = null
+    Events.$emit('claims:record:got')
   }
 }
 
@@ -121,6 +140,10 @@ const actions = {
       limit: state.currentClaimLimit,
       newClaimId: state.newAddedClaimId
     })
+  },
+  getClaimRecord ({ commit, state }, {socket, idx}) {
+    commit('CLAIMS_START_RECORD_REQUEST')
+    socket.emit('get_claim_record', {id: state.claimList[idx].id})
   }
 }
 
