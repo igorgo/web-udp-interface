@@ -11,7 +11,7 @@ require(`./themes/app.${__THEME}.styl`)
 // require(`quasar/dist/quasar.ie.${__THEME}.css`)
 
 import Vue from 'vue'
-import Quasar from 'quasar'
+import Quasar from 'quasar-framework'
 // import { Events } from 'quasar-framework'
 import router from './router'
 import store from './store'

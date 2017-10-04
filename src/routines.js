@@ -3,7 +3,7 @@
  * Copyright(c) 2017 igor-go <igorgo16@gmail.com>
  * MIT Licensed
  */
-import {date} from 'quasar'
+import {date} from 'quasar-framework'
 
 function formatDate (str) {
   return date.isValid(str) ? date.formatDate(new Date(str), 'DD.MM.YYYY') : str

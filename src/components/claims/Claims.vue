@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="content">
     <q-scroll-area ref="scroll" class="claim-body">

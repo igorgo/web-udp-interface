@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { QBtn, QIcon } from 'quasar'
+import { QBtn, QIcon } from 'quasar-framework'
 
 export default {
   components: {

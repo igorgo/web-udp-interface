@@ -1,3 +1,4 @@
+<!--suppress JSUnusedGlobalSymbols -->
 <template>
   <q-layout
     ref="layout"

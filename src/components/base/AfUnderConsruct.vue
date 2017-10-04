@@ -16,11 +16,6 @@
       backText: String
     },
     components: {QBtn},
-    directives: {GoBack},
-    computed: {
-      backTo () {
-        return ` '${this.backRoute}' `
-      }
-    }
+    directives: {GoBack}
   }
 </script>

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import { QPagination } from 'quasar'
+  import { QPagination } from 'quasar-framework'
   import { mapGetters, mapState } from 'vuex'
 
   export default {

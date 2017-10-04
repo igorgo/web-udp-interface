@@ -4,7 +4,7 @@
  * MIT Licensed
  */
 
-import {SessionStorage as storage} from 'quasar'
+import {SessionStorage as storage} from 'quasar-framework'
 import * as _ from 'lodash'
 
 export default {

@@ -44,7 +44,7 @@
     QTransition,
     QSpinnerGears,
     QInnerLoading
-  } from 'quasar'
+  } from 'quasar-framework'
   import c from '../../constants'
   import {mapState} from 'vuex'
 

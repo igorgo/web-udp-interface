@@ -133,9 +133,6 @@
       }
     },
     methods: {
-      apply () {
-        this.finishEdit()
-      },
       saveApply () {
         this.editName(false)
       },
@@ -157,7 +154,7 @@
         }
       },
       cancel () {
-        this.conditionSetDoNotUpdate(true)
+        void this.$store.dispatch('conditionSetDoNotUpdate', true)
         this.$router.back()
       },
       updateFilter (key, value) {
@@ -173,8 +170,7 @@
       },
       inclFilter,
       ...mapActions([
-        'clearFilterForm',
-        'conditionSetDoNotUpdate'
+        'clearFilterForm'
       ]),
       editName (justSave) {
         this.filterName = this.currentFilterEdit.name
@@ -226,7 +222,7 @@
           r.push({
             caption: 'Застосувати',
             action: 'apply',
-            handler: this.apply,
+            handler: this.finishEdit,
             color: 'primary'
           }, {
             caption: 'Зберегти та застосувати',

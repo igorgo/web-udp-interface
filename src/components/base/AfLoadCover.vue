@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import {QInnerLoading, QSpinnerGears} from 'quasar'
+  import {QInnerLoading, QSpinnerGears} from 'quasar-framework'
 
   export default {
     name: 'af-load-cover',

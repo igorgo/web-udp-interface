@@ -16,7 +16,7 @@
 <script>
   import {QList, QFixedPosition, QIcon, QBtn} from 'quasar-framework'
   import CondFilter from './CondFilter.vue'
-  import {mapState, mapActions} from 'vuex'
+  import {mapState} from 'vuex'
 
   export default {
     data () {
@@ -43,19 +43,15 @@
       })
     },
     methods: {
-      ...mapActions([
-        'conditionListScroll',
-        'getConditionsList'
-      ]),
       addFilter () {
         void this.$store.dispatch('getConditionFilter', { conditionId: null, from: 'filters' })
         this.$router.push('/filter')
       },
       __onKeyArrowDown () {
-        this.$store.dispatch('conditionListScroll', 1)
+        void this.$store.dispatch('conditionListScroll', 1)
       },
       __onKeyArrowUp () {
-        this.$store.dispatch('conditionListScroll', -1)
+        void this.$store.dispatch('conditionListScroll', -1)
       },
       __editFilter () {
         if ((this.listIndex >= 0) && (this.filters[this.listIndex]['EDITABLE'] === 'Y')) {
@@ -65,7 +61,7 @@
       }
     },
     mounted: function () {
-      this.getConditionsList(this.$socket)
+      void this.$store.dispatch('getConditionsList', this.$socket)
     },
     created () {
       for (let i in this.eventMapper) {

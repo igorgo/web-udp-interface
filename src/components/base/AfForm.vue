@@ -14,54 +14,38 @@
       </div>
     <div slot="right" class="afinasql-bg" v-show="hasTitleActions">
       <q-btn
-        v-for="iAction in titleActions"
+        v-for="item in titleActions"
         small
         round
         flat
-        :key="iAction.action"
-        :icon="iAction.icon"
-        @click="iAction.handler()"
+        :key="item.action"
+        :icon="item.icon"
+        @click="item.handler()"
         class="float-right"
       />
     </div>
     </q-card-title>
-    <q-card-main ref="form-body" :class="clsSlot">
+    <q-card-main ref="form-body">
       <slot></slot>
     </q-card-main>
     <q-card-actions v-show="hasBottomActions" class="justify-end">
       <q-btn
-        v-for="iAction in bottomActions"
+        v-for="item in bottomActions"
         flat
-        :color="iAction.color"
-        :key="iAction.action"
-        @click="iAction.handler()"
-      >{{iAction.caption}}</q-btn>
+        :color="item.color"
+        :key="item.action"
+        @click="item.handler()"
+      >{{item.caption}}</q-btn>
     </q-card-actions>
   </q-card>
 </template>
 
 <script>
-  import { QCard, QCardTitle, QIcon, QCardMain, QCardActions, QBtn } from 'quasar'
+  import { QCard, QCardTitle, QIcon, QCardMain, QCardActions, QBtn } from 'quasar-framework'
   export default {
     name: 'af-form',
     components: { QCard, QCardTitle, QIcon, QCardMain, QCardActions, QBtn },
     computed: {
-      clsTitle () {
-        let cls = []
-        if (this.color) {
-          cls.push('bg-' + this.color)
-          if (!this.darktext) cls.push('text-white')
-        }
-        if (this.darktext) cls.push('text-black')
-        return cls.join(' ')
-      },
-      clsSlot () {
-        /* let cls = []
-        if (this.color) {
-          cls.push('text-' + this.color)
-        }
-        return cls.join(' ') */
-      },
       hasTitleActions () {
         return this.titleActions && (this.titleActions.length > 0)
       },
@@ -77,11 +61,7 @@
       bottomActions: Array,
       subtitle: String,
       subtitleClass: String
-    },
-    data () {
-      return {}
-    },
-    methods: {}
+    }
   }
 </script>
 

@@ -8,6 +8,7 @@
 
 <script>
   import AfUnderConsruct from '../../base/AfUnderConsruct.vue'
+
   export default {
     components: { AfUnderConsruct }
   }

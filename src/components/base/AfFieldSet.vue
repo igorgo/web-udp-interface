@@ -1,51 +1,25 @@
 <template>
-  <q-collapsible class="af-field-set" :class="cls" opened icon-toggle :label="caption">
-    <div :style="slotStyle" class="af-field-set-slot">
+  <q-collapsible class="af-field-set" opened icon-toggle :label="caption">
+    <div class="af-field-set-slot">
       <slot></slot>
     </div>
   </q-collapsible>
 </template>
 
 <script>
-  import { QList, QListHeader, QCollapsible, dom } from 'quasar'
+  import { QList, QListHeader, QCollapsible } from 'quasar-framework'
 
   export default {
     name: 'af-field-set',
     components: { QList, QListHeader, QCollapsible },
     props: {
       caption: String
-    },
-    data () {
-      return {
-        txtColor: ''
-      }
-    },
-    computed: {
-      cls () {
-        /* if (this.color) {
-          return 'text-' + this.$parent['color']
-        } */
-      },
-      slotStyle () {
-        /* if (this.$parent['color']) {
-          // return 'border-top: 1px solid ' + dom.style(this.$el, 'color') + ';'
-          return 'border-top: 1px solid ' + this.txtColor + ';'
-        } */
-        return 'border-top: 1px solid ' + this.txtColor + ';'
-      },
-      color () {
-        // return this.$parent['color']
-      }
-    },
-    mounted () {
-      this.txtColor = dom.style(this.$el, 'color')
-    },
-    methods: {
     }
   }
 </script>
 
-<style lang="styl">
+<style lang="stylus">
+  @import '~variables'
   .q-list + .q-list
     margin-top: 10 px
   .q-list
@@ -59,5 +33,5 @@
     padding-top: 0
   .af-field-set-slot
     padding-top: 8px
-
+    border-top: 1px solid $primary
 </style>

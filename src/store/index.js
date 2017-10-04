@@ -10,10 +10,8 @@ import main from './modules/main'
 import filters from './modules/filters'
 import claims from './modules/claims'
 import staticDicts from './modules/staticDicts'
-// import * as types from './mutation-types'
-import { Toast } from 'quasar'
+import { Toast } from 'quasar-framework'
 Vue.use(Vuex)
-const debug = process.env.NODE_ENV !== 'production'
 
 const state = {
   connect: false
@@ -39,9 +37,9 @@ export default new Vuex.Store({
   getters: {
   },
   mutations: {
-    SOCKET_CONNECT: (state, status) => {
+    SOCKET_CONNECT: (state) => {
       state.connect = true
     }
   },
-  strict: debug
+  strict: true
 })

@@ -1,3 +1,4 @@
+<!--suppress JSUnusedGlobalSymbols -->
 <template>
   <q-item multiline class="no-padding cursor-pointer">
     <q-card class="full-width text-black" :color="clBcolor">
@@ -43,24 +44,14 @@
 </template>
 
 <script>
-  import { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator } from 'quasar'
+  import { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator } from 'quasar-framework'
   import {formatDateTime} from '../../routines'
 
   export default {
     components: { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator },
     computed: {
-      clicon () {
-        switch (this.$props.claimRec.claimType) {
-          case 1:
-            return 'build'
-          case 2:
-            return 'warning'
-          case 3:
-            return 'fa-bug'
-        }
-      },
       regDate () {
-        return formatDateTime(this.$props.claimRec.regDate)
+        return formatDateTime(this.$props['claimRec'].regDate)
       },
       isClosed () {
         if (this.$props.claimRec.hasBuildTo) return 'Виконано в збірці'
@@ -138,7 +129,7 @@
     name: 'claim-row',
     methods: {
       onClaimClick (idx) {
-        this.$store.dispatch('getClaimRecord', {socket: this.$socket, idx})
+        void this.$store.dispatch('getClaimRecord', {socket: this.$socket, idx})
         this.$router.push('/claim/view')
       }
     }

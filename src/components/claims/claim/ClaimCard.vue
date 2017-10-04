@@ -1,3 +1,4 @@
+<!--suppress JSUnusedGlobalSymbols -->
 <template>
     <div v-if="record.id">
       <table class="q-table responsive">

@@ -61,7 +61,7 @@ const mutations = {
   },
   [types.AUTH_USER_DATA_LOADED] (state, msg) {
     state.userData = parseUserData(msg)
-    cache.set('userData', parseUserData(msg))
+    cache.set('userData', state.userData)
   }
 }
 const getters = {
