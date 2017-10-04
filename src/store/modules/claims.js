@@ -6,7 +6,8 @@ import {
   CLAIMS_SORT_ORDER_CHANGE,
   CLAIMS_START_REQUEST,
   CLAIMS_RECORD_GOT,
-  CLAIMS_START_RECORD_REQUEST
+  CLAIMS_START_RECORD_REQUEST,
+  CLAIMS_SET_DO_NOT_UPDATE
 } from '../mutation-types'
 import cache from '../../cache'
 import * as c from '../../constants'
@@ -20,18 +21,19 @@ const state = {
   currentClaimPage: cache.get('claimListPage', 1),
   currentClaimSort: cache.get(['userData', 'CLAIM_SORT'], 2),
   claimSortDesc: cache.get(['userData', 'CLAIM_SORT_ORDER'], 1),
+  claimListPages: 1,
   getClaimsInProgress: false,
   newAddedClaimId: null,
-  claimRecord: {id: null},
+  claimRecord: { id: null },
   claimRecordIndexActive: null,
   claimRecordIndexRequested: null,
   claimRecordIndexWait: null,
   isFirstRecord: false,
-  isLastRecord: false
+  isLastRecord: false,
+  doNotUpdate: false
 }
 
 const getters = {
-  claimListPages: state => Math.floor(state.allClaimsCount / state.currentClaimLimit) + 1,
   sortsList: () => c.SORT_OPTIONS.map((item, ind) => {
     return { label: item.label, value: ind }
   }),
@@ -44,10 +46,17 @@ const mutations = {
     state.allClaimsCount = result.allCnt
     state.currentClaimLimit = result.limit
     state.currentClaimPage = result.page
-    state.getClaimsInProgress = false
+    state.claimListPages = Math.floor(state.allClaimsCount / state.currentClaimLimit) + 1
     cache.set('claimListPage', result.page)
     cache.set(['userData', 'LIST_LIMIT'], result.limit)
-    Events.$emit('claims:new-portion')
+    if (state.claimRecordIndexWait !== null) {
+      Events.$emit('claims:ready:to:step', {idx: state.claimRecordIndexWait})
+      state.claimRecordIndexWait = null
+    }
+    else {
+      state.getClaimsInProgress = false
+      Events.$emit('claims:new-portion')
+    }
   },
   [CLAIMS_FILTER_CHANGE] (state, val) {
     state.currentCondition = val
@@ -64,16 +73,26 @@ const mutations = {
   [CLAIMS_START_REQUEST] (state) {
     state.getClaimsInProgress = true
   },
-  [CLAIMS_START_RECORD_REQUEST] (state, idx) {
+  [CLAIMS_START_RECORD_REQUEST] (state, { idx, shiftPage = 0 }) {
     state.getClaimsInProgress = true
     state.claimRecordIndexRequested = idx
+    if (shiftPage) {
+      state.claimRecordIndexWait = idx
+      state.currentClaimPage += shiftPage
+    }
   },
   [CLAIMS_RECORD_GOT] (state, record) {
     state.claimRecord = record
     state.getClaimsInProgress = false
     state.claimRecordIndexActive = state.claimRecordIndexRequested
     state.claimRecordIndexRequested = null
+    state.isFirstRecord = (state.currentClaimPage === 1) && (state.claimRecordIndexActive === 0)
+    state.isLastRecord = (state.currentClaimPage === state.claimListPages) &&
+      (state.claimRecordIndexActive === (state.claimList.length - 1))
     Events.$emit('claims:record:got')
+  },
+  [CLAIMS_SET_DO_NOT_UPDATE] (state, value) {
+    state.doNotUpdate = value
   }
 }
 
@@ -110,7 +129,7 @@ const actions = {
   setCurrentClaimPage ({ commit, dispatch }, { socket, value }) {
     commit(CLAIMS_PAGE_CHANGE, value)
     if (!socket) return
-    dispatch('sendClaimsRequest', {socket})
+    dispatch('sendClaimsRequest', { socket })
   },
   setCurrentCondition ({ commit, dispatch }, { socket, value }) {
     cache.set(['userData', 'LAST_COND'], value)
@@ -126,7 +145,12 @@ const actions = {
       value
     })
   },
-  sendClaimsRequest ({ commit, state }, { socket, discardPage }) {
+  sendClaimsRequest ({ commit, state }, { socket, discardPage = false }) {
+    if (state.doNotUpdate) {
+      commit(CLAIMS_SET_DO_NOT_UPDATE, false)
+      Events.$emit('claims:list:scroll:to', { pos: state.claimRecordIndexActive })
+      return
+    }
     let sortStr = ''
     if (state.currentClaimSort > 0) {
       sortStr = c.SORT_OPTIONS[state.currentClaimSort].field
@@ -141,9 +165,38 @@ const actions = {
       newClaimId: state.newAddedClaimId
     })
   },
-  getClaimRecord ({ commit, state }, {socket, idx}) {
-    commit('CLAIMS_START_RECORD_REQUEST')
-    socket.emit('get_claim_record', {id: state.claimList[idx].id})
+  getClaimRecord ({ commit, state }, { socket, idx }) {
+    commit('CLAIMS_START_RECORD_REQUEST', { idx })
+    socket.emit('get_claim_record', { id: state.claimList[idx].id })
+  },
+  claimsSetDoNotUpdate ({ commit }, doNotUpdate) {
+    commit(CLAIMS_SET_DO_NOT_UPDATE, doNotUpdate)
+  },
+  claimStepRecord ({ state, commit, dispatch }, { socket, step }) {
+    let needShiftPage = false
+    if (step === -1) {
+      if (state.isFirstRecord) return
+      if (state.claimRecordIndexActive === 0) {
+        commit(CLAIMS_START_RECORD_REQUEST, { idx: state.currentClaimLimit - 1, shiftPage: -1 })
+        needShiftPage = true
+      }
+    }
+    if (step === 1) {
+      if (state.isLastRecord) return
+      if (state.claimRecordIndexActive === (state.currentClaimLimit - 1)) {
+        commit(CLAIMS_START_RECORD_REQUEST, { idx: 0, shiftPage: 1 })
+        needShiftPage = true
+      }
+    }
+    if (needShiftPage) {
+      Events.$once('claims:ready:to:step', ({idx}) => {
+        dispatch('getClaimRecord', {socket, idx})
+      })
+      dispatch('sendClaimsRequest', { socket })
+    }
+    else {
+      dispatch('getClaimRecord', { socket, idx: state.state.claimRecordIndexActive + step })
+    }
   }
 }
 

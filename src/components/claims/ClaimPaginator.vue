@@ -19,11 +19,10 @@
     },
     computed: {
       ...mapState({
-        currentClaimPage: state => state.claims.currentClaimPage
+        currentClaimPage: state => state.claims.currentClaimPage,
+        claimListPages: state => state.claims.claimListPages
       }),
-      ...mapGetters([
-        'claimListPages'
-      ])
+      ...mapGetters([])
     },
     methods: {
       goToPage (value) {

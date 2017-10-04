@@ -3,7 +3,7 @@
   <div class="content">
     <q-scroll-area ref="scroll" class="claim-body">
       <claim-header/>
-      <q-list no-border highlight>
+      <q-list ref="list" no-border highlight>
         <claim-row v-for="(item, index) in claimList" :key="item['id']" :claimRec="item" :claimIdx="index"/>
       </q-list>
       <q-fixed-position corner="bottom-right" :offset="[12, 68]" class="z-absolute">
@@ -42,7 +42,8 @@
         currentCondition: state => state.claims.currentCondition,
         currentClaimLimit: state => state.claims.currentClaimLimit,
         claimList: state => state.claims.claimList,
-        progress: state => state.claims.getClaimsInProgress
+        progress: state => state.claims.getClaimsInProgress,
+        claimRecordIndexActive: state => state.claims.claimRecordIndexActive
       }),
       ...mapGetters([
       ])
@@ -54,6 +55,10 @@
       newPortionHandler () {
         this.$refs['scroll'].setScrollPosition(0)
       },
+      scrollToRecord ({pos}) {
+        const offset = this.$refs['list'].children[pos] ? this.$refs['list'].children[pos].offsetTop : 0
+        this.$refs['scroll'].setScrollPosition(offset)
+      },
       addClaim () {
         // todo: open form for add new claim
         this.$router.push('/claim/new')
@@ -61,9 +66,11 @@
     },
     created () {
       this.$q.events.$on('claims:new-portion', this.newPortionHandler)
+      this.$q.events.$on('claims:list:scroll:to', this.scrollToRecord)
     },
     beforeDestroy () {
       this.$q.events.$off('claims:new-portion', this.newPortionHandler)
+      this.$q.events.$off('claims:list:scroll:to', this.scrollToRecord)
     },
     directives: {
       BackToTop
