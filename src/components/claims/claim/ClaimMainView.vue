@@ -7,7 +7,9 @@
     />
     <claim-view-navigator/>
     <claim-card/>
+    <hr/>
     <claim-view-documents/>
+    <hr/>
     <claim-view-history/>
     <af-load-cover :progress="loadProgress"/>
   </div>

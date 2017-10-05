@@ -7,11 +7,16 @@ import {
   CLAIMS_START_REQUEST,
   CLAIMS_RECORD_GOT,
   CLAIMS_START_RECORD_REQUEST,
-  CLAIMS_SET_DO_NOT_UPDATE
+  CLAIMS_SET_DO_NOT_UPDATE,
+  CLAIMS_HISTORY_GOT
 } from '../mutation-types'
 import cache from '../../cache'
 import * as c from '../../constants'
 import {Events} from 'quasar-framework'
+
+const REQUEST_RECORD = 0b01
+const REQUEST_HISTORY = 0b10
+const REQUEST_ALL = 0b11
 
 const state = {
   allClaimsCount: 0,
@@ -25,12 +30,14 @@ const state = {
   getClaimsInProgress: false,
   newAddedClaimId: null,
   claimRecord: { id: null },
+  claimHistory: [],
   claimRecordIndexActive: null,
   claimRecordIndexRequested: null,
   claimRecordIndexWait: null,
   isFirstRecord: false,
   isLastRecord: false,
-  doNotUpdate: false
+  doNotUpdate: false,
+  recordRequestsState: 0
 }
 
 const getters = {
@@ -75,21 +82,31 @@ const mutations = {
   },
   [CLAIMS_START_RECORD_REQUEST] (state, { idx, shiftPage = 0 }) {
     state.getClaimsInProgress = true
+    state.recordRequestsState = 0
     state.claimRecordIndexRequested = idx
     if (shiftPage) {
       state.claimRecordIndexWait = idx
       state.currentClaimPage += shiftPage
     }
+    state.claimRecord = { id: null }
+    state.claimHistory = []
   },
   [CLAIMS_RECORD_GOT] (state, record) {
     state.claimRecord = record
-    state.getClaimsInProgress = false
+    state.recordRequestsState += REQUEST_RECORD
+    state.getClaimsInProgress = (state.recordRequestsState !== REQUEST_ALL)
     state.claimRecordIndexActive = state.claimRecordIndexRequested
     state.claimRecordIndexRequested = null
     state.isFirstRecord = (state.currentClaimPage === 1) && (state.claimRecordIndexActive === 0)
     state.isLastRecord = (state.currentClaimPage === state.claimListPages) &&
       (state.claimRecordIndexActive === (state.claimList.length - 1))
     Events.$emit('claims:record:got')
+  },
+  [CLAIMS_HISTORY_GOT] (state, { history }) {
+    state.claimHistory = history
+    state.recordRequestsState += REQUEST_HISTORY
+    state.getClaimsInProgress = (state.recordRequestsState !== REQUEST_ALL)
+    Events.$emit('claims:history:got')
   },
   [CLAIMS_SET_DO_NOT_UPDATE] (state, value) {
     state.doNotUpdate = value
@@ -195,7 +212,7 @@ const actions = {
       dispatch('sendClaimsRequest', { socket })
     }
     else {
-      dispatch('getClaimRecord', { socket, idx: state.state.claimRecordIndexActive + step })
+      dispatch('getClaimRecord', { socket, idx: state.claimRecordIndexActive + step })
     }
   }
 }

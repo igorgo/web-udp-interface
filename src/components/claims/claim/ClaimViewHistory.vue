@@ -1,5 +1,7 @@
 <template>
-    <div>Тут буде історія листування і зміни стану</div>
+    <div>
+      <div v-for="item in history">{{item.who}} ...</div>
+    </div>
 </template>
 
 <script>
@@ -17,7 +19,9 @@
       ...mapActions([])
     },
     computed: {
-      ...mapState([]),
+      ...mapState({
+        history: state => state.claims.claimHistory
+      }),
       ...mapGetters([])
     },
     created () {
