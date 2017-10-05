@@ -1,5 +1,7 @@
 <template>
-    <div>Тут буде список приєднаних файлів</div>
+    <div>
+      <div v-for="item in files">{{item.path}} ...</div>
+    </div>
 </template>
 
 <script>
@@ -17,7 +19,9 @@
       ...mapActions([])
     },
     computed: {
-      ...mapState([]),
+      ...mapState({
+        files: state => state.claims.claimFiles
+      }),
       ...mapGetters([])
     },
     created () {

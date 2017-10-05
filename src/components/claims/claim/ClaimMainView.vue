@@ -8,7 +8,7 @@
     <claim-view-navigator/>
     <claim-card/>
     <hr/>
-    <claim-view-documents/>
+    <claim-view-files/>
     <hr/>
     <claim-view-history/>
     <af-load-cover :progress="loadProgress"/>
@@ -19,7 +19,7 @@
   import { AfUnderConsruct, AfLoadCover } from '../../base'
   import ClaimCard from './ClaimCard.vue'
   import ClaimViewNavigator from './ClaimViewNavigator.vue'
-  import ClaimViewDocuments from './ClaimViewDocuments.vue'
+  import ClaimViewFiles from './ClaimViewFiles.vue'
   import ClaimViewHistory from './ClaimViewHistory.vue'
   import { mapState } from 'vuex'
 
@@ -28,7 +28,7 @@
       AfUnderConsruct,
       ClaimCard,
       ClaimViewNavigator,
-      ClaimViewDocuments,
+      ClaimViewFiles,
       ClaimViewHistory,
       AfLoadCover
     },

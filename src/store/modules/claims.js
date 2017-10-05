@@ -8,15 +8,17 @@ import {
   CLAIMS_RECORD_GOT,
   CLAIMS_START_RECORD_REQUEST,
   CLAIMS_SET_DO_NOT_UPDATE,
-  CLAIMS_HISTORY_GOT
+  CLAIMS_HISTORY_GOT,
+  CLAIMS_FILES_GOT
 } from '../mutation-types'
 import cache from '../../cache'
 import * as c from '../../constants'
 import {Events} from 'quasar-framework'
 
-const REQUEST_RECORD = 0b01
-const REQUEST_HISTORY = 0b10
-const REQUEST_ALL = 0b11
+const REQUEST_RECORD = 0b001
+const REQUEST_HISTORY = 0b010
+const REQUEST_FILES = 0b100
+const REQUEST_ALL = 0b111
 
 const state = {
   allClaimsCount: 0,
@@ -31,6 +33,7 @@ const state = {
   newAddedClaimId: null,
   claimRecord: { id: null },
   claimHistory: [],
+  claimFiles: [],
   claimRecordIndexActive: null,
   claimRecordIndexRequested: null,
   claimRecordIndexWait: null,
@@ -107,6 +110,12 @@ const mutations = {
     state.recordRequestsState += REQUEST_HISTORY
     state.getClaimsInProgress = (state.recordRequestsState !== REQUEST_ALL)
     Events.$emit('claims:history:got')
+  },
+  [CLAIMS_FILES_GOT] (state, { files }) {
+    state.claimFiles = files
+    state.recordRequestsState += REQUEST_FILES
+    state.getClaimsInProgress = (state.recordRequestsState !== REQUEST_ALL)
+    Events.$emit('claims:files:got')
   },
   [CLAIMS_SET_DO_NOT_UPDATE] (state, value) {
     state.doNotUpdate = value
