@@ -39,9 +39,7 @@
       return {
         eventMapper: {
           'app:unauthorized': this.__onUnauthorized,
-          'key:arrow:up': this.__onKeyArrowUp,
-          'key:f2': this.__editFilter,
-          'key:insert': this.addFilter
+          'app:session:not:valid': this.__onSessionNonValid
         }
       }
     },
@@ -55,6 +53,12 @@
     },
     methods: {
       __onUnauthorized () {
+        if (this.$store.state.auth.sessionID) {
+          this.$socket.emit('validate_session', {sessionID: this.$store.state.auth.sessionID})
+        }
+        else this.$router.push('/login')
+      },
+      __onSessionNonValid () {
         this.$router.push('/login')
       }
     },

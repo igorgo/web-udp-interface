@@ -1,8 +1,3 @@
-/*!
- *
- * Copyright(c) 2017 igor-go <igorgo16@gmail.com>
- * MIT Licensed
- */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import auth from './modules/auth'

@@ -4,9 +4,10 @@
  * MIT Licensed
  */
 
-import * as mts from '../mutation-types'
+import {MAIN_SET_CUR_RELEASES, LINKED_FILE_GOT} from '../mutation-types'
 import cache from '../../cache'
 import {formatDate} from '../../routines'
+import fileSaver from 'file-saver'
 
 function makeCurReleases (cursor) {
   function makeRelease (rownum) {
@@ -42,10 +43,14 @@ const getters = {
 }
 
 const mutations = {
-  [mts.MAIN_SET_CUR_RELEASES] (state, result) {
+  [MAIN_SET_CUR_RELEASES] (state, result) {
     state.curReleases = makeCurReleases(result)
     state.releasesLoaded = true
     cache.set('curReleases', makeCurReleases(result))
+  },
+  [LINKED_FILE_GOT] (state, {fileData, fileName, mimeType}) {
+    const blob = new Blob([fileData], {type: mimeType})
+    fileSaver.saveAs(blob, fileName)
   }
 }
 

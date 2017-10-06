@@ -49,13 +49,20 @@ Quasar.start(() => {
         if (!keyMapper.hasOwnProperty(event.keyCode)) return
         if (!keyMapper[event.keyCode].hasOwnProperty(modifiers)) return
         this.$q.events.$emit(keyMapper[event.keyCode][modifiers])
+      },
+      onSocketConnect () {
+        if (this.$store.state.auth.sessionID) {
+          this.$socket.emit('validate_session', {sessionID: this.$store.state.auth.sessionID})
+        }
       }
     },
     created () {
+      this.$q.events.$on('server:connected', this.onSocketConnect)
       window.addEventListener('keydown', this.globalKeyListener)
     },
     beforeDestroy () {
       window.removeEventListener('keydown', this.globalKeyListener)
+      this.$q.events.$off('server:connected', this.onSocketConnect)
     }
   })
 })

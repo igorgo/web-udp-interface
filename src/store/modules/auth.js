@@ -5,7 +5,7 @@
  */
 
 import * as types from '../mutation-types'
-import { Toast, Events } from 'quasar-framework'
+import { Events } from 'quasar-framework'
 import cache from '../../cache'
 
 function parseUserData (data) {
@@ -27,12 +27,6 @@ const state = {
 
 const mutations = {
   [types.AUTH_UNAUTHORIZED] (state, msg) {
-    state.authError = ''
-    state.authorized = false
-    state.userFullName = ''
-    state.sessionID = ''
-    cache.clear()
-    if (msg && msg.message) Toast.create.negative(msg.message)
     Events.$emit('app:unauthorized')
   },
   [types.AUTH_ERROR] (state, msg) {
@@ -55,6 +49,7 @@ const mutations = {
     state.userFullName = ''
     state.sessionID = ''
     cache.clear()
+    Events.$emit('app:session:not:valid')
   },
   [types.AUTH_SESSION_VALIDATED] (state) {
     state.authorized = true
