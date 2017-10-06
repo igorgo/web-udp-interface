@@ -2,8 +2,6 @@
   <div class="row justify-center">
     <af-form
       title="Фільтр"
-      :titleActions="tActions"
-      :bottomActions="bActions"
       :subtitle="currentFilterEdit.name"
       style="max-width: 800px;"
       class="col"
@@ -88,6 +86,52 @@
           @input="updateFilter('claimContent', $event)"
         />
       </af-field-set>
+      <q-btn
+        v-if="invokedByClaims"
+        flat
+        color="primary"
+        @click="finishEdit"
+        slot="bottom-buttons"
+      >Застосувати</q-btn>
+      <q-btn
+        v-if="invokedByClaims"
+        flat
+        color="primary"
+        @click="saveApply"
+        slot="bottom-buttons"
+      >Зберегти та застосувати</q-btn>
+      <q-btn
+        v-if="!invokedByClaims"
+        flat
+        color="primary"
+        @click="save"
+        slot="bottom-buttons"
+      >Зберегти</q-btn>
+      <q-btn
+        flat
+        color="negative"
+        @click="cancel"
+        slot="bottom-buttons"
+      >Скасування</q-btn>
+      <q-btn
+        v-if="currentFilterEdit.rn"
+        small
+        round
+        flat
+        slot="titleActions"
+        :icon="'delete'"
+        @click="deleteFilter"
+        class="float-right"
+      />
+      <q-btn
+        small
+        round
+        flat
+        slot="titleActions"
+        :icon="'fa-eraser'"
+        @click="clearFilterForm"
+        class="float-right"
+      />
     </af-form>
     <af-load-cover :progress="progress"/>
     <q-modal ref="nameEditModal" minimized :content-css="{padding: '10px'}">
@@ -216,53 +260,6 @@
         'buildsSelectList',
         'currentFilterEdit'
       ]),
-      bActions () {
-        let r = []
-        if (this.invokedByClaims) {
-          r.push({
-            caption: 'Застосувати',
-            action: 'apply',
-            handler: this.finishEdit,
-            color: 'primary'
-          }, {
-            caption: 'Зберегти та застосувати',
-            action: 'saveApply',
-            handler: this.saveApply,
-            color: 'primary'
-          })
-        }
-        else {
-          r.push({
-            caption: 'Зберегти',
-            action: 'save',
-            handler: this.save,
-            color: 'primary'
-          })
-        }
-        r.push({
-          caption: 'Скасування',
-          action: 'cancel',
-          handler: this.cancel,
-          color: 'negative'
-        })
-        return r
-      },
-      tActions () {
-        let r = []
-        if (this.currentFilterEdit.rn) {
-          r.push({
-            icon: 'delete',
-            action: 'deleteFilter',
-            handler: this.deleteFilter
-          })
-        }
-        r.push({
-          icon: 'fa-eraser',
-          action: 'clearForm',
-          handler: this.clearFilterForm
-        })
-        return r
-      },
       nameEditModalValidator () {
         return this.filterName && this.filterName.trim().length > 0
       }

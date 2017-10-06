@@ -6,7 +6,7 @@
     subtitle-class="af-error-title"
     class="col"
     style="max-width: 800px;"
-    :bottomActions="bActions"
+    ref="form"
   >
     <q-field
       icon="account box"
@@ -27,14 +27,28 @@
         v-model="userpass"
       ></q-input>
     </q-field>
+    <q-btn
+      flat
+      color="primary"
+      @click="doLogin"
+      slot="bottom-buttons"
+      :disabled="!isValid"
+    >Увійти</q-btn>
+    <q-btn
+      flat
+      color="negative"
+      @click="doCancel"
+      slot="bottom-buttons"
+    >Скасування</q-btn>
   </af-form>
   </div>
 </template>
 
 <script>
-  import {QField, QInput} from 'quasar-framework'
+  import {QField, QInput, QBtn} from 'quasar-framework'
   import { AfForm } from './base'
   import {mapState, mapGetters, mapActions} from 'vuex'
+  import {mapEvent, strNotEmpty} from '../routines'
 
   export default {
     name: '',
@@ -42,17 +56,22 @@
     data () {
       return {
         username: '',
-        userpass: ''
+        userpass: '',
+        eventMapper: {
+          'key:enter': this.doLogin
+        }
       }
     },
     components: {
       AfForm,
       QField,
-      QInput
+      QInput,
+      QBtn
     },
     methods: {
       ...mapActions([]),
       doLogin () {
+        if (!this.isValid) return
         const message = {
           user: this.username,
           pass: this.userpass
@@ -69,28 +88,17 @@
         authorized: state => state.auth.authorized
       }),
       ...mapGetters([]),
-      bActions () {
-        return [
-          {
-            caption: 'Увійти',
-            action: 'doLogin',
-            handler: this.doLogin,
-            color: 'primary'
-          },
-          {
-            caption: 'Скасування',
-            action: 'doCancel',
-            handler: this.doCancel,
-            color: 'negative'
-          }
-        ]
+      isValid () {
+        return strNotEmpty(this.username) && strNotEmpty(this.userpass)
       }
     },
     created () {
+      mapEvent(this, true)
     },
     mounted () {
     },
     beforeDestroy () {
+      mapEvent(this, false)
     },
     watch: {
       authorized (value) {
@@ -100,7 +108,6 @@
       }
     }
   }
-  //     -- text-shadow 2px 2px 0px $negative
 </script>
 
 <style lang="stylus">
