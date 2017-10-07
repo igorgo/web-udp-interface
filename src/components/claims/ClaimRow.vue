@@ -1,7 +1,7 @@
 <!--suppress JSUnusedGlobalSymbols -->
 <template>
-  <q-item multiline class="no-padding cursor-pointer">
-    <q-card class="full-width text-black" :color="clBcolor">
+  <q-item multiline class="no-padding cursor-pointer" :class="{'claim-list-active': claimIdx === activeIndex}">
+    <q-card class="claim-list-card text-black" :color="clBcolor">
       <q-card-main @click="onClaimClick(claimIdx)">
         <div class="row justify-start cl-title" style="margin-bottom: 10px">
           <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
@@ -21,10 +21,10 @@
           </div>
         </div>
         <q-card-separator style="margin-top: 10px"/>
-        <div class="claim-row group text-left">
+        <div class="claim-row text-left">
           <p class="ellipsis-3-lines text-faded light-paragraph">{{claimRec.description}}</p>
         </div>
-      <div v-if="claimRec.executor || claimRec.hasBuildTo">
+        <div v-if="claimRec.executor || claimRec.hasBuildTo">
           <div class="claim-row-c">
             <div class="col-sm-6 col-xs-12" v-if="claimRec.executor">
               Виконавець&nbsp;<span class="token bg-teal-14">{{claimRec.executor}}</span>
@@ -37,19 +37,22 @@
               <span class="token bg-teal-14">{{claimRec.closedInBuild}}</span>
             </div>
           </div>
-      </div>
+        </div>
       </q-card-main>
     </q-card>
   </q-item>
 </template>
 
 <script>
-  import { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator } from 'quasar-framework'
+  import {QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator} from 'quasar-framework'
   import {formatDateTime} from '../../routines'
 
   export default {
     components: { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator },
     computed: {
+      activeIndex () {
+        return this.$store.state.claims.claimRecordIndexActive
+      },
       regDate () {
         return formatDateTime(this.$props['claimRec'].regDate)
       },
@@ -129,7 +132,7 @@
     name: 'claim-row',
     methods: {
       onClaimClick (idx) {
-        void this.$store.dispatch('getClaimRecord', {socket: this.$socket, idx})
+        void this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx })
         this.$router.push('/claim/view')
       }
     }
@@ -144,17 +147,27 @@
     @extends .col-xl-3
     @extends .col-sm-6
     @extends .col-xs-12
+
   .gray-token
     @extends .token
     @extends .bg-blue-grey
+
   .claim-row
     @extends .row
-    @extends .sm-gutter
+
   .claim-row-c
     @extends .claim-row
     @extends .justify-around
     @extends .items-center
+
   .cl-title
-    font-size: 1.2rem
+    font-size 1.2rem
+
+  .claim-list-card
+    width 100%
+
+  .claim-list-active
+    background-color $afinasql
+
 </style>
 

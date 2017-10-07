@@ -37,11 +37,11 @@ export default {
     background $afinasql !important
     color white
   .af-disabled-nonactive
-    color $af-disabled-fg
+    color $af-disabled-fg !important
   .af-disabled-active
-    color $af-disabled-fg-invert
+    color $af-disabled-fg-invert !important
   .af-enabled-nonactive
-    color $af-enabled-fg
+    color $af-enabled-fg !important
   .af-enabled-active
-    color $af-enabled-fg-invert
+    color $af-enabled-fg-invert !important
 </style>

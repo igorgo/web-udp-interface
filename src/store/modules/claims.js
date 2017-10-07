@@ -9,7 +9,8 @@ import {
   CLAIMS_START_RECORD_REQUEST,
   CLAIMS_SET_DO_NOT_UPDATE,
   CLAIMS_HISTORY_GOT,
-  CLAIMS_FILES_GOT
+  CLAIMS_FILES_GOT,
+  CLAIMS_LIST_SCROLL
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -89,11 +90,13 @@ const mutations = {
     }
     else {
       state.getClaimsInProgress = false
+      state.claimRecordIndexActive = state.claimList.length ? 0 : null
       Events.$emit('claims:new-portion')
     }
   },
   [CLAIMS_FILTER_CHANGE] (state, val) {
     state.currentCondition = val
+    state.currentClaimPage = 1
   },
   [CLAIMS_SORT_ORDER_CHANGE] (state, value) {
     state.claimSortDesc = value ? 1 : 0
@@ -143,6 +146,9 @@ const mutations = {
   },
   [CLAIMS_SET_DO_NOT_UPDATE] (state, value) {
     state.doNotUpdate = value
+  },
+  [CLAIMS_LIST_SCROLL] (state, value) {
+    state.claimRecordIndexActive = value
   }
 }
 
@@ -247,6 +253,12 @@ const actions = {
     else {
       dispatch('getClaimRecord', { socket, idx: state.claimRecordIndexActive + step })
     }
+  },
+  claimsListScroll ({ state, commit }, n) {
+    if (state.claimRecordIndexActive === null) return
+    const i = state.claimRecordIndexActive + n
+    if ((i >= 0) && (i < state.claimList.length)) commit(CLAIMS_LIST_SCROLL, i)
+    Events.$emit('claims:list:scroll:to', { pos: i })
   }
 }
 

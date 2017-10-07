@@ -3,7 +3,7 @@
   <div class="content">
     <q-scroll-area ref="scroll" class="claim-body">
       <claim-header/>
-      <q-list ref="list" no-border highlight>
+      <q-list ref="list" no-border>
         <claim-row v-for="(item, index) in claimList" :key="item['id']" :claimRec="item" :claimIdx="index"/>
       </q-list>
       <q-fixed-position corner="bottom-right" :offset="[12, 68]" class="z-absolute">
@@ -34,6 +34,7 @@
   import { QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop } from 'quasar-framework'
   import { AfLoadCover } from '../base'
   import { mapGetters, mapState } from 'vuex'
+  import {mapEvent} from '../../routines'
 
   export default {
     components: { ClaimHeader, QScrollArea, ClaimRow, QList, QFixedPosition, QBtn, QIcon, ClaimPaginator, AfLoadCover },
@@ -56,21 +57,44 @@
         this.$refs['scroll'].setScrollPosition(0)
       },
       scrollToRecord ({pos}) {
-        const offset = this.$refs['list'].children[pos] ? this.$refs['list'].children[pos].offsetTop : 0
+        const activeCard = this.$refs['list'].children[pos]
+        let offset = activeCard ? activeCard.offsetTop : 0
+        offset -= Math.floor(this.$refs['scroll'].$el.clientHeight / 2)
+        offset += Math.floor(activeCard.clientHeight / 2)
         this.$refs['scroll'].setScrollPosition(offset)
       },
       addClaim () {
         // todo: open form for add new claim
         this.$router.push('/claim/new')
+      },
+      __onKeyArrowDown () {
+        void this.$store.dispatch('claimsListScroll', 1)
+      },
+      __onKeyArrowUp () {
+        void this.$store.dispatch('claimsListScroll', -1)
+      },
+      __onKeyEnter  () {
+        void this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx: this.claimRecordIndexActive })
+        this.$router.push('/claim/view')
+      }
+    },
+    data () {
+      return {
+        eventMapper: {
+          'key:arrow:down': this.__onKeyArrowDown,
+          'key:enter': this.__onKeyEnter,
+          'key:insert': this.addClaim,
+          'key:arrow:up': this.__onKeyArrowUp,
+          'claims:new-portion': this.newPortionHandler,
+          'claims:list:scroll:to': this.scrollToRecord
+        }
       }
     },
     created () {
-      this.$q.events.$on('claims:new-portion', this.newPortionHandler)
-      this.$q.events.$on('claims:list:scroll:to', this.scrollToRecord)
+      mapEvent(this, true)
     },
     beforeDestroy () {
-      this.$q.events.$off('claims:new-portion', this.newPortionHandler)
-      this.$q.events.$off('claims:list:scroll:to', this.scrollToRecord)
+      mapEvent(this, false)
     },
     directives: {
       BackToTop

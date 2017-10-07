@@ -17,6 +17,7 @@
   import {QList, QFixedPosition, QIcon, QBtn} from 'quasar-framework'
   import CondFilter from './CondFilter.vue'
   import {mapState} from 'vuex'
+  import {mapEvent} from '../../routines'
 
   export default {
     data () {
@@ -64,14 +65,10 @@
       void this.$store.dispatch('getConditionsList', this.$socket)
     },
     created () {
-      for (let i in this.eventMapper) {
-        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$on(i, this.eventMapper[i])
-      }
+      mapEvent(this, true)
     },
     beforeDestroy () {
-      for (let i in this.eventMapper) {
-        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$off(i, this.eventMapper[i])
-      }
+      mapEvent(this, false)
     }
   }
 </script>
