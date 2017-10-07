@@ -16,11 +16,11 @@ import Quasar from 'quasar-framework'
 import router from './router'
 import store from './store'
 import VueSocketio from 'vue-socket.io'
-import c from './constants'
+import { SERVER_URL } from './constants'
 
 Vue.config.productionTip = false
 Vue.use(Quasar) // Install Quasar Framework
-Vue.use(VueSocketio, c.SERVER_URL, store)
+Vue.use(VueSocketio, SERVER_URL, store)
 
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')

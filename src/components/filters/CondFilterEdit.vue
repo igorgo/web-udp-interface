@@ -150,7 +150,7 @@
   import {AfForm, AfFieldSet, AfLoadCover} from '../base'
   import {QCardTitle, QField, QInput, QCheckbox, QAutocomplete, QSelect, QBtn, QModal, Dialog} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
-  import {inclFilter} from '../../routines'
+  import { inclFilter } from '../../routines'
 
   export default {
     components: {

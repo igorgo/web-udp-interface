@@ -4,21 +4,37 @@
  * MIT Licensed
  */
 import {date} from 'quasar-framework'
+import {DAY_NAMES, MONTH_NAMES} from './constants'
 
-function formatDate (str) {
+export function formatDate (str) {
   return date.isValid(str) ? date.formatDate(new Date(str), 'DD.MM.YYYY') : str
 }
 
-function formatDateTime (str) {
+export function formatDateFull (str) {
+  return date.isValid(str)
+    ? date.formatDate(
+      new Date(str),
+      'D MMMM YYYY, dddd',
+      {dayNames: DAY_NAMES, monthNames: MONTH_NAMES}
+    )
+    : str
+}
+
+export function formatDateTime (str) {
   return date.isValid(str) ? date.formatDate(new Date(str), 'DD.MM.YYYY HH:mm:ss') : str
 }
 
-function inclFilter (what, { field, list }) {
+export function formatOnlyTime (str, sec = true) {
+  const fs = sec ? 'HH:mm:ss' : 'HH:mm'
+  return date.isValid(str) ? date.formatDate(new Date(str), fs) : str
+}
+
+export function inclFilter (what, { field, list }) {
   const needle = what.toLowerCase()
   return list.filter(item => item[field].toLowerCase().indexOf(needle) > -1)
 }
 
-function hrFileSize (bites) {
+export function hrFileSize (bites) {
   if (isNaN(bites)) {
     throw new Error('Invalid number')
   }
@@ -42,11 +58,11 @@ function hrFileSize (bites) {
   }
 }
 
-function strNotEmpty (str) {
+export function strNotEmpty (str) {
   return str ? str.trim().length > 0 : false
 }
 
-function mapEvent ({eventMapper, $q}, listen) {
+export function mapEvent ({eventMapper, $q}, listen) {
   if (!eventMapper) return
   for (let i in eventMapper) {
     if (eventMapper.hasOwnProperty(i)) {
@@ -54,13 +70,4 @@ function mapEvent ({eventMapper, $q}, listen) {
       else $q.events.$off(i, eventMapper[i])
     }
   }
-}
-
-export {
-  formatDate,
-  formatDateTime,
-  inclFilter,
-  hrFileSize,
-  strNotEmpty,
-  mapEvent
 }

@@ -1,16 +1,9 @@
-/*!
- *
- * Copyright(c) 2017 igor-go <igorgo16@gmail.com>
- * MIT Licensed
- */
 
-const c = module.exports
-
-// c.SERVER_URL = 'http://localhost:8716'
-// c.SERVER_URL = 'http://192.168.3.182:8716'
-c.SERVER_URL = 'http://178.150.56.24:18716'
-// c.SERVER_URL = 'http://192.168.1.116:8716'
-c.SORT_OPTIONS = [
+// export const SERVER_URL = 'http://localhost:8716'
+// export const SERVER_URL = 'http://192.168.3.182:8716'
+export const SERVER_URL = 'http://178.150.56.24:18716'
+// export const SERVER_URL = 'http://192.168.1.116:8716'
+export const SORT_OPTIONS = [
   {
     label: 'без сортування',
     field: ''
@@ -37,5 +30,34 @@ c.SORT_OPTIONS = [
   }
 ]
 
-c.STABLE_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3GHDWmebTVVdC1zRVJOWVk'
-c.BETA_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3GHDWmebTVVdC1zRVJOWVk'
+export const HELP_STATUS = {
+  0: 'Не вирішено',
+  1: 'Немає необхідності',
+  2: 'Необхідно',
+  3: 'Включити в альбом',
+  4: 'Описано в іншій рекламації',
+  5: 'Поки пропущу',
+  21: 'Включено',
+  22: 'Не включено',
+  23: 'Відкладено',
+  24: 'Не треба',
+  25: 'Включено в альбом'
+}
+
+export const CLAIM_TYPE_BY_ID = {
+  4440: 'ПОМИЛКА',
+  4412: 'ДОРОБКА',
+  4424: 'ЗАУВАЖЕННЯ'
+}
+
+export const DAY_NAMES = [
+  'неділя', 'понеділок', 'вівторок', 'середа', 'четвер', 'п\'ятниця', 'субота'
+]
+
+export const MONTH_NAMES = [
+  'січня', 'лютого', 'березня', 'квітня', 'травня', 'червня',
+  'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'
+]
+
+export const STABLE_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3GHDWmebTVVdC1zRVJOWVk'
+export const BETA_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3GHDWmebTVVdC1zRVJOWVk'

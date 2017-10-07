@@ -45,14 +45,14 @@
     QSpinnerGears,
     QInnerLoading
   } from 'quasar-framework'
-  import c from '../../constants'
+  import {STABLE_DOWNLOAD_URL, BETA_DOWNLOAD_URL} from '../../constants'
   import {mapState} from 'vuex'
 
   export default {
     data () {
       return {
-        stableUrl: c.STABLE_DOWNLOAD_URL,
-        betaUrl: c.BETA_DOWNLOAD_URL
+        stableUrl: STABLE_DOWNLOAD_URL,
+        betaUrl: BETA_DOWNLOAD_URL
       }
     },
     props: ['rtype'],

@@ -12,8 +12,9 @@ import {
   CLAIMS_FILES_GOT
 } from '../mutation-types'
 import cache from '../../cache'
-import * as c from '../../constants'
+import {SORT_OPTIONS} from '../../constants'
 import {Events} from 'quasar-framework'
+import {formatDate, formatOnlyTime, formatDateFull} from '../../routines'
 
 const REQUEST_RECORD = 0b001
 const REQUEST_HISTORY = 0b010
@@ -44,10 +45,33 @@ const state = {
 }
 
 const getters = {
-  sortsList: () => c.SORT_OPTIONS.map((item, ind) => {
+  sortsList: () => SORT_OPTIONS.map((item, ind) => {
     return { label: item.label, value: ind }
   }),
-  claimSortDesc: state => !!state.claimSortDesc
+  claimSortDesc: state => !!state.claimSortDesc,
+  historyView: state => {
+    let result = []
+    let onDay = null
+    let j = -1
+    for (let i = state.claimHistory.length - 1; i > -1; i--) {
+      const rec = state.claimHistory[i]
+      const day = formatDate(rec.date)
+      if (day !== onDay) {
+        result.push({
+          day: formatDateFull(rec.date),
+          content: []
+        })
+        j++
+        onDay = day
+      }
+      let { date, ...restRec } = rec
+      result[j].content.push({
+        time: formatOnlyTime(date, false),
+        ...restRec
+      })
+    }
+    return result
+  }
 }
 
 const mutations = {
@@ -60,7 +84,7 @@ const mutations = {
     cache.set('claimListPage', result.page)
     cache.set(['userData', 'LIST_LIMIT'], result.limit)
     if (state.claimRecordIndexWait !== null) {
-      Events.$emit('claims:ready:to:step', {idx: state.claimRecordIndexWait})
+      Events.$emit('claims:ready:to:step', { idx: state.claimRecordIndexWait })
       state.claimRecordIndexWait = null
     }
     else {
@@ -179,7 +203,7 @@ const actions = {
     }
     let sortStr = ''
     if (state.currentClaimSort > 0) {
-      sortStr = c.SORT_OPTIONS[state.currentClaimSort].field
+      sortStr = SORT_OPTIONS[state.currentClaimSort].field
       if (state.claimSortDesc) sortStr += ' DESC'
     }
     commit('CLAIMS_START_REQUEST')
@@ -215,8 +239,8 @@ const actions = {
       }
     }
     if (needShiftPage) {
-      Events.$once('claims:ready:to:step', ({idx}) => {
-        dispatch('getClaimRecord', {socket, idx})
+      Events.$once('claims:ready:to:step', ({ idx }) => {
+        dispatch('getClaimRecord', { socket, idx })
       })
       dispatch('sendClaimsRequest', { socket })
     }
