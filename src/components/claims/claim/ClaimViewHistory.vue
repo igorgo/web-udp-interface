@@ -17,9 +17,7 @@
             Виконавець: <span class="af-hist-executor">{{content.newExecutor}}</span>
           </div>
         </div>
-        <div>
-          <small>{{content.comment}}</small>
-        </div>
+        <pre v-if="content.comment" class="af-history-comment"><small>{{content.comment}}</small></pre>
         <div>
           <p class="text-italic text-grey">{{content.who}}, {{content.time}}</p>
         </div>
@@ -102,4 +100,9 @@
   .af-hist-executor
     color $afinasql
     font-weight 400
+
+  .af-history-comment
+    border-left 3px solid $afinasql
+    padding 10px
+    background-color $light
 </style>

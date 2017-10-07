@@ -23,7 +23,13 @@ export default {
   .content
     margin 10px 15px 0 15px
   h5
-    color: $afinasql
+    color $afinasql
+  pre
+    white-space pre-wrap
+    white-space -moz-pre-wrap
+    white-space -pre-wrap
+    white-space -o-pre-wrap
+    word-wrap break-word
   .afina-bg
     background $afina !important
     color white

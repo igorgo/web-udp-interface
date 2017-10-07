@@ -34,6 +34,12 @@ export function inclFilter (what, { field, list }) {
   return list.filter(item => item[field].toLowerCase().indexOf(needle) > -1)
 }
 
+/*
+export function multiLineToArray (str) {
+  return str ? str.replace(/\r\n/g, '\n').split('\n') : []
+}
+*/
+
 export function hrFileSize (bites) {
   if (isNaN(bites)) {
     throw new Error('Invalid number')
