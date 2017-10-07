@@ -14,6 +14,9 @@
  */
 
 export default {
+  13: {
+    0: 'key:enter'
+  },
   38: {
     0: 'key:arrow:up'
   },

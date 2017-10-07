@@ -42,9 +42,25 @@ function hrFileSize (bites) {
   }
 }
 
+function strNotEmpty (str) {
+  return str ? str.trim().length > 0 : false
+}
+
+function mapEvent ({eventMapper, $q}, listen) {
+  if (!eventMapper) return
+  for (let i in eventMapper) {
+    if (eventMapper.hasOwnProperty(i)) {
+      if (listen) $q.events.$on(i, eventMapper[i])
+      else $q.events.$off(i, eventMapper[i])
+    }
+  }
+}
+
 export {
   formatDate,
   formatDateTime,
   inclFilter,
-  hrFileSize
+  hrFileSize,
+  strNotEmpty,
+  mapEvent
 }

@@ -22,7 +22,6 @@
     methods: {
       ...mapActions([]),
       download (id) {
-        console.log(id)
         this.$socket.emit('get_linked_file', { id })
       },
       fileSize (size) {
