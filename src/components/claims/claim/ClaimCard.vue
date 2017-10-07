@@ -1,52 +1,86 @@
 <!--suppress JSUnusedGlobalSymbols -->
 <template>
     <div v-if="record.id">
+      <q-card class="row" :color="clBcolor">
+        <q-card-main>
+         <q-item class="col-1" display="inline-flex">
+          <q-item-main width="15%">
+            <q-item-tile width="15%">
+           <q-chip :icon="clIconSet" square small color="primary">{{record.claimType}}</q-chip>
+            </q-item-tile>
+            <q-item-tile width="15%"><q-chip square small color="secondary">
+              № {{`${record.claimPrefix}-${record.claimNumber}`}}
+            </q-chip></q-item-tile>
+            <q-item-tile width="15%">
+              <q-chip icon="swap vertical circle" small color="primary">{{record.priority}}</q-chip>
+            </q-item-tile>
+          </q-item-main>
+         </q-item>
+          <q-item class="col-2" width="15%" display="inline-flex">
+            <q-item-main>
+          <q-item-tile>
+            Зареєстровано&nbsp; <span>{{registeredAt}}</span>
+          </q-item-tile>
+          <q-item-tile>
+            Стан змінено&nbsp; <span>{{changedAt}}</span>
+          </q-item-tile>
+          <q-item-tile>
+            Відпрацювати до&nbsp; <span>{{execTill}}</span>
+          </q-item-tile>
+            </q-item-main>
+          </q-item>
+          <q-item class="col-3" width="15%" display="inline-flex">
+            <q-item-main>
+              <q-item-tile>
+                Автор&nbsp; <span>{{record.registeredByAgent}}</span>
+              </q-item-tile>
+              <q-item-tile>
+                Виконавець&nbsp; <span>{{record.executor}}</span>
+              </q-item-tile>
+            </q-item-main>
+          </q-item>
+          <q-item class="col-4" width="15%" display="inline-flex">
+            <q-item-main>
+              <q-item-tile>
+                Реліз виявлення&nbsp; <span>{{record.buildFrom}}</span>
+              </q-item-tile>
+              <q-item-tile>
+                Реліз виконання&nbsp; <span>{{record.buildTo}}</span>
+              </q-item-tile>
+            </q-item-main>
+          </q-item>
+          <div>
+          <span align="left" width="50%" float="left">{{record.app}}</span>
+          <span align="right" width="50%">{{record.unit}}</span>
+          </div>
+          <div>{{record.content}}</div>
+        </q-card-main>
+      </q-card>>
+
+
+
       <table class="q-table responsive">
         <thead>
         <tr>
-          <th>Тип</th>
-          <th>Номер</th>
-          <th>Зареєстровано</th>
-          <th>Автор</th>
           <th>Стан</th>
-          <th>Стан змінено</th>
-          <th>Пріоритет</th>
-          <th>Виконавець</th>
-          <th>Відпрацюати до</th>
-          <th>Реліз виявлення</th>
-          <th>Реліз виконання</th>
-          <th>Розділ</th>
-          <th>Застосунок</th>
           <th>Дія в розділі</th>
           <th>Стан хелпу</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-          <td data-th="Тип">{{record.claimType}}</td>
-          <td data-th="Номер">{{`${record.claimPrefix}-${record.claimNumber}`}}</td>
-          <td data-th="Зареєстровано">{{registeredAt}}</td>
-          <td data-th="Автор">{{record.registeredByAgent}}</td>
           <td data-th="Стан">{{record.claimState}}</td>
-          <td data-th="Стан змінено">{{changedAt}}</td>
-          <td data-th="Пріоритет">{{record.priority}}</td>
-          <td data-th="Виконавець">{{record.executor}}</td>
-          <td data-th="Відпрацюати до">{{execTill}}</td>
-          <td data-th="Реліз виявлення">{{record.buildFrom}}</td>
-          <td data-th="Реліз виконання">{{record.buildTo}}</td>
-          <td data-th="Розділ">{{record.unit}}</td>
-          <td data-th="Застосунок">{{record.app}}</td>
           <td data-th="Дія в розділі">{{record.action}}</td>
           <td data-th="Стан хелпу">{{record.helpSign}}</td>
         </tr>
         </tbody>
       </table>
-      <div>{{record.content}}</div>
     </div>
 </template>
 
 <script>
   // import {} from 'quasar-framework'
+  import { QCard, QChip, QCardTitle, QCardMain, QItem, QItemSide, QItemMain, QItemTile } from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {formatDateTime} from '../../../routines'
 
@@ -55,7 +89,7 @@
     data () {
       return {}
     },
-    components: {},
+    components: {QCard, QCardMain, QChip, QCardTitle, QItem, QItemSide, QItemMain, QItemTile},
     methods: {
       ...mapActions([])
     },
@@ -72,6 +106,17 @@
       },
       execTill () {
         return formatDateTime(this.record.execTill)
+      },
+      // to test only, rewrite after testing
+      clIconSet () {
+        switch (this.record.claimType) {
+          case 'ДОРАБОТКА':
+            return 'add alert'
+          case 'ЗАМЕЧАНИЕ':
+            return 'warning'
+          case 'ОШИБКА':
+            return 'error'
+        }
       }
     },
     created () {
