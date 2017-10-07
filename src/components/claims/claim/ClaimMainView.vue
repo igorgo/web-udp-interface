@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-touch-pan.horizontal.nomouse="onPanning" :class="{'af-selectable' : isNotTouch}">
     <af-under-consruct
       title="Перегляд рекламації"
       back-route="/claims"
@@ -22,6 +22,7 @@
   import ClaimViewFiles from './ClaimViewFiles.vue'
   import ClaimViewHistory from './ClaimViewHistory.vue'
   import { mapState } from 'vuex'
+  import { TouchPan } from 'quasar-framework'
 
   export default {
     components: {
@@ -35,10 +36,28 @@
     computed: {
       ...mapState({
         loadProgress: state => state.claims.getClaimsInProgress
-      })
+      }),
+      isNotTouch () {
+        return !this.$q.platform.has.touch
+      }
+    },
+    directives: {
+      TouchPan
+    },
+    methods: {
+      onPanning (obj) {
+        if (obj.isFinal) {
+          this.$store.dispatch('claimStepRecord', {socket: this.$socket, step: (obj.direction === 'left') ? 1 : -1})
+        }
+      }
     }
   }
 </script>
 
 <style lang="stylus">
+  .af-selectable
+    -webkit-user-select text
+    -moz-user-select text
+    -ms-user-select text
+    user-select text
 </style>
