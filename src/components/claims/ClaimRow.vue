@@ -1,7 +1,7 @@
 <!--suppress JSUnusedGlobalSymbols -->
 <template>
   <q-item multiline class="no-padding cursor-pointer" :class="{'claim-list-active': claimIdx === activeIndex}">
-    <q-card class="claim-list-card text-black" :color="clBcolor">
+    <q-card class="claim-list-card text-black" :class="cardClass" color="grey-1">
       <q-card-main @click="onClaimClick(claimIdx)">
         <div class="row justify-start cl-title" style="margin-bottom: 10px">
           <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
@@ -50,6 +50,9 @@
   export default {
     components: { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator },
     computed: {
+      cardClass () {
+        return 'claim-list-card-t' + this.$props.claimRec.claimType
+      },
       activeIndex () {
         return this.$store.state.claims.claimRecordIndexActive
       },
@@ -165,6 +168,18 @@
 
   .claim-list-card
     width 100%
+    border-left-style solid
+    border-left-width 16px
+    margin 5px
+
+  .claim-list-card-t1
+    border-left-color $green-8
+
+  .claim-list-card-t2
+    border-left-color $yellow-6
+
+  .claim-list-card-t3
+    border-left-color $red-6
 
   .claim-list-active
     background-color $afinasql

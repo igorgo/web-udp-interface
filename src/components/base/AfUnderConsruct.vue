@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
-    <q-btn style="margin-top: 10px" color="primary"  icon="arrow back" v-go-back="backRoute">{{backText ? backText : 'Повернутися'}}</q-btn>
-    <h1>{{title}}</h1>
+    <q-btn v-if="backRoute" style="margin-top: 10px" color="primary"  icon="arrow back" v-go-back="backRoute">{{backText ? backText : 'Повернутися'}}</q-btn>
+    <h1 v-if="title">{{title}}</h1>
     <p>В процессі розробки…</p>
   </div>
 </template>

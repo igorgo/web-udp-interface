@@ -5,7 +5,7 @@
         <q-select
           stack-label="Фільтр"
           inverted
-          color="amber-9"
+          color="secondary"
           separator
           :options="filterOptions"
           v-model="currentCondition"
@@ -18,7 +18,7 @@
           small
           round
           flat
-          color="amber-9"
+          color="secondary"
           @click="onNewFilterClick"
           icon="fa-filter"
         />
@@ -29,7 +29,7 @@
         <q-select
           stack-label="Сортування"
           inverted
-          color="purple"
+          color="secondary"
           separator
           :options="sortsList"
           v-model="currentClaimSort"
@@ -44,7 +44,7 @@
           class="sort-icon"
           checked-icon="arrow drop down"
           unchecked-icon="arrow drop up"
-          color="purple"
+          color="secondary"
         />
       </div>
     </div>
@@ -74,7 +74,7 @@
     },
     name: 'claims-header',
     created: function () {
-      this.$socket.emit('get_claim_conditions_list', {sessionID: this.$store.getters.sessionID})
+      this.$socket.emit('get_claim_conditions_list', { sessionID: this.$store.getters.sessionID })
     },
     methods: {
       onFilterChange (value) {
@@ -95,10 +95,12 @@
 </script>
 
 <style lang="stylus">
-  .sort-icon .q-checkbox-checked
-  .sort-icon .q-checkbox-unchecked
-      height: 54px !important
-      width: 30px !important
-      font-size: 54px !important
-      margin-left: 5px
+  @import '~variables'
+  .sort-icon .q-checkbox-checked, .sort-icon .q-checkbox-unchecked
+    height 54px !important
+    width 30px !important
+    font-size 54px !important
+    margin-left 5px
+    color $secondary
+
 </style>

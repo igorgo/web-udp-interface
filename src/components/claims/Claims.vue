@@ -11,7 +11,7 @@
           color="deep-orange-12"
           round
           class="animate-pop"
-          v-back-to-top.animate="{offset: 500, duration: 200}"
+          v-back-to-top.animate="{offset: 100, duration: 200}"
         >
           <q-icon name="keyboard_arrow_up" />
         </q-btn>

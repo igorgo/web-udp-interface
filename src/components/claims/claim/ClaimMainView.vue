@@ -1,16 +1,20 @@
 <template>
   <div v-touch-pan.horizontal.nomouse="onPanning" :class="{'af-selectable' : isNotTouch}">
-    <af-under-consruct
-      title="Перегляд рекламації"
-      back-route="/claims"
-      back-text="До списку"
-    />
     <claim-view-navigator/>
     <claim-card/>
     <hr/>
     <claim-view-files/>
     <hr/>
     <claim-view-history/>
+    <q-fixed-position corner="bottom-right" :offset="[12, 68]" class="z-absolute">
+      <q-btn
+        color="deep-orange-12"
+        round
+        icon="keyboard_arrow_up"
+        class="animate-pop"
+        v-back-to-top.animate="{offset: 100, duration: 200}"
+      />
+    </q-fixed-position>
     <af-load-cover :progress="loadProgress"/>
   </div>
 </template>
@@ -22,7 +26,7 @@
   import ClaimViewFiles from './ClaimViewFiles.vue'
   import ClaimViewHistory from './ClaimViewHistory.vue'
   import { mapState } from 'vuex'
-  import { TouchPan } from 'quasar-framework'
+  import { TouchPan, QFixedPosition, QBtn, BackToTop } from 'quasar-framework'
 
   export default {
     components: {
@@ -31,7 +35,9 @@
       ClaimViewNavigator,
       ClaimViewFiles,
       ClaimViewHistory,
-      AfLoadCover
+      AfLoadCover,
+      QFixedPosition,
+      QBtn
     },
     computed: {
       ...mapState({
@@ -42,7 +48,8 @@
       }
     },
     directives: {
-      TouchPan
+      TouchPan,
+      BackToTop
     },
     methods: {
       onPanning (obj) {

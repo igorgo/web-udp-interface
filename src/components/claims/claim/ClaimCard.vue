@@ -1,7 +1,7 @@
 <!--suppress JSUnusedGlobalSymbols -->
 <template>
     <div v-if="record.id">
-      <q-card class="row" :color="clBcolor">
+      <q-card class="row">
         <q-card-main>
          <q-item class="col-1" display="inline-flex">
           <q-item-main width="15%">
