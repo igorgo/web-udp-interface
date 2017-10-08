@@ -43,9 +43,9 @@ Quasar.start(() => {
         if (event.metaKey) return
         // event.preventDefault()
         let modifiers = 0
-        if (event.ctrlKey) modifiers += 1
-        if (event.shiftKey) modifiers += 2
-        if (event.altKey) modifiers += 4
+        if (event.ctrlKey) modifiers += 0b001
+        if (event.shiftKey) modifiers += 0b010
+        if (event.altKey) modifiers += 0b100
         if (!keyMapper.hasOwnProperty(event.keyCode)) return
         if (!keyMapper[event.keyCode].hasOwnProperty(modifiers)) return
         this.$q.events.$emit(keyMapper[event.keyCode][modifiers])

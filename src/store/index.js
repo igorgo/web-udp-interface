@@ -5,7 +5,7 @@ import main from './modules/main'
 import filters from './modules/filters'
 import claims from './modules/claims'
 import staticDicts from './modules/staticDicts'
-import { Toast } from 'quasar-framework'
+import { Toast, Platform } from 'quasar-framework'
 Vue.use(Vuex)
 
 const state = {
@@ -30,6 +30,9 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    isNotTouch () {
+      return !Platform.has.touch
+    }
   },
   mutations: {
     SOCKET_CONNECT: (state) => {

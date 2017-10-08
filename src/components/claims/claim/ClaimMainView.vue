@@ -25,7 +25,7 @@
   import ClaimViewNavigator from './ClaimViewNavigator.vue'
   import ClaimViewFiles from './ClaimViewFiles.vue'
   import ClaimViewHistory from './ClaimViewHistory.vue'
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   import { TouchPan, QFixedPosition, QBtn, BackToTop } from 'quasar-framework'
 
   export default {
@@ -43,9 +43,9 @@
       ...mapState({
         loadProgress: state => state.claims.getClaimsInProgress
       }),
-      isNotTouch () {
-        return !this.$q.platform.has.touch
-      }
+      ...mapGetters([
+        'isNotTouch'
+      ])
     },
     directives: {
       TouchPan,
@@ -62,9 +62,4 @@
 </script>
 
 <style lang="stylus">
-  .af-selectable
-    -webkit-user-select text
-    -moz-user-select text
-    -ms-user-select text
-    user-select text
 </style>

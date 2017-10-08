@@ -14,11 +14,20 @@
  */
 
 export default {
+  8: {
+    0: 'key:backspace'
+  },
   13: {
     0: 'key:enter'
   },
+  37: {
+    1: 'key:arrow:left:ctrl'
+  },
   38: {
     0: 'key:arrow:up'
+  },
+  39: {
+    1: 'key:arrow:right:ctrl'
   },
   40: {
     0: 'key:arrow:down'

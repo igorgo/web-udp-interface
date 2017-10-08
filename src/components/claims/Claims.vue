@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-  <div class="content">
+  <div class="content" v-touch-pan.horizontal.nomouse="onPanning">
     <q-scroll-area ref="scroll" class="claim-body">
       <claim-header/>
       <q-list ref="list" no-border>
@@ -31,9 +31,9 @@
   import ClaimHeader from './ClaimsHeader.vue'
   import ClaimRow from './ClaimRow.vue'
   import ClaimPaginator from './ClaimPaginator.vue'
-  import { QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop } from 'quasar-framework'
+  import { QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop, TouchPan } from 'quasar-framework'
   import { AfLoadCover } from '../base'
-  import { mapGetters, mapState } from 'vuex'
+  import { mapState } from 'vuex'
   import {mapEvent} from '../../routines'
 
   export default {
@@ -44,10 +44,10 @@
         currentClaimLimit: state => state.claims.currentClaimLimit,
         claimList: state => state.claims.claimList,
         progress: state => state.claims.getClaimsInProgress,
-        claimRecordIndexActive: state => state.claims.claimRecordIndexActive
-      }),
-      ...mapGetters([
-      ])
+        claimRecordIndexActive: state => state.claims.claimRecordIndexActive,
+        claimListPages: state => state.claims.claimListPages,
+        currentClaimPage: state => state.claims.currentClaimPage
+      })
     },
     mounted: function () {
       void this.$store.dispatch('sendClaimsRequest', {socket: this.$socket})
@@ -68,14 +68,35 @@
         this.$router.push('/claim/new')
       },
       __onKeyArrowDown () {
-        void this.$store.dispatch('claimsListScroll', 1)
+        if (!this.progress && this.claimRecordIndexActive < this.claimList.length - 1) {
+          void this.$store.dispatch('claimsListScroll', 1)
+        }
       },
       __onKeyArrowUp () {
-        void this.$store.dispatch('claimsListScroll', -1)
+        if (!this.progress && this.claimRecordIndexActive > 0) {
+          void this.$store.dispatch('claimsListScroll', -1)
+        }
       },
-      __onKeyEnter  () {
+      __onKeyEnter () {
+        if (this.progress) return
         void this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx: this.claimRecordIndexActive })
         this.$router.push('/claim/view')
+      },
+      __onPrevPage () {
+        if ((!this.progress) && (this.currentClaimPage > 1)) {
+          void this.$store.dispatch('setCurrentClaimPage', {value: this.currentClaimPage - 1, socket: this.$socket})
+        }
+      },
+      __onNextPage () {
+        if ((!this.progress) && (this.currentClaimPage < this.claimListPages)) {
+          void this.$store.dispatch('setCurrentClaimPage', {value: this.currentClaimPage + 1, socket: this.$socket})
+        }
+      },
+      onPanning (obj) {
+        if (obj.isFinal) {
+          if (obj.direction === 'left') this.__onNextPage()
+          else this.__onPrevPage()
+        }
       }
     },
     data () {
@@ -85,6 +106,8 @@
           'key:enter': this.__onKeyEnter,
           'key:insert': this.addClaim,
           'key:arrow:up': this.__onKeyArrowUp,
+          'key:arrow:left:ctrl': this.__onPrevPage,
+          'key:arrow:right:ctrl': this.__onNextPage,
           'claims:new-portion': this.newPortionHandler,
           'claims:list:scroll:to': this.scrollToRecord
         }
@@ -97,7 +120,8 @@
       mapEvent(this, false)
     },
     directives: {
-      BackToTop
+      BackToTop,
+      TouchPan
     }
 
   }

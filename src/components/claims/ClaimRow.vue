@@ -1,6 +1,6 @@
 <!--suppress JSUnusedGlobalSymbols -->
 <template>
-  <q-item multiline class="no-padding cursor-pointer" :class="{'claim-list-active': claimIdx === activeIndex}">
+  <q-item multiline class="no-padding cursor-pointer" :class="{'claim-list-active': claimIdx === activeIndex, 'af-selectable' : isNotTouch}">
     <q-card class="claim-list-card text-black" :class="cardClass" color="grey-1">
       <q-card-main @click="onClaimClick(claimIdx)">
         <div class="row justify-start cl-title" style="margin-bottom: 10px">
@@ -46,10 +46,14 @@
 <script>
   import {QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator} from 'quasar-framework'
   import {formatDateTime} from '../../routines'
+  import { mapGetters } from 'vuex'
 
   export default {
     components: { QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator },
     computed: {
+      ...mapGetters([
+        'isNotTouch'
+      ]),
       cardClass () {
         return 'claim-list-card-t' + this.$props.claimRec.claimType
       },
