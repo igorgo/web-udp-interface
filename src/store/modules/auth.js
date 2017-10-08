@@ -60,6 +60,7 @@ const mutations = {
   }
 }
 const getters = {
+  sessionID: state => state.sessionID
 }
 
 const actions = {

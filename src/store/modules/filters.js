@@ -169,7 +169,7 @@ const mutations = {
   }
 }
 const actions = {
-  getConditionFilter ({ commit }, { socket, conditionId, from }) {
+  getConditionFilter ({ commit, getters }, { socket, conditionId, from }) {
     commit(FILTER_GET, from)
     if ((from === 'filters') && (conditionId === null)) {
       commit(FILTER_CLEAR, true)
@@ -177,7 +177,7 @@ const actions = {
     else {
       if (!socket) return
       commit(FILTER_COVER)
-      socket.emit('get_claim_condition', { conditionId })
+      socket.emit('get_claim_condition', { sessionID: getters.sessionID, conditionId })
     }
   },
   modifyFilterField ({commit}, {key, value}) {
@@ -186,14 +186,14 @@ const actions = {
   clearFilterForm ({commit}) {
     commit(FILTER_CLEAR, false)
   },
-  saveConditionFilter ({state}, {socket}) {
+  saveConditionFilter ({state, getters}, {socket}) {
     if (!socket) return
-    socket.emit('save_claim_condition', state.currentFilter)
+    socket.emit('save_claim_condition', {sessionID: getters.sessionID, ...state.currentFilter})
   },
-  deleteConditionFilter ({state, commit}, {socket}) {
+  deleteConditionFilter ({state, commit, getters}, {socket}) {
     if ((socket && state.currentFilter.rn)) {
       commit(FILTER_COVER)
-      socket.emit('delete_claim_condition', {rn: state.currentFilter.rn})
+      socket.emit('delete_claim_condition', {sessionID: getters.sessionID, rn: state.currentFilter.rn})
     }
   },
   conditionListScroll ({ state, commit }, n) {
@@ -206,10 +206,10 @@ const actions = {
   conditionSetDoNotUpdate ({commit}, doNotUpdate) {
     commit(FILTER_SET_DO_NOT_UPDATE, doNotUpdate)
   },
-  getConditionsList ({state, commit}, socket) {
+  getConditionsList ({state, commit, getters}, socket) {
     if (state.doNotUpdate) commit(FILTER_SET_DO_NOT_UPDATE, false)
     else {
-      socket.emit('get_claim_conditions_list')
+      socket.emit('get_claim_conditions_list', {sessionID: getters.sessionID})
     }
   }
 }

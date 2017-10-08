@@ -22,7 +22,7 @@
     methods: {
       ...mapActions([]),
       download (id) {
-        this.$socket.emit('get_linked_file', { id })
+        this.$socket.emit('get_linked_file', { sessionID: this.$store.getters.sessionID, id })
       },
       fileSize (size) {
         return hrFileSize(size)

@@ -153,7 +153,7 @@ const mutations = {
 }
 
 const actions = {
-  setCurrentSort ({ commit, dispatch }, { socket, value }) {
+  setCurrentSort ({ commit, dispatch, getters }, { socket, value }) {
     cache.set(['userData', 'CLAIM_SORT'], value)
     commit(CLAIMS_SORT_CHANGE, value)
     if (!socket) return
@@ -162,12 +162,13 @@ const actions = {
       discardPage: true
     })
     socket.emit('set_user_data_param', {
+      sessionID: getters.sessionID,
       param: 'CLAIM_SORT',
       dataType: 'N',
       value
     })
   },
-  setCurrentClaimSortOrder ({ commit, dispatch }, { socket, value }) {
+  setCurrentClaimSortOrder ({ commit, dispatch, getters }, { socket, value }) {
     const intVal = value ? 1 : 0
     cache.set(['userData', 'CLAIM_SORT_ORDER'], intVal)
     commit(CLAIMS_SORT_ORDER_CHANGE, intVal)
@@ -177,6 +178,7 @@ const actions = {
       discardPage: true
     })
     socket.emit('set_user_data_param', {
+      sessionID: getters.sessionID,
       param: 'CLAIM_SORT_ORDER',
       dataType: 'N',
       intVal
@@ -187,7 +189,7 @@ const actions = {
     if (!socket) return
     dispatch('sendClaimsRequest', { socket })
   },
-  setCurrentCondition ({ commit, dispatch }, { socket, value }) {
+  setCurrentCondition ({ commit, dispatch, getters }, { socket, value }) {
     cache.set(['userData', 'LAST_COND'], value)
     commit(CLAIMS_FILTER_CHANGE, value)
     if (!socket) return
@@ -196,12 +198,13 @@ const actions = {
       discardPage: true
     })
     socket.emit('set_user_data_param', {
+      sessionID: getters.sessionID,
       param: 'LAST_COND',
       dataType: 'N',
       value
     })
   },
-  sendClaimsRequest ({ commit, state }, { socket, discardPage = false }) {
+  sendClaimsRequest ({ commit, state, getters }, { socket, discardPage = false }) {
     if (state.doNotUpdate) {
       commit(CLAIMS_SET_DO_NOT_UPDATE, false)
       Events.$emit('claims:list:scroll:to', { pos: state.claimRecordIndexActive })
@@ -214,6 +217,7 @@ const actions = {
     }
     commit('CLAIMS_START_REQUEST')
     socket.emit('get_claim_list', {
+      sessionID: getters.sessionID,
       conditionId: state.currentCondition,
       sortOrder: sortStr,
       page: discardPage ? 1 : state.currentClaimPage,
@@ -221,9 +225,9 @@ const actions = {
       newClaimId: state.newAddedClaimId
     })
   },
-  getClaimRecord ({ commit, state }, { socket, idx }) {
+  getClaimRecord ({ commit, state, getters }, { socket, idx }) {
     commit('CLAIMS_START_RECORD_REQUEST', { idx })
-    socket.emit('get_claim_record', { id: state.claimList[idx].id })
+    socket.emit('get_claim_record', { sessionID: getters.sessionID, id: state.claimList[idx].id })
   },
   claimsSetDoNotUpdate ({ commit }, doNotUpdate) {
     commit(CLAIMS_SET_DO_NOT_UPDATE, doNotUpdate)
