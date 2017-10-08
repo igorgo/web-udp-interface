@@ -1,6 +1,6 @@
 <template>
   <div v-touch-pan.horizontal.nomouse="onPanning" :class="{'af-selectable' : isNotTouch}">
-    <claim-view-navigator/>
+    <claim-view-navigator ref="nav"/>
     <claim-card/>
     <hr/>
     <claim-view-files/>
@@ -20,13 +20,14 @@
 </template>
 
 <script>
-  import { AfUnderConsruct, AfLoadCover } from '../../base'
+  import {AfUnderConsruct, AfLoadCover} from '../../base'
   import ClaimCard from './ClaimCard.vue'
   import ClaimViewNavigator from './ClaimViewNavigator.vue'
   import ClaimViewFiles from './ClaimViewFiles.vue'
   import ClaimViewHistory from './ClaimViewHistory.vue'
-  import { mapState, mapGetters } from 'vuex'
-  import { TouchPan, QFixedPosition, QBtn, BackToTop } from 'quasar-framework'
+  import {mapState, mapGetters} from 'vuex'
+  import { mapEvent } from '../../../routines'
+  import {TouchPan, QFixedPosition, QBtn, BackToTop} from 'quasar-framework'
 
   export default {
     components: {
@@ -41,7 +42,9 @@
     },
     computed: {
       ...mapState({
-        loadProgress: state => state.claims.getClaimsInProgress
+        loadProgress: state => state.claims.getClaimsInProgress,
+        isFirstRecord: state => state.claims.isFirstRecord,
+        isLastRecord: state => state.claims.isLastRecord
       }),
       ...mapGetters([
         'isNotTouch'
@@ -52,11 +55,36 @@
       BackToTop
     },
     methods: {
+      __onPrevClaim () {
+        if ((!this.progress) && (!this.isFirstRecord)) this.$refs.nav.claimStepRecord(-1)
+      },
+      __onNextClaim () {
+        if ((!this.progress) && (!this.isLastRecord)) this.$refs.nav.claimStepRecord(1)
+      },
       onPanning (obj) {
-        if (obj.isFinal) {
-          this.$store.dispatch('claimStepRecord', {socket: this.$socket, step: (obj.direction === 'left') ? 1 : -1})
+        if (obj.isFinal && !this.loadProgress) {
+          if (obj.direction === 'left') this.__onNextClaim()
+          else this.__onPrevClaim()
+        }
+      },
+      __backToList () {
+        this.$refs.nav.goBackToList()
+      }
+    },
+    data () {
+      return {
+        eventMapper: {
+          'key:arrow:left:ctrl': this.__onPrevClaim,
+          'key:arrow:right:ctrl': this.__onNextClaim,
+          'key:backspace': this.__backToList
         }
       }
+    },
+    created () {
+      mapEvent(this, true)
+    },
+    beforeDestroy () {
+      mapEvent(this, false)
     }
   }
 </script>
