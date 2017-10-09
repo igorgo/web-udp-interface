@@ -45,10 +45,11 @@
     },
     computed: {
       ...mapState({
-        isFirstRecord: state => state.claims.isFirstRecord,
-        isLastRecord: state => state.claims.isLastRecord
       }),
-      ...mapGetters([])
+      ...mapGetters([
+        'isFirstRecord',
+        'isLastRecord'
+      ])
     },
     created () {
     },

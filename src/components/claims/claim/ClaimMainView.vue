@@ -15,18 +15,26 @@
         />
       </q-fixed-position>
     </q-scroll-area>
-    <q-fixed-position corner="top-right" :offset="[10, 5]" class="z-absolute" v-show="!loadProgress && !actionProgress">
+    <q-fixed-position corner="top-right" :offset="[10, 5]" class="z-absolute"
+                      v-show="(!claimViewLoading) && actionsMask">
       <q-btn
         color="white"
         round
         small
         flat
-        icon="settings"
-        class="animate-pop"
-        @click="showActions"
-      />
+        icon="more vert"
+      >
+        <q-popover ref="popover">
+          <q-list link>
+            <q-item v-for="item in availActions" :key="item.code" @click="onAction(item.code)">
+              <q-item-side :icon="item.icon"/>
+              <q-item-main :label="item.label"/>
+            </q-item>
+          </q-list>
+        </q-popover>
+      </q-btn>
     </q-fixed-position>
-    <af-load-cover :progress="loadProgress"/>
+    <af-load-cover :progress="claimViewLoading"/>
   </div>
 </template>
 
@@ -38,49 +46,118 @@
   import ClaimViewHistory from './ClaimViewHistory.vue'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {mapEvent} from '../../../routines'
-  import {TouchPan, QFixedPosition, QBtn, BackToTop, ActionSheet, QScrollArea, scroll} from 'quasar-framework'
+  import {
+    TouchPan, QFixedPosition, QBtn, BackToTop, QScrollArea,
+    scroll, QPopover, QList, QItemSide, QItemMain, QItem
+  } from 'quasar-framework'
 
   export default {
     components: {
       AfUnderConsruct,
+      AfLoadCover,
       ClaimCard,
       ClaimViewNavigator,
       ClaimViewFiles,
       ClaimViewHistory,
-      AfLoadCover,
       QFixedPosition,
       QBtn,
-      QScrollArea
+      QScrollArea,
+      QPopover,
+      QList,
+      QItemSide,
+      QItemMain,
+      QItem
     },
     computed: {
       ...mapState({
-        loadProgress: state => state.claims.getClaimsInProgress,
-        actionProgress: state => state.claims.actionInProgress,
-        isFirstRecord: state => state.claims.isFirstRecord,
-        isLastRecord: state => state.claims.isLastRecord
+        actionsMask: state => state.claims.claimActionsMask
       }),
       ...mapGetters([
-        'isNotTouch'
-      ])
+        'isNotTouch',
+        'claimViewLoading',
+        'isFirstRecord',
+        'isLastRecord',
+        'isActionAvail'
+      ]),
+      availActions () {
+        let result = []
+        this.isActionAvail('status') && result.push({
+          code: 'status',
+          label: 'змінити статус',
+          icon: 'assignment turned in'
+        })
+        this.isActionAvail('return') && result.push({
+          code: 'return',
+          label: 'повернути попередній статус',
+          icon: 'assignment return'
+        })
+        this.isActionAvail('comment') && result.push({
+          code: 'comment',
+          label: 'коментувати',
+          icon: 'speaker notes'
+        })
+        this.isActionAvail('assign') && result.push({
+          code: 'assign',
+          label: 'змінити виконавця',
+          icon: 'assignment ind'
+        })
+        this.isActionAvail('attach') && result.push({
+          code: 'attach',
+          label: 'додати файл',
+          icon: 'attach file'
+        })
+        this.isActionAvail('prioritize') && result.push({
+          code: 'prioritize',
+          label: 'змінити пріоритет',
+          icon: 'swap vert'
+        })
+        this.isActionAvail('edit') && result.push({
+          code: 'edit',
+          label: 'виправити',
+          icon: 'mode edit'
+        })
+        this.isActionAvail('annul') && result.push({
+          code: 'annul',
+          label: 'анулювати',
+          icon: 'block'
+        })
+        this.isActionAvail('delete') && result.push({
+          code: 'delete',
+          label: 'видалити',
+          icon: 'delete'
+        })
+        this.isActionAvail('setHelpNeed') && result.push({
+          code: 'setHelpNeed',
+          label: 'вказати необхідність довідки',
+          icon: 'help'
+        })
+        this.isActionAvail('setHelpStatus') && result.push({
+          code: 'setHelpStatus',
+          label: 'вказати статус довідки',
+          icon: 'live help'
+        })
+        return result
+      }
     },
     directives: {
       TouchPan,
       BackToTop
     },
     methods: {
-      ...mapActions([
-        'claimSetActionProgress'
-      ]),
-      __onPrevClaim () {
-        if ((!this.progress) && (!this.isFirstRecord)) this.$refs.nav.claimStepRecord(-1)
+      ...mapActions([]),
+      onPrevClaim () {
+        if ((!this.progress) && (!this.isFirstRecord)) this.__stepRec(-1)
       },
-      __onNextClaim () {
-        if ((!this.progress) && (!this.isLastRecord)) this.$refs.nav.claimStepRecord(1)
+      onNextClaim () {
+        if ((!this.progress) && (!this.isLastRecord)) this.__stepRec(1)
+      },
+      __stepRec (step) {
+        this.$refs.nav.claimStepRecord(step)
       },
       onPanning (obj) {
-        if (obj.isFinal && !this.loadProgress) {
-          if (obj.direction === 'left') this.__onNextClaim()
-          else this.__onPrevClaim()
+        if (obj.isFinal && !this.claimViewLoading) {
+          if (obj.direction === 'left') this.onNextClaim()
+          else this.onPrevClaim()
         }
       },
       scrollDown () {
@@ -94,118 +171,56 @@
         const cPos = scroll.getScrollPosition(target)
         scroll.setScrollPosition(target, cPos + (down ? 50 : -50))
       },
-      __backToList () {
+      backToList () {
         this.$refs.nav.goBackToList()
       },
-      __onAction (action) {
+      onAction (action) {
+        this.$refs.popover.close()
         switch (action) {
           case 'edit':
-            console.log('виправити')
+            console.log('edit')
             break
           case 'status':
-            console.log('змінити статус')
+            console.log('status')
             break
           case 'assign':
-            console.log('змінити виконавця')
+            console.log('assign')
             break
           case 'return':
-            console.log('повернути попередній статус')
+            console.log('return')
             break
           case 'comment':
-            console.log('прокоментувати')
+            console.log('comment')
             break
           case 'annul':
-            console.log('анулювати')
+            console.log('annul')
             break
           case 'prioritize':
-            console.log('встановити пріоритет')
+            console.log('prioritize')
             break
           case 'attach':
-            console.log('додати файл')
+            console.log('attach')
+            break
+          case 'delete':
+            console.log('delete')
+            break
+          case 'setHelpNeed':
+            console.log('setHelpNeed')
+            break
+          case 'setHelpStatus':
+            console.log('setHelpStatus')
             break
         }
-        // !!!! убрать потом
-        this.claimSetActionProgress(false)
-      },
-      showActions () {
-        this.claimSetActionProgress(true)
-        ActionSheet.create({
-          title: 'Виберіть дію',
-          actions: [
-            {
-              label: 'змінити статус',
-              icon: 'assignment turned in',
-              handler: () => {
-                this.__onAction('status')
-              }
-            },
-            {
-              label: 'змінити виконавця',
-              icon: 'assignment ind',
-              handler: () => {
-                this.__onAction('assign')
-              }
-            },
-            {
-              label: 'повернути попередній статус',
-              icon: 'assignment return',
-              handler: () => {
-                this.__onAction('return')
-              }
-            },
-            {
-              label: 'прокоментувати',
-              icon: 'speaker notes',
-              handler: () => {
-                this.__onAction('comment')
-              }
-            },
-            {
-              label: 'додати файл',
-              icon: 'attach file',
-              handler: () => {
-                this.__onAction('attach')
-              }
-            },
-            {
-              label: 'виправити',
-              icon: 'mode edit',
-              handler: () => {
-                this.__onAction('edit')
-              }
-            },
-            {
-              label: 'змінити пріоритет',
-              icon: 'swap vert',
-              handler: () => {
-                this.__onAction('prioritize')
-              }
-            },
-            {
-              label: 'анулювати',
-              icon: 'block',
-              handler: () => {
-                this.__onAction('annul')
-              }
-            }
-          ],
-          dismiss: {
-            label: 'Скасування',
-            handler: () => {
-              this.claimSetActionProgress(false)
-            }
-          }
-        })
       }
     },
     data () {
       return {
         eventMapper: {
-          'key:arrow:left:ctrl': this.__onPrevClaim,
-          'key:arrow:right:ctrl': this.__onNextClaim,
+          'key:arrow:left:ctrl': this.onPrevClaim,
+          'key:arrow:right:ctrl': this.onNextClaim,
           'key:arrow:up': this.scrollUp,
           'key:arrow:down': this.scrollDown,
-          'key:backspace': this.__backToList
+          'key:backspace': this.backToList
         }
       }
     },

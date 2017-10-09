@@ -11,7 +11,7 @@ import {
   CLAIMS_HISTORY_GOT,
   CLAIMS_FILES_GOT,
   CLAIMS_LIST_SCROLL,
-  CLAIMS_SET_ACT_PROGRESS
+  CLAIM_AVAIL_ACTIONS_GOT
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -21,7 +21,21 @@ import {formatDate, formatOnlyTime, formatDateFull} from '../../routines'
 const REQUEST_RECORD = 0b001
 const REQUEST_HISTORY = 0b010
 const REQUEST_FILES = 0b100
-const REQUEST_ALL = 0b111
+const REQUEST_ALL_FINISH = 0b111
+
+const actionsFlags = {
+  'edit': 0b00000000001,
+  'delete': 0b00000000010,
+  'status': 0b00000000100,
+  'assign': 0b00000001000,
+  'return': 0b00000010000,
+  'annul': 0b00000100000,
+  'comment': 0b00001000000,
+  'attach': 0b00010000000,
+  'prioritize': 0b00100000000,
+  'setHelpNeed': 0b01000000000,
+  'setHelpStatus': 0b10000000000
+}
 
 const state = {
   allClaimsCount: 0,
@@ -31,18 +45,16 @@ const state = {
   currentClaimPage: cache.get('claimListPage', 1),
   currentClaimSort: cache.get(['userData', 'CLAIM_SORT'], 2),
   claimSortDesc: cache.get(['userData', 'CLAIM_SORT_ORDER'], 1),
-  actionInProgress: false,
   claimListPages: 1,
   getClaimsInProgress: false,
   newAddedClaimId: null,
   claimRecord: { id: null },
   claimHistory: [],
   claimFiles: [],
+  claimActionsMask: 0,
   claimRecordIndexActive: null,
   claimRecordIndexRequested: null,
   claimRecordIndexWait: null,
-  isFirstRecord: false,
-  isLastRecord: false,
   doNotUpdate: false,
   recordRequestsState: 0
 }
@@ -74,7 +86,12 @@ const getters = {
       })
     }
     return result
-  }
+  },
+  claimViewLoading: state => state.recordRequestsState !== REQUEST_ALL_FINISH,
+  isFirstRecord: state => (state.currentClaimPage === 1) && (state.claimRecordIndexActive === 0),
+  isLastRecord: state => (state.currentClaimPage === state.claimListPages) &&
+    (state.claimRecordIndexActive === (state.claimList.length - 1)),
+  isActionAvail: state => action => (state.claimActionsMask & actionsFlags[action]) === actionsFlags[action]
 }
 
 const mutations = {
@@ -113,7 +130,6 @@ const mutations = {
     state.getClaimsInProgress = true
   },
   [CLAIMS_START_RECORD_REQUEST] (state, { idx, shiftPage = 0 }) {
-    state.getClaimsInProgress = true
     state.recordRequestsState = 0
     state.claimRecordIndexRequested = idx
     if (shiftPage) {
@@ -123,28 +139,23 @@ const mutations = {
     state.claimRecord = { id: null }
     state.claimHistory = []
     state.claimFiles = []
+    state.claimActionsMask = 0
   },
   [CLAIMS_RECORD_GOT] (state, record) {
     state.claimRecord = record
     state.recordRequestsState += REQUEST_RECORD
-    state.getClaimsInProgress = (state.recordRequestsState !== REQUEST_ALL)
     state.claimRecordIndexActive = state.claimRecordIndexRequested
     state.claimRecordIndexRequested = null
-    state.isFirstRecord = (state.currentClaimPage === 1) && (state.claimRecordIndexActive === 0)
-    state.isLastRecord = (state.currentClaimPage === state.claimListPages) &&
-      (state.claimRecordIndexActive === (state.claimList.length - 1))
     Events.$emit('claims:record:got')
   },
   [CLAIMS_HISTORY_GOT] (state, { history }) {
     state.claimHistory = history
     state.recordRequestsState += REQUEST_HISTORY
-    state.getClaimsInProgress = (state.recordRequestsState !== REQUEST_ALL)
     Events.$emit('claims:history:got')
   },
   [CLAIMS_FILES_GOT] (state, { files }) {
     state.claimFiles = files
     state.recordRequestsState += REQUEST_FILES
-    state.getClaimsInProgress = (state.recordRequestsState !== REQUEST_ALL)
     Events.$emit('claims:files:got')
   },
   [CLAIMS_SET_DO_NOT_UPDATE] (state, value) {
@@ -153,8 +164,8 @@ const mutations = {
   [CLAIMS_LIST_SCROLL] (state, value) {
     state.claimRecordIndexActive = value
   },
-  [CLAIMS_SET_ACT_PROGRESS] (state, value) {
-    state.actionInProgress = value
+  [CLAIM_AVAIL_ACTIONS_GOT] (state, { id, actionsMask }) {
+    if (state.claimList[state.claimRecordIndexActive].id === id) state.claimActionsMask = actionsMask
   }
 }
 
@@ -238,17 +249,17 @@ const actions = {
   claimsSetDoNotUpdate ({ commit }, doNotUpdate) {
     commit(CLAIMS_SET_DO_NOT_UPDATE, doNotUpdate)
   },
-  claimStepRecord ({ state, commit, dispatch }, { socket, step }) {
+  claimStepRecord ({ state, commit, dispatch, getters }, { socket, step }) {
     let needShiftPage = false
     if (step === -1) {
-      if (state.isFirstRecord) return
+      if (getters.isFirstRecord) return
       if (state.claimRecordIndexActive === 0) {
         commit(CLAIMS_START_RECORD_REQUEST, { idx: state.currentClaimLimit - 1, shiftPage: -1 })
         needShiftPage = true
       }
     }
     if (step === 1) {
-      if (state.isLastRecord) return
+      if (getters.isLastRecord) return
       if (state.claimRecordIndexActive === (state.currentClaimLimit - 1)) {
         commit(CLAIMS_START_RECORD_REQUEST, { idx: 0, shiftPage: 1 })
         needShiftPage = true
@@ -269,9 +280,6 @@ const actions = {
     const i = state.claimRecordIndexActive + n
     if ((i >= 0) && (i < state.claimList.length)) commit(CLAIMS_LIST_SCROLL, i)
     Events.$emit('claims:list:scroll:to', { pos: i })
-  },
-  claimSetActionProgress ({commit}, value) {
-    commit(CLAIMS_SET_ACT_PROGRESS, value)
   }
 }
 
