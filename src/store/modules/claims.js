@@ -103,12 +103,12 @@ const mutations = {
     state.claimListPages = Math.floor(state.allClaimsCount / state.currentClaimLimit) + 1
     cache.set('claimListPage', result.page)
     cache.set(['userData', 'LIST_LIMIT'], result.limit)
+    state.getClaimsInProgress = false
     if (state.claimRecordIndexWait !== null) {
       Events.$emit('claims:ready:to:step', { idx: state.claimRecordIndexWait })
       state.claimRecordIndexWait = null
     }
     else {
-      state.getClaimsInProgress = false
       state.claimRecordIndexActive = state.claimList.length ? 0 : null
       Events.$emit('claims:new-portion')
     }

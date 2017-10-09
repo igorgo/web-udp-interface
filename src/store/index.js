@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 import auth from './modules/auth'
 import main from './modules/main'
 import filters from './modules/filters'
 import claims from './modules/claims'
 import staticDicts from './modules/staticDicts'
-import { Toast, Platform } from 'quasar-framework'
+import { Toast, Platform, SessionStorage } from 'quasar-framework'
 Vue.use(Vuex)
 
 const state = {
   connect: false
 }
+
 export default new Vuex.Store({
   state,
   modules: {
@@ -39,5 +41,14 @@ export default new Vuex.Store({
       state.connect = true
     }
   },
-  strict: true
+  strict: true,
+  plugins: [
+    createPersistedState({
+      storage: {
+        getItem: key => SessionStorage.get.item(key),
+        setItem: (key, value) => SessionStorage.set(key, value),
+        removeItem: key => SessionStorage.remove(key)
+      }
+    })
+  ]
 })
