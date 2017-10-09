@@ -1,17 +1,19 @@
 <template>
-  <div class="af-row">
-    <div v-if="value" class="af-label">{{caption}}</div>
-    <div v-if="value" class="af-date-field">{{value}}</div>
-  </div>
+  <table>
+    <tr v-for="item in items">
+      <td class="af-label">{{item.label}}</td><td class="af-field">{{item.text}}</td>
+    </tr>
+  </table>
 </template>
 
 <script>
   export default {
-    name: 'af-text-with-label',
-    components: {},
+    name: 'af-comp-table',
     props: {
-      caption: String,
-      value: String
+      items: {
+        type: Array,
+        required: false
+      }
     }
   }
 </script>
@@ -21,9 +23,8 @@
   .af-row
     display: flex
     flex-flow: row wrap
-    justify-content: flex-end
-    vertical-align: items-start
-  .af-date-field
+    justify-content: space-around
+  .af-field
     text-align:right
     color:white
     font-size : 0.9rem
@@ -39,3 +40,4 @@
     margin:1px
     border-radius: 3px
 </style>
+

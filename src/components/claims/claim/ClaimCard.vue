@@ -2,65 +2,38 @@
 <template>
     <div v-if="record.id">
       <q-card  :color="clBcolor">
-        <q-card-title class="no-padding">
-          <q-chip :icon="clIconSet" square color="secondary">{{record.claimType}} № {{`${record.claimPrefix}-${record.claimNumber}`}} </q-chip>
-          <q-chip square color="primary">Пріоритет:{{record.priority}}</q-chip>
-          <q-chip square color="primary">{{record.claimState}}</q-chip>
-          <q-chip square color="primary">Стан хелпу {{record.helpSign}}</q-chip>
-          <q-chip square color="primary">Модуль {{record.app}}</q-chip>
-        </q-card-title>
         <q-card-main class="row no-padding">
-          <q-item class="col-3">
-            <q-item-main>
-              <af-text-with-label
-                caption="Зареєстровано"
-                v-bind:value="registeredAt"
-              />
-              <af-text-with-label
-                caption="Стан змінено"
-                v-bind:value="changedAt"
-              />
-              <af-text-with-label
-                caption="Відпрацювати до"
-                v-bind:value="execTill"
-              />
-              <af-text-with-label
-                caption="Автор"
-                v-bind:value="record.registeredByAgent"
-              />
-              <af-text-with-label
-                caption="Виконавець"
-                v-bind:value="record.executor"
-              />
-              <af-text-with-label
-                caption="Реліз виявлення"
-                v-bind:value="record.buildFrom"
-              />
-              <af-text-with-label
-                caption="Реліз виконання"
-                v-bind:value="record.buildTo"
-              />
-            </q-item-main>
-          </q-item>
-          <q-item class="col-9 col-md-auto">
-            <q-item-main>
-            <q-item-tile><span v-if="record.unit">Розділ:</span>{{record.unit}}</q-item-tile>
-            <q-item-tile><span v-if="record.action">Дія:</span>{{record.action}}</q-item-tile>
-              <q-item-tile>  <pre class="af-history-comment">{{record.content}}</pre> </q-item-tile>
-            </q-item-main>
-          </q-item>
-
+       <!--   <q-chip :icon="clIconSet" square color="secondary">{{record.claimType}} № {{`${record.claimPrefix}-${record.claimNumber}`}} </q-chip>-->
+          <af-comp-table v-bind:items="[{label: 'Тип події' , text: record.claimType},
+            {label: 'Подія №', text: record.claimPrefix+'-'+record.claimNumber},
+      {label: 'Пріоритет', text: record.priority},
+      {label: 'Стан', text: record.claimState}
+      ]"/>
+          <af-comp-table v-bind:items="[{label: 'Зареєстровано', text: registeredAt},
+      {label: 'Стан змінено', text: changedAt},
+      {label: 'Відпрацювати до', text: execTill},
+      {label: 'Стан хелпу', text: record.helpSign}
+      ]"/>,
+          <af-comp-table v-bind:items="[{label: 'Автор', text: record.registeredByAgent},
+      {label: 'Виконавець', text: record.executor},
+      {label: 'Реліз виявлення', text: record.buildFrom},
+      {label: 'Реліз виконання', text: record.buildTo}]"/>
         </q-card-main>
+        <div><span class="af-simple-label">Модуль</span><span>{{record.app}}</span></div>
+        <div><span class="af-simple-label">Розділ</span><span>{{record.unit}}</span></div>
+        <div><span  v-if="record.action" class="af-simple-label">Дія</span><span>{{record.action}}</span></div>
+        <div><pre class="af-history-comment">{{record.content}}</pre></div>
       </q-card>
     </div>
 </template>
 
 <script>
   // import {} from 'quasar-framework'
-  import { QCard, QChip, QCardTitle, QCardMain, QItem, QItemSide, QItemMain, QItemTile } from 'quasar-framework'
+  import { QCard, QChip, QCardTitle, QCardMain, QItem, QItemSide, QItemMain, QItemTile, QList } from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {formatDateTime} from '../../../routines'
   import AfTextWithLabel from '../../base/AfTextWithLabel.vue'
+  import AfCompTable from '../../base/AfCompTable.vue'
 
   export default {
     props: [],
@@ -68,7 +41,7 @@
       return {}
     },
     components: {
-      AfTextWithLabel, QCard, QCardMain, QChip, QCardTitle, QItem, QItemSide, QItemMain, QItemTile},
+      AfCompTable, AfTextWithLabel, QCard, QCardMain, QChip, QCardTitle, QItem, QItemSide, QItemMain, QItemTile, QList},
     methods: {
       ...mapActions([])
     },
@@ -109,4 +82,13 @@
 
 <style lang="stylus">
     @import '~variables'
+    .af-row
+      display: flex
+      flex-flow: row wrap
+      justify-content: flex-start
+    .af-simple-label
+     color: $primary
+     margin: 1px
+     padding: 5px 5px 5px 3px
+     width: 50px
 </style>
