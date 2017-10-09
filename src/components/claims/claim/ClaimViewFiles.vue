@@ -1,9 +1,11 @@
 <template>
-    <div>
+    <div v-if="files.length">
+      <hr/>
       <div v-for="item in files">
         <q-btn icon="file download" small flat round @click="download(item.id)"/>
         <span>{{item.path}} ({{fileSize(item.sizeBite)}})</span>
       </div>
+      <hr/>
     </div>
 </template>
 

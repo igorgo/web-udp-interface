@@ -10,7 +10,8 @@ import {
   CLAIMS_SET_DO_NOT_UPDATE,
   CLAIMS_HISTORY_GOT,
   CLAIMS_FILES_GOT,
-  CLAIMS_LIST_SCROLL
+  CLAIMS_LIST_SCROLL,
+  CLAIMS_SET_ACT_PROGRESS
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -30,6 +31,7 @@ const state = {
   currentClaimPage: cache.get('claimListPage', 1),
   currentClaimSort: cache.get(['userData', 'CLAIM_SORT'], 2),
   claimSortDesc: cache.get(['userData', 'CLAIM_SORT_ORDER'], 1),
+  actionInProgress: false,
   claimListPages: 1,
   getClaimsInProgress: false,
   newAddedClaimId: null,
@@ -120,6 +122,7 @@ const mutations = {
     }
     state.claimRecord = { id: null }
     state.claimHistory = []
+    state.claimFiles = []
   },
   [CLAIMS_RECORD_GOT] (state, record) {
     state.claimRecord = record
@@ -149,6 +152,9 @@ const mutations = {
   },
   [CLAIMS_LIST_SCROLL] (state, value) {
     state.claimRecordIndexActive = value
+  },
+  [CLAIMS_SET_ACT_PROGRESS] (state, value) {
+    state.actionInProgress = value
   }
 }
 
@@ -215,7 +221,7 @@ const actions = {
       sortStr = SORT_OPTIONS[state.currentClaimSort].field
       if (state.claimSortDesc) sortStr += ' DESC'
     }
-    commit('CLAIMS_START_REQUEST')
+    commit(CLAIMS_START_REQUEST)
     socket.emit('get_claim_list', {
       sessionID: getters.sessionID,
       conditionId: state.currentCondition,
@@ -226,7 +232,7 @@ const actions = {
     })
   },
   getClaimRecord ({ commit, state, getters }, { socket, idx }) {
-    commit('CLAIMS_START_RECORD_REQUEST', { idx })
+    commit(CLAIMS_START_RECORD_REQUEST, { idx })
     socket.emit('get_claim_record', { sessionID: getters.sessionID, id: state.claimList[idx].id })
   },
   claimsSetDoNotUpdate ({ commit }, doNotUpdate) {
@@ -263,6 +269,9 @@ const actions = {
     const i = state.claimRecordIndexActive + n
     if ((i >= 0) && (i < state.claimList.length)) commit(CLAIMS_LIST_SCROLL, i)
     Events.$emit('claims:list:scroll:to', { pos: i })
+  },
+  claimSetActionProgress ({commit}, value) {
+    commit(CLAIMS_SET_ACT_PROGRESS, value)
   }
 }
 

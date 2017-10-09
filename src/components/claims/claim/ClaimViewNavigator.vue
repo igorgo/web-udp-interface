@@ -1,16 +1,22 @@
 <template>
-  <div class="content row justify-around">
-    <div class="col text-center">
-      <q-btn small color="primary" icon="arrow back" class="claim-nav-title" :disabled="isFirstRecord" @click="claimStepRecord(-1)"><span>Попередня</span></q-btn>
+  <div class="content">
+    <div class="row justify-around">
+      <div class="col text-center">
+        <q-btn small color="primary" icon="arrow back" class="claim-nav-title" :disabled="isFirstRecord"
+               @click="claimStepRecord(-1)"><span>Попередня</span></q-btn>
+      </div>
+      <div class="col text-center" id="claim-nav-back">
+        <q-btn small color="primary" icon="arrow upward" icon-right="arrow upward" class="claim-nav-title"
+               @click="goBackToList">
+          <span>До списку</span>
+        </q-btn>
+      </div>
+      <div class="col text-center">
+        <q-btn small color="primary" icon-right="arrow forward" class="claim-nav-title" :disabled="isLastRecord"
+               @click="claimStepRecord(1)"><span>Наступна</span></q-btn>
+      </div>
     </div>
-    <div class="col text-center" id="claim-nav-back">
-      <q-btn small color="primary" icon="arrow upward" icon-right="arrow upward" class="claim-nav-title" @click="goBackToList">
-        <span>До списку</span>
-      </q-btn>
-    </div>
-    <div class="col text-center">
-      <q-btn small color="primary" icon-right="arrow forward" class="claim-nav-title" :disabled="isLastRecord" @click="claimStepRecord(1)"><span>Наступна</span></q-btn>
-    </div>
+    <hr/>
   </div>
 </template>
 
@@ -30,7 +36,7 @@
     methods: {
       ...mapActions([]),
       claimStepRecord (step) {
-        this.$store.dispatch('claimStepRecord', {socket: this.$socket, step})
+        this.$store.dispatch('claimStepRecord', { socket: this.$socket, step })
       },
       goBackToList () {
         void this.$store.dispatch('claimsSetDoNotUpdate', true)
@@ -57,12 +63,15 @@
   @import '~variables'
   #claim-nav-back
     margin 0 10px
+
   @media (max-width: 520px)
-    .claim-nav-title>.q-btn-inner>span
+    .claim-nav-title > .q-btn-inner > span
       display none
-    .claim-nav-title>.q-btn-inner>.on-left
-    .claim-nav-title>.q-btn-inner>.on-right
+
+    .claim-nav-title > .q-btn-inner > .on-left
+    .claim-nav-title > .q-btn-inner > .on-right
       margin 0
-    #claim-nav-back>.claim-nav-title>.q-btn-inner>.on-right
+
+    #claim-nav-back > .claim-nav-title > .q-btn-inner > .on-right
       display none
 </style>

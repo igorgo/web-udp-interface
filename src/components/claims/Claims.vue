@@ -8,7 +8,7 @@
       </q-list>
       <q-fixed-position corner="bottom-right" :offset="[12, 68]" class="z-absolute">
         <q-btn
-          color="deep-orange-12"
+          color="secondary"
           round
           class="animate-pop"
           v-back-to-top.animate="{offset: 100, duration: 200}"
