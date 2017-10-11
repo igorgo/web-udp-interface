@@ -136,9 +136,9 @@ const mutations = {
       state.claimRecordIndexWait = idx
       state.currentClaimPage += shiftPage
     }
-    state.claimRecord = { id: null }
-    state.claimHistory = []
-    state.claimFiles = []
+    // state.claimRecord = { id: null }
+    // state.claimHistory = []
+    // state.claimFiles = []
     state.claimActionsMask = 0
   },
   [CLAIMS_RECORD_GOT] (state, record) {

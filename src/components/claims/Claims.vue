@@ -2,7 +2,7 @@
 <template>
   <div class="content" v-touch-pan.horizontal.nomouse="onPanning">
     <q-scroll-area ref="scroll" class="claim-body">
-      <claim-header/>
+      <claim-header ref="navigator"/>
       <q-list ref="list" no-border>
         <claim-row v-for="(item, index) in claimList" :key="item['id']" :claimRec="item" :claimIdx="index"/>
       </q-list>
@@ -31,7 +31,7 @@
   import ClaimHeader from './ClaimsHeader.vue'
   import ClaimRow from './ClaimRow.vue'
   import ClaimPaginator from './ClaimPaginator.vue'
-  import { QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop, TouchPan } from 'quasar-framework'
+  import { QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop, TouchPan, scroll } from 'quasar-framework'
   import { AfLoadCover } from '../base'
   import { mapState } from 'vuex'
   import {mapEvent} from '../../routines'
@@ -54,14 +54,20 @@
     },
     methods: {
       newPortionHandler () {
-        this.$refs['scroll'].setScrollPosition(0)
+        const target = scroll.getScrollTarget(this.$refs['navigator'].$el)
+        if (target) {
+          scroll.setScrollPosition(target, 0)
+        }
       },
       scrollToRecord ({pos}) {
-        const activeCard = this.$refs['list'].children[pos]
-        let offset = activeCard ? activeCard.offsetTop : 0
-        offset -= Math.floor(this.$refs['scroll'].$el.clientHeight / 2)
-        offset += Math.floor(activeCard.clientHeight / 2)
-        this.$refs['scroll'].setScrollPosition(offset)
+        const target = scroll.getScrollTarget(this.$refs['navigator'].$el)
+        if (target) {
+          const activeCard = this.$refs['list'].children[pos]
+          let offset = activeCard ? activeCard.offsetTop : 0
+          offset -= Math.floor(this.$refs['scroll'].$el.clientHeight / 2)
+          offset += Math.floor(activeCard.clientHeight / 2)
+          scroll.setScrollPosition(target, offset)
+        }
       },
       addClaim () {
         // todo: open form for add new claim

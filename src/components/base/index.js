@@ -4,6 +4,7 @@ import AfLoadCover from './AfLoadCover.vue'
 import AfUnderConsruct from './AfUnderConsruct.vue'
 import AfTextWithLabel from './AfTextWithLabel.vue'
 import AfCompTable from './AfCompTable.vue'
+import AfFieldValueList from './AfFieldValueList.vue'
 
 export {
   AfForm,
@@ -11,5 +12,6 @@ export {
   AfLoadCover,
   AfUnderConsruct,
   AfTextWithLabel,
-  AfCompTable
+  AfCompTable,
+  AfFieldValueList
 }

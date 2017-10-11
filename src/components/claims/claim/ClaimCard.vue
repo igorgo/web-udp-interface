@@ -2,9 +2,24 @@
 <template>
   <div v-if="record.id">
     <q-card flat>
+      <div></div>
+      <div class="row" ref="fields">
+        <af-field-value-list
+          v-for="(tab, index) in compTables"
+          :key="'tab'+index"
+          :items="tab"
+          valueBg="primary"
+          labelBg="yellow-1"
+          valueFg="white"
+          labelAlign="right"
+          valueAlign="left"
+          class="col-12 col-sm-6 col-xl-4"
+          :valueWidth="[6,5,5,6,6]"
+        />
+      </div>
       <q-card-main class="row">
-        <!--   <q-chip :icon="clIconSet" square color="secondary">{{record.claimType}} № {{`${record.claimPrefix}-${record.claimNumber}`}} </q-chip>-->
-        <af-comp-table v-for="(tab, index) in compTables" :key="'tab'+index" :items="tab" text-width="150px" class="col-12 col-sm-6 col-xl-4"/>
+        <af-comp-table v-for="(tab, index) in compTables" :key="'tab'+index" :items="tab"
+                       class="col-12 col-sm-6 col-xl-4"/>
       </q-card-main>
       <div><span class="af-simple-label">Модуль</span><span>{{record.app}}</span></div>
       <div><span class="af-simple-label">Розділ</span><span>{{record.unit}}</span></div>
@@ -21,8 +36,7 @@
   import {QCard, QChip, QCardTitle, QCardMain, QItem, QItemSide, QItemMain, QItemTile, QList} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {formatDateTime} from '../../../routines'
-  import AfTextWithLabel from '../../base/AfTextWithLabel.vue'
-  import AfCompTable from '../../base/AfCompTable.vue'
+  import {AfCompTable, AfFieldValueList} from '../../base'
 
   export default {
     props: [],
@@ -30,7 +44,17 @@
       return {}
     },
     components: {
-      AfCompTable, AfTextWithLabel, QCard, QCardMain, QChip, QCardTitle, QItem, QItemSide, QItemMain, QItemTile, QList
+      AfCompTable,
+      QCard,
+      QCardMain,
+      QChip,
+      QCardTitle,
+      QItem,
+      QItemSide,
+      QItemMain,
+      QItemTile,
+      QList,
+      AfFieldValueList
     },
     methods: {
       ...mapActions([])
@@ -61,7 +85,8 @@
           ]
         }
       }),
-      ...mapGetters([]),
+      ...mapGetters([
+      ]),
       // to test only, rewrite after testing
       clIconSet () {
         switch (this.record.claimType) {
@@ -74,11 +99,33 @@
         }
       }
     },
+    resizeFields () {
+
+    },
     created () {
     },
     mounted () {
     },
     beforeDestroy () {
+    },
+    updated () {
+      const values = this.$refs.fields.querySelectorAll('.af-f-v-list-val')
+      const labels = this.$refs.fields.querySelectorAll('.af-f-v-list-lab')
+      console.log(labels)
+      console.log(values)
+      let maxValWidth = 0
+      for (let i = 0; i < values.length; i++) {
+        if (values[i].clientWidth > maxValWidth) maxValWidth = values[i].clientWidth
+      }
+      console.log(maxValWidth)
+      const labelWidth = this.$refs.fields.querySelector('.af-f-v-list-row').clientWidth - maxValWidth
+      console.log(labelWidth)
+      for (let i = 0; i < values.length; i++) {
+        values[i].style.width = maxValWidth + 'px'
+      }
+      for (let i = 0; i < labels.length; i++) {
+        labels[i].style.width = labelWidth - 4 + 'px'
+      }
     }
   }
 </script>
