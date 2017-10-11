@@ -1,8 +1,3 @@
-
-// export const SERVER_URL = 'http://localhost:8716'
-// export const SERVER_URL = 'http://192.168.3.182:8716'
-export const SERVER_URL = 'http://178.150.56.24:18716'
-// export const SERVER_URL = 'http://192.168.1.116:8716'
 export const SORT_OPTIONS = [
   {
     label: 'без сортування',
@@ -60,4 +55,4 @@ export const MONTH_NAMES = [
 ]
 
 export const STABLE_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3GHDWmebTVVdC1zRVJOWVk'
-export const BETA_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3GHDWmebTVVdC1zRVJOWVk'
+export const BETA_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3GHDWmeQWhUdmJSalV5WGc'

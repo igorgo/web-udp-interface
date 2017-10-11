@@ -9,3 +9,4 @@ cordova/plugins
 /package-lock.json
 /electron/
 /cordova/
+/src/srv-addr.js

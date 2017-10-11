@@ -16,7 +16,13 @@ import Quasar from 'quasar-framework'
 import router from './router'
 import store from './store'
 import VueSocketio from 'vue-socket.io'
-import { SERVER_URL } from './constants'
+// константа SERVER_URL "переехала" в src/srv-addr.js
+// файл необходимо локально создать вручную, в git он будет игнорится
+// содержание файла что-то типа
+// ```
+// export const SERVER_URL = 'http://localhost:8716'
+// ```
+import { SERVER_URL } from './srv-addr'
 
 Vue.config.productionTip = false
 Vue.use(Quasar) // Install Quasar Framework

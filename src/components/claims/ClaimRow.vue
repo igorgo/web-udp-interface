@@ -2,11 +2,11 @@
 <template>
   <q-item multiline class="no-padding cursor-pointer" :class="{'claim-list-active': claimIdx === activeIndex, 'af-selectable' : isNotTouch}">
     <q-card class="claim-list-card text-black" :class="cardClass" color="grey-1">
-      <q-card-main @click="onClaimClick(claimIdx)">
+      <q-card-main @click="onClaimClick(claimIdx)" style="padding: 10px">
         <div class="row justify-start cl-title" style="margin-bottom: 10px">
-          <div class="col-sm-11 col-xs-10">{{clTitle}}</div>
-          <div class="col-sm-1 col-xs-2">
-            <q-chip :color="clPriorColor" class="text-primary-dark">!{{claimRec.priority}}</q-chip>
+          <div class="col-sm-11 col-xs-9">{{clTitle}}</div>
+          <div class="col-sm-1 col-xs-3">
+            <q-chip :color="clPriorColor">!{{claimRec.priority}}</q-chip>
             <q-icon v-if="claimRec.hasDocs" name="attach file"></q-icon>
           </div>
         </div>
@@ -15,18 +15,20 @@
           <div class="fl-3-6-12">від&nbsp;<span class="gray-token">{{regDate}}</span></div>
           <div class="fl-3-6-12">Автор&nbsp;<span class="gray-token">{{claimRec.author}}</span></div>
           <div class="fl-3-6-12">
-            <q-chip :color="clStatusColor" small :icon="clStatusIcon" class="text-center">
+            <!--q-chip :color="clStatusColor" small :icon="clStatusIcon" class="text-center">
               {{claimRec.status}}<br/>{{changeDate}}
+            </q-chip-->
+            <q-chip :color="clStatusColor" small class="text-center">
+              {{claimRec.status}} ({{changeDate}})
             </q-chip>
           </div>
         </div>
-        <q-card-separator style="margin-top: 10px"/>
         <div class="claim-row text-left">
           <p class="ellipsis-3-lines text-faded light-paragraph">{{claimRec.description}}</p>
         </div>
         <div v-if="claimRec.executor || claimRec.hasBuildTo">
           <div class="claim-row-c">
-            <div class="col-sm-6 col-xs-12" v-if="claimRec.executor">
+            <div class="col-sm-6 col-xs-12" style="margin-bottom: 5px" v-if="claimRec.executor">
               Виконавець&nbsp;<span class="token bg-teal-14">{{claimRec.executor}}</span>
             </div>
             <div
@@ -45,7 +47,7 @@
 
 <script>
   import {QItem, QCard, QCardTitle, QIcon, QCardMain, QChip, QCardSeparator} from 'quasar-framework'
-  import {formatDateTime} from '../../routines'
+  import {formatDate} from '../../routines'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -61,14 +63,14 @@
         return this.$store.state.claims.claimRecordIndexActive
       },
       regDate () {
-        return formatDateTime(this.$props['claimRec'].regDate)
+        return formatDate(this.$props['claimRec'].regDate)
       },
       isClosed () {
         if (this.$props.claimRec.hasBuildTo) return 'Виконано в збірці'
         else return 'Буде виконано в релізі'
       },
       changeDate () {
-        return formatDateTime(this.$props.claimRec.changeDate)
+        return formatDate(this.$props.claimRec.changeDate)
       },
       clTitle () {
         if (this.$props.claimRec.unit) return this.$props.claimRec.unit.replace(/;/g, ', ')
@@ -154,6 +156,7 @@
     @extends .col-xl-3
     @extends .col-sm-6
     @extends .col-xs-12
+    margin-bottom 5px
 
   .gray-token
     @extends .token
@@ -161,6 +164,11 @@
 
   .claim-row
     @extends .row
+    margin-bottom 5px
+
+  .claim-row p
+    margin-bottom 0
+    line-height 1.2em
 
   .claim-row-c
     @extends .claim-row
@@ -175,6 +183,7 @@
     border-left-style solid
     border-left-width 16px
     margin 5px
+    font-size .8em
 
   .claim-list-card-t1
     border-left-color $green-8
