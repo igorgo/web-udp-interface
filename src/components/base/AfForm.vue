@@ -1,5 +1,5 @@
 <template>
-  <q-card>
+  <q-card class="af-base-form">
     <q-card-title
       class="afinasql-bg"
     >
@@ -45,5 +45,9 @@
 </script>
 
 <style lang="stylus">
-
+  @import '~variables'
+  .af-base-form .q-card-container
+    padding: 10px 10px
+  .af-base-form .q-card-actions
+    padding-top 0
 </style>

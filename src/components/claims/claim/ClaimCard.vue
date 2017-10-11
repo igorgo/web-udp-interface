@@ -10,7 +10,7 @@
           labelBg="yellow-1"
           valueFg="white"
           labelAlign="right"
-          valueAlign="right"
+          valueAlign="left"
           border
           class="col-12 col-sm-6 col-xl-4"
         />
@@ -19,7 +19,7 @@
     <div><span class="af-simple-label">Розділ</span><span>{{record.unit}}</span></div>
     <div><span v-if="record.action" class="af-simple-label">Дія</span><span>{{record.action}}</span></div>
     <div>
-      <pre class="af-history-comment"><small>{{record.content}}</small></pre>
+      <pre class="af-history-comment" :class="{'af-selectable' : isNotTouch}"><small>{{record.content}}</small></pre>
     </div>
 
   </div>
@@ -27,7 +27,7 @@
 
 <script>
   // import {} from 'quasar-framework'
-  import {mapState} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import {formatDateTime} from '../../../routines'
   import {AfFieldValueList} from '../../base'
 
@@ -60,7 +60,10 @@
             ]
           ]
         }
-      })
+      }),
+      ...mapGetters([
+        'isNotTouch'
+      ])
     },
     updated () {
       const values = this.$refs.fields.querySelectorAll('.af-f-v-list-val')
@@ -70,7 +73,7 @@
         if (w > maxValWidth) maxValWidth = w
       }
       for (let i = 0; i < values.length; i++) {
-        values[i].style.width = maxValWidth + 6 + 'px'
+        values[i].style.width = maxValWidth + 8 + 'px'
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div v-touch-pan.horizontal.nomouse="onPanning" :class="{'af-selectable' : isNotTouch}">
+  <div v-touch-pan.horizontal.nomouse="onPanning">
     <claim-view-navigator ref="nav"/>
     <q-scroll-area ref="scroll" class="claim-view-body">
       <claim-card ref="card"/>
@@ -236,5 +236,4 @@
 <style lang="stylus">
   .claim-view-body
     height calc(100vh - 116px)
-
 </style>

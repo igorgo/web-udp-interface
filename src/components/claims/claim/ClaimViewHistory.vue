@@ -17,7 +17,7 @@
             Виконавець: <span class="af-hist-executor">{{content.newExecutor}}</span>
           </div>
         </div>
-        <pre v-if="content.comment" class="af-history-comment"><small>{{content.comment}}</small></pre>
+        <pre v-if="content.comment" class="af-history-comment" :class="{'af-selectable' : isNotTouch}"><small>{{content.comment}}</small></pre>
         <div>
           <p class="text-italic text-grey">{{content.who}}, {{content.time}}</p>
         </div>
@@ -45,7 +45,8 @@
         history: state => state.claims.claimHistory
       }),
       ...mapGetters([
-        'historyView'
+        'historyView',
+        'isNotTouch'
       ])
     },
     created () {

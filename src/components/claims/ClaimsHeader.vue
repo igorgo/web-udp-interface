@@ -20,7 +20,7 @@
           flat
           color="secondary"
           @click="onNewFilterClick"
-          icon="fa-filter"
+          icon="ion-funnel"
         />
       </div>
     </div>

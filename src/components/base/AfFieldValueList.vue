@@ -8,7 +8,7 @@
           {{item.label}}:
         </td>
         <td class="af-f-v-list-val"
-             :class="[valueBg ? 'bg-' + valueBg: '', valueFg ? 'text-' + valueFg: '', 'text-' + valueAlign]"
+             :class="[valueBg ? 'bg-' + valueBg: '', valueFg ? 'text-' + valueFg: '', 'text-' + valueAlign, {'af-selectable' : isNotTouch}]"
         >
           <div style="display: inline-block; padding: 0 1px">{{item.value}}</div>
         </td>
@@ -18,6 +18,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: 'af-field-value-list',
     props: {
@@ -37,6 +39,11 @@
         validator: val => (new Set(['left', 'right', 'center'])).has(val)
       },
       border: Boolean
+    },
+    computed: {
+      ...mapGetters([
+        'isNotTouch'
+      ])
     }
   }
 </script>

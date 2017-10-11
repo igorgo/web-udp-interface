@@ -153,7 +153,7 @@
   @import '~quasar-framework/dist/quasar.mat.styl'
 
   .fl-3-6-12
-    @extends .col-xl-3
+    @extends .col-xl-2
     @extends .col-sm-6
     @extends .col-xs-12
     margin-bottom 5px
@@ -172,7 +172,7 @@
 
   .claim-row-c
     @extends .claim-row
-    @extends .justify-around
+    @extends .justify-start
     @extends .items-center
 
   .cl-title
