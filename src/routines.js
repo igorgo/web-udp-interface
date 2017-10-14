@@ -54,14 +54,14 @@ export function hrFileSize (bites) {
   }
   if (bites === 0) {
     result[0] = 0
-    result[1] = symbol[e]
+    result[1] = symbol[0]
   }
   else {
     const val = bites / Math.pow(2, e * 10)
     result[0] = Number(val.toFixed(e > 0 ? 2 : 0))
     result[1] = symbol[e]
-    return result.join(' ')
   }
+  return result.join(' ')
 }
 
 export function strNotEmpty (str) {

@@ -11,7 +11,8 @@ import {
   CLAIMS_HISTORY_GOT,
   CLAIMS_FILES_GOT,
   CLAIMS_LIST_SCROLL,
-  CLAIM_AVAIL_ACTIONS_GOT
+  CLAIM_AVAIL_ACTIONS_GOT,
+  CLAIM_FILE_ATTACHED
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -112,6 +113,9 @@ const mutations = {
       state.claimRecordIndexActive = state.claimList.length ? 0 : null
       Events.$emit('claims:new-portion')
     }
+  },
+  [CLAIM_FILE_ATTACHED] (state, pl) {
+    Events.$emit('claims:file:attached', pl)
   },
   [CLAIMS_FILTER_CHANGE] (state, val) {
     state.currentCondition = val
@@ -243,6 +247,7 @@ const actions = {
     })
   },
   getClaimRecord ({ commit, state, getters }, { socket, idx }) {
+    if (idx === null) idx = state.claimRecordIndexActive
     commit(CLAIMS_START_RECORD_REQUEST, { idx })
     socket.emit('get_claim_record', { sessionID: getters.sessionID, id: state.claimList[idx].id })
   },

@@ -34,18 +34,23 @@
         </q-popover>
       </q-btn>
     </q-fixed-position>
+    <claim-attach ref="formAttach"/>
     <af-load-cover :progress="claimViewLoading"/>
   </div>
 </template>
 
 <script>
-  import {AfUnderConsruct, AfLoadCover} from '../../base'
-  import ClaimCard from './ClaimCard.vue'
-  import ClaimViewNavigator from './ClaimViewNavigator.vue'
-  import ClaimViewFiles from './ClaimViewFiles.vue'
-  import ClaimViewHistory from './ClaimViewHistory.vue'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {mapEvent} from '../../../routines'
+  import {
+    ClaimAttach,
+    ClaimCard,
+    ClaimViewNavigator,
+    ClaimViewFiles,
+    ClaimViewHistory,
+    AfUnderConsruct,
+    AfLoadCover
+  } from '../../'
   import {
     TouchPan, QFixedPosition, QBtn, BackToTop, QScrollArea,
     scroll, QPopover, QList, QItemSide, QItemMain, QItem
@@ -59,6 +64,7 @@
       ClaimViewNavigator,
       ClaimViewFiles,
       ClaimViewHistory,
+      ClaimAttach,
       QFixedPosition,
       QBtn,
       QScrollArea,
@@ -103,7 +109,7 @@
         })
         this.isActionAvail('attach') && result.push({
           code: 'attach',
-          label: 'додати файл',
+          label: 'додати файл(и)',
           icon: 'attach file'
         })
         this.isActionAvail('prioritize') && result.push({
@@ -199,6 +205,7 @@
             console.log('prioritize')
             break
           case 'attach':
+            this.$refs.formAttach.open()
             console.log('attach')
             break
           case 'delete':
