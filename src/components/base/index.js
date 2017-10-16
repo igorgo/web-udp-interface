@@ -4,6 +4,9 @@ import AfLoadCover from './AfLoadCover.vue'
 import AfUnderConsruct from './AfUnderConsruct.vue'
 import AfTextWithLabel from './AfTextWithLabel.vue'
 import AfFieldValueList from './AfFieldValueList.vue'
+import AfInput from './AfInput.vue'
+import AfAutocomplete from './AfAutocomplete.vue'
+import AfMultiSelect from './AfMultiSelect.vue'
 
 export {
   AfForm,
@@ -11,5 +14,8 @@ export {
   AfLoadCover,
   AfUnderConsruct,
   AfTextWithLabel,
-  AfFieldValueList
+  AfFieldValueList,
+  AfInput,
+  AfAutocomplete,
+  AfMultiSelect
 }

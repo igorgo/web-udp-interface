@@ -17,7 +17,14 @@
     </div>
     </q-card-title>
     <q-card-main ref="form-body">
-      <slot></slot>
+      <template v-if="scrollable">
+        <q-scroll-area class="af-form-body">
+          <slot></slot>
+        </q-scroll-area>
+      </template>
+      <template v-else>
+        <slot></slot>
+      </template>
     </q-card-main>
     <q-card-actions class="justify-end">
       <slot name="bottom-buttons"></slot>
@@ -26,10 +33,10 @@
 </template>
 
 <script>
-  import { QCard, QCardTitle, QIcon, QCardMain, QCardActions, QBtn } from 'quasar-framework'
+  import { QCard, QCardTitle, QCardMain, QCardActions, QScrollArea } from 'quasar-framework'
   export default {
     name: 'af-form',
-    components: { QCard, QCardTitle, QIcon, QCardMain, QCardActions, QBtn },
+    components: { QCard, QCardTitle, QCardMain, QCardActions, QScrollArea },
     computed: {
     },
     methods: {
@@ -39,15 +46,12 @@
       color: String,
       darktext: Boolean,
       subtitle: String,
-      subtitleClass: String
+      subtitleClass: String,
+      scrollable: Boolean
     }
   }
 </script>
 
 <style lang="stylus">
   @import '~variables'
-  .af-base-form .q-card-container
-    padding: 10px 10px
-  .af-base-form .q-card-actions
-    padding-top 0
 </style>

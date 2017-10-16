@@ -77,3 +77,7 @@ export function mapEvent ({eventMapper, $q}, listen) {
     }
   }
 }
+
+export function cloneObject (data) {
+  return JSON.parse(JSON.stringify(data))
+}

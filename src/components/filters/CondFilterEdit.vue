@@ -5,6 +5,7 @@
       :subtitle="currentFilterEdit.name"
       style="max-width: 800px;"
       class="col"
+      scrollable
     >
       <q-btn
         icon="edit"
@@ -14,105 +15,104 @@
         slot="after-subtitle"
         @click="editName(true)"
       />
-      <af-field-set caption="Реквізити">
-        <q-input
-          :value="currentFilterEdit.claimNumb"
-          @input="updateFilter('claimNumb', $event)"
-          float-label="Номер рекламації"
-        />
-      </af-field-set>
-      <af-field-set caption="Система">
-        <q-input
-          :value="currentFilterEdit.claimUnit"
-          @input="updateFilter('claimUnit', $event)"
-          float-label="Розділ"
-        >
-          <q-autocomplete
+      <div>
+        <af-field-set class="hidden"></af-field-set>
+        <af-field-set caption="Реквізити">
+          <af-input
+            :value="currentFilterEdit.claimNumb"
+            @input="updateFilter('claimNumb', $event)"
+            label="Номер рекламації"
+          />
+        </af-field-set>
+        <af-field-set caption="Система">
+          <af-autocomplete
+            :value="currentFilterEdit.claimUnit"
+            @input="updateFilter('claimUnit', $event)"
+            label="Розділ"
             :staticData="unitsAutoComplete"
             :filter="inclFilter"
           />
-        </q-input>
-        <q-input
-          :value="currentFilterEdit.claimApp"
-          @input="updateFilter('claimApp', $event)"
-          float-label="Застосунок"
-        >
-          <q-autocomplete
+          <af-autocomplete
+            :value="currentFilterEdit.claimApp"
+            @input="updateFilter('claimApp', $event)"
+            label="Застосунок"
             :staticData="appsAutoComplete"
             :filter="inclFilter"
           />
-        </q-input>
-      </af-field-set>
-      <af-field-set caption="Реліз">
-        <q-select
-          float-label="Версія"
-          v-model="currentFilterEdit.claimVersion"
-          :options="versionSelectList"
-          multiple
-          @change="updateFilter('claimVersion', $event)"
-        />
-        <q-select
-          float-label="Реліз"
-          :value="currentFilterEdit.claimRelease.value"
-          :options="releaseSelectList"
-          multiple
-          :disable="currentFilterEdit.claimRelease.disable"
-          @change="updateFilter('claimRelease', $event)"
-        />
-        <q-select
-          float-label="Збірка"
-          :value="currentFilterEdit.claimBuild.value"
-          :options="buildsSelectList"
-          multiple
-          :disable="currentFilterEdit.claimBuild.disable"
-          @change="updateFilter('claimBuild', $event)"
-        />
-      </af-field-set>
-      <af-field-set caption="Власне">
-        <q-checkbox
-          :value="currentFilterEdit.imExecutor"
-          @input="updateFilter('imExecutor', $event)"
-          label="Я - виконавець"
-        />
-        <q-checkbox
-          :value="currentFilterEdit.imInitiator"
-          @input="updateFilter('imInitiator', $event)"
-          label="Я - автор"
-        />
-      </af-field-set>
-      <af-field-set caption="Зміст">
-        <q-input
-          :value="currentFilterEdit.claimContent"
-          @input="updateFilter('claimContent', $event)"
-        />
-      </af-field-set>
+        </af-field-set>
+        <af-field-set caption="Реліз">
+          <af-multi-select
+            label="Версія"
+            v-model="currentFilterEdit.claimVersion"
+            :options="versionSelectList"
+            @change="updateFilter('claimVersion', $event)"
+          />
+          <af-multi-select
+            label="Реліз"
+            :value="currentFilterEdit.claimRelease.value"
+            :options="releaseSelectList"
+            :disable="currentFilterEdit.claimRelease.disable"
+            @change="updateFilter('claimRelease', $event)"
+          />
+          <af-multi-select
+            label="Збірка"
+            :value="currentFilterEdit.claimBuild.value"
+            :options="buildsSelectList"
+            :disable="currentFilterEdit.claimBuild.disable"
+            @change="updateFilter('claimBuild', $event)"
+          />
+        </af-field-set>
+        <af-field-set caption="Власне">
+          <q-checkbox
+            :value="currentFilterEdit.imExecutor"
+            @input="updateFilter('imExecutor', $event)"
+            label="Я - виконавець"
+          />
+          <q-checkbox
+            :value="currentFilterEdit.imInitiator"
+            @input="updateFilter('imInitiator', $event)"
+            label="Я - автор"
+          />
+        </af-field-set>
+        <af-field-set caption="Зміст">
+          <q-input
+            :value="currentFilterEdit.claimContent"
+            @input="updateFilter('claimContent', $event)"
+            inverted
+          />
+        </af-field-set>
+      </div>
       <q-btn
         v-if="invokedByClaims"
         flat
         color="primary"
         @click="finishEdit"
         slot="bottom-buttons"
-      >Застосувати</q-btn>
+      >Застосувати
+      </q-btn>
       <q-btn
         v-if="invokedByClaims"
         flat
         color="primary"
         @click="saveApply"
         slot="bottom-buttons"
-      >Зберегти та застосувати</q-btn>
+      >Зберегти та застосувати
+      </q-btn>
       <q-btn
         v-if="!invokedByClaims"
         flat
         color="primary"
         @click="save"
         slot="bottom-buttons"
-      >Зберегти</q-btn>
+      >Зберегти
+      </q-btn>
       <q-btn
         flat
         color="negative"
         @click="cancel"
         slot="bottom-buttons"
-      >Скасування</q-btn>
+      >Скасування
+      </q-btn>
       <q-btn
         v-if="currentFilterEdit.rn"
         small
@@ -147,10 +147,10 @@
 </template>
 
 <script>
-  import {AfForm, AfFieldSet, AfLoadCover} from '../base'
-  import {QCardTitle, QField, QInput, QCheckbox, QAutocomplete, QSelect, QBtn, QModal, Dialog} from 'quasar-framework'
+  import {AfForm, AfFieldSet, AfLoadCover, AfInput, AfAutocomplete, AfMultiSelect} from '../base'
+  import {QCardTitle, QCheckbox, QBtn, QInput, QModal, Dialog} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
-  import { inclFilter } from '../../routines'
+  import {inclFilter} from '../../routines'
 
   export default {
     components: {
@@ -158,13 +158,13 @@
       AfForm,
       QCardTitle,
       AfLoadCover,
-      QField,
-      QInput,
       QCheckbox,
-      QAutocomplete,
-      QSelect,
       QBtn,
-      QModal
+      QModal,
+      QInput,
+      AfInput,
+      AfAutocomplete,
+      AfMultiSelect
     },
     data () {
       return {
@@ -210,7 +210,7 @@
         !this.justSave && this.finishEdit(this.invokedByClaims ? null : this.currentFilterEdit.rn)
       },
       finishEdit () {
-        void this.$store.dispatch('saveConditionFilter', {socket: this.$socket})
+        void this.$store.dispatch('saveConditionFilter', { socket: this.$socket })
       },
       inclFilter,
       ...mapActions([
@@ -225,7 +225,7 @@
         this.$router.back()
       },
       doDelete () {
-        void this.$store.dispatch('deleteConditionFilter', {socket: this.$socket})
+        void this.$store.dispatch('deleteConditionFilter', { socket: this.$socket })
       },
       deleteFilter () {
         Dialog.create({
