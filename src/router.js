@@ -20,7 +20,7 @@ const routes = [
       {path: '/filters', component: load('filters/CondFilters')},
       {path: '/claims', component: load('claims/Claims')},
       {path: '/claim/view', component: load('claims/claim/ClaimMainView')},
-      {path: '/claim/new', component: load('claims/claim/ClaimNew')},
+      // {path: '/claim/new', component: load('claims/claim/ClaimNew')},
       {path: '/main', component: load('main/Main')}
     ]
   },
