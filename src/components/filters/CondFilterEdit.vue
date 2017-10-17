@@ -75,10 +75,9 @@
           />
         </af-field-set>
         <af-field-set caption="Зміст">
-          <q-input
+          <af-input
             :value="currentFilterEdit.claimContent"
             @input="updateFilter('claimContent', $event)"
-            inverted
           />
         </af-field-set>
       </div>
@@ -136,7 +135,7 @@
     <af-load-cover :progress="progress"/>
     <q-modal ref="nameEditModal" minimized :content-css="{padding: '10px'}">
       <h6>Найменуваня фільтра</h6>
-      <q-input
+      <af-input
         ref="nameEditInput"
         v-model="filterName"
       />

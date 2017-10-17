@@ -2,6 +2,7 @@
   <q-modal maximized v-model="isOpen">
     <div class="row justify-center relative-position">
       <af-form title="Додавання файлів" style="width: 800px;">
+        <af-field-set caption="Файли">
         <q-input-frame
           ref="input"
           class="q-if-inverted q-if-dark bg-primary text-white"
@@ -58,6 +59,7 @@
             </div>
           </div>
         </q-slide-transition>
+        </af-field-set>
         <q-btn
           flat
           :disabled="!hasExpandedContent"
@@ -83,7 +85,6 @@
   import {
     QModal,
     QBtn,
-    QUploader,
     QInputFrame,
     QIcon,
     QSlideTransition,
@@ -94,8 +95,7 @@
   } from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {hrFileSize, mapEvent} from '../../../routines'
-  import {AfForm, AfLoadCover} from '../../base'
-  //  import AfForm from '../../base/AfForm.vue'
+  import {AfForm, AfLoadCover, AfFieldSet} from '../../base'
 
   export default {
     name: 'claim-attach',
@@ -122,7 +122,6 @@
     components: {
       QModal,
       QBtn,
-      QUploader,
       QInputFrame,
       QIcon,
       QSlideTransition,
@@ -131,7 +130,8 @@
       QItemMain,
       QItemTile,
       AfForm,
-      AfLoadCover
+      AfLoadCover,
+      AfFieldSet
     },
     methods: {
       ...mapActions([
@@ -255,7 +255,3 @@
     }
   }
 </script>
-
-<style lang="stylus">
-  @import '~variables'
-</style>

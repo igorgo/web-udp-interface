@@ -45,7 +45,7 @@
 <script>
   import {QBtn} from 'quasar-framework'
   import {AfForm, AfFieldSet, AfInput} from './base'
-  import {mapState, mapGetters, mapActions} from 'vuex'
+  import {mapState} from 'vuex'
   import {mapEvent, strNotEmpty} from '../routines'
 
   export default {
