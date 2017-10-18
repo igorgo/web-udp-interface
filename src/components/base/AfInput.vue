@@ -8,6 +8,8 @@
     @input="__input"
     :clearable="clearable"
     :color="__color"
+    :min="min"
+    :max="max"
   />
 </template>
 <script>

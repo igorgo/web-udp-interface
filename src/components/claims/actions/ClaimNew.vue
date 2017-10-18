@@ -1,29 +1,44 @@
 <template>
   <af-modal-form ref="form"
-    title="Додавання рекламації"
-    :valid="__validate()"
-    :okHandle="__onOkClick"
+                 title="Додавання рекламації"
+                 :valid="__validate()"
+                 :okHandle="__onOkClick"
   >
     <div></div>
     <af-field-set caption="Параметри">
       <div class="row">
-        <q-option-group
-          type="radio"
-          v-model="recType"
-          :options="recTypes"
-          class="col"
-        />
-        <div class="col row" style="padding-left: 5px">
-        <af-input
-          type="number"
-          min="1"
-          max="10"
-          label="Пріоритет"
-          class="col"
-          v-model="recPriority"
-        />
-        <q-checkbox v-model="recSendToProgr" label="На розгляд" class="col"/>
+        <div class="col-xs-6 col-sm-3">
+          <q-option-group
+            type="radio"
+            v-model="recType"
+            :options="recTypes"
+          />
         </div>
+        <div class="col-xs-6 col-sm-9 row items-center xs-gutter">
+          <div class="col-sm-8">
+            <af-input
+              type="number"
+              :min="1"
+              :max="10"
+              label="Пріоритет"
+              v-model="recPriority"
+              required
+            />
+          </div>
+          <div class="col-sm-4 float-right">
+            <q-checkbox
+              v-model="recSendToProgr"
+              label="На розгляд"
+            />
+          </div>
+        </div>
+      </div>
+      <div>
+        <q-select
+          stack-label="Ініціатор"
+          v-model="recAuthor"
+          :options="initiatorSelect"
+        />
       </div>
     </af-field-set>
   </af-modal-form>
@@ -31,8 +46,10 @@
 
 <script>
   import {AfModalForm, AfFieldSet, AfInput} from '../../base'
-  import {QOptionGroup, QCheckbox} from 'quasar-framework'
+  import {QOptionGroup, QCheckbox, QSelect} from 'quasar-framework'
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
+  import {mapGetters} from 'vuex'
+
   export default {
     data () {
       return {
@@ -40,15 +57,21 @@
         recType: 'ДОРАБОТКА',
         recTypes: CLAIM_TYPE_OPTIONS,
         recPriority: 5,
-        recSendToProgr: false
+        recSendToProgr: false,
+        recAuthor: ''
       }
     },
-    props: {
+    props: {},
+    computed: {
+      ...mapGetters([
+        'initiatorSelect'
+      ])
     },
     components: {
       AfModalForm,
       AfFieldSet,
       QOptionGroup,
+      QSelect,
       AfInput,
       QCheckbox
     },

@@ -8,6 +8,8 @@ export default {
     value: { required: true },
     icon: String,
     type: String,
+    min: Number,
+    max: Number,
     clearable: {
       type: Boolean,
       default: true
@@ -31,7 +33,22 @@ export default {
     },
     __color () {
       if (this.$props.required) {
-        return this.$props.value && this.$props.value.trim().length > 0 ? 'primary' : 'secondary'
+        if ((this.type === 'text') || (this.type === 'textarea')) {
+          return this.value && this.value.trim().length > 0 ? 'primary' : 'secondary'
+        }
+        else if (this.type === 'number') {
+          let b = true
+          if (this.max) {
+            b = b && (this.value <= this.max)
+          }
+          if (this.min) {
+            b = b && (this.value >= this.min)
+          }
+          return this.value && b ? 'primary' : 'secondary'
+        }
+        else {
+          return this.value ? 'primary' : 'secondary'
+        }
       }
       else {
         return 'primary'

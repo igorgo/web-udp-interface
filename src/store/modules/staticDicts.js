@@ -1,6 +1,11 @@
 'use strict'
 
-import { STATIC_UNITNAMES_LOADED, STATIC_APPNAMES_LOADED, STATIC_BUILDS_LOADED } from '../mutation-types'
+import {
+  STATIC_UNITNAMES_LOADED,
+  STATIC_APPNAMES_LOADED,
+  STATIC_BUILDS_LOADED,
+  ALL_PERSONS_LOADED
+} from '../mutation-types'
 import cache from '../../cache'
 import * as _ from 'lodash'
 
@@ -21,7 +26,8 @@ function array2AutoComplete (arr) {
 const state = {
   unitsNames: cache.get('unitsNames', []),
   appsNames: cache.get('appsNames', []),
-  allBuilds: cache.get('allBuilds', [])
+  allBuilds: cache.get('allBuilds', []),
+  allPersons: cache.get('allPersons', [])
 }
 
 const mutations = {
@@ -38,6 +44,10 @@ const mutations = {
   [STATIC_BUILDS_LOADED] (state, pl) {
     state.allBuilds = pl
     cache.set('allBuilds', pl)
+  },
+  [ALL_PERSONS_LOADED]  (state, pl) {
+    state.allPersons = pl
+    cache.set('allPersons', pl)
   }
 }
 
@@ -53,6 +63,15 @@ const getters = {
     const v = _.findIndex(state.allBuilds, item => item['version'] === ver)
     const r = v !== -1 ? _.findIndex(state.allBuilds[v]['releases'], item => item['release'] === rel) : -1
     return r !== -1 ? state.allBuilds[v]['releases'][r]['builds'] : []
+  },
+  initiatorSelect: state => {
+    return [
+      {
+        label: '',
+        value: -1
+      },
+      ...state.allPersons.map((pers, idx) => ({label: pers.label, value: idx}))
+    ]
   }
 }
 
