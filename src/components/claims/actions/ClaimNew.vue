@@ -34,8 +34,8 @@
         </div>
       </div>
       <div>
-        <q-select
-          stack-label="Ініціатор"
+        <af-select
+          label="Ініціатор"
           v-model="recAuthor"
           :options="initiatorSelect"
         />
@@ -45,8 +45,8 @@
 </template>
 
 <script>
-  import {AfModalForm, AfFieldSet, AfInput} from '../../base'
-  import {QOptionGroup, QCheckbox, QSelect} from 'quasar-framework'
+  import {AfModalForm, AfFieldSet, AfInput, AfSelect} from '../../base'
+  import {QOptionGroup, QCheckbox} from 'quasar-framework'
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
   import {mapGetters} from 'vuex'
 
@@ -58,7 +58,7 @@
         recTypes: CLAIM_TYPE_OPTIONS,
         recPriority: 5,
         recSendToProgr: false,
-        recAuthor: ''
+        recAuthor: -1
       }
     },
     props: {},
@@ -71,7 +71,7 @@
       AfModalForm,
       AfFieldSet,
       QOptionGroup,
-      QSelect,
+      AfSelect,
       AfInput,
       QCheckbox
     },

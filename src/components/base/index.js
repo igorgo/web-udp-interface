@@ -8,6 +8,7 @@ import AfInput from './AfInput.vue'
 import AfAutocomplete from './AfAutocomplete.vue'
 import AfMultiSelect from './AfMultiSelect.vue'
 import AfModalForm from './AfModalForm.vue'
+import AfSelect from './AfSelect.vue'
 
 export {
   AfForm,
@@ -19,5 +20,6 @@ export {
   AfInput,
   AfAutocomplete,
   AfMultiSelect,
-  AfModalForm
+  AfModalForm,
+  AfSelect
 }
