@@ -13,6 +13,7 @@
       :staticData="staticData"
       :filter="filter"
       :max-results="maxResults"
+      @selected="__selected"
     />
   </q-input>
 </template>
@@ -31,6 +32,15 @@
       maxResults: {
         type: Number,
         default: 10000
+      }
+    },
+    methods: {
+      __selected (result) {
+        const tokens = this.value.split(';')
+        tokens[tokens.length - 1] = result.value
+        const val = tokens.join(';')
+        this.$emit('input', val)
+        this.$emit('change', val)
       }
     }
   }

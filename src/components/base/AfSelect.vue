@@ -6,6 +6,10 @@
     inverted
     :stack-label="label"
     @input="__change"
+    :multiple="multiple"
+    :filter="filter"
+    :autofocus-filter="autofocusFilter"
+    :disable="disable"
   />
 </template>
 

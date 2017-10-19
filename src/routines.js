@@ -30,8 +30,9 @@ export function formatOnlyTime (str, sec = true) {
 }
 
 export function inclFilter (what, { field, list }) {
-  const needle = what.toLowerCase()
-  return list.filter(item => item[field].toLowerCase().indexOf(needle) > -1)
+  const tokens = what.split(';')
+  const needle = tokens[tokens.length - 1].toLowerCase()
+  return needle ? list.filter(item => item[field].toLowerCase().indexOf(needle) > -1) : []
 }
 
 /*

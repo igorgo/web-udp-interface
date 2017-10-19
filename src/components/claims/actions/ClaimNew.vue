@@ -40,15 +40,33 @@
           :options="initiatorSelect"
         />
       </div>
+      <div>
+        <af-autocomplete
+          v-model="recUnit"
+          label="Розділ"
+          :staticData="unitsAutoComplete"
+          :filter="inclFilter"
+        />
+      </div>
+      <div>
+        <af-select
+          label="Застосунок"
+          v-model="recApps"
+          :options="appsByUnits"
+          multiple
+          :disable="appsDisabled"
+        />
+      </div>
     </af-field-set>
   </af-modal-form>
 </template>
 
 <script>
-  import {AfModalForm, AfFieldSet, AfInput, AfSelect} from '../../base'
+  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete} from '../../base'
   import {QOptionGroup, QCheckbox} from 'quasar-framework'
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
+  import {inclFilter} from '../../../routines'
 
   export default {
     data () {
@@ -58,14 +76,21 @@
         recTypes: CLAIM_TYPE_OPTIONS,
         recPriority: 5,
         recSendToProgr: false,
-        recAuthor: -1
+        recAuthor: -1,
+        recUnit: [],
+        recApps: []
       }
     },
     props: {},
     computed: {
       ...mapGetters([
-        'initiatorSelect'
-      ])
+        'initiatorSelect',
+        'unitsAutoComplete',
+        'appsByUnits'
+      ]),
+      appsDisabled () {
+        return this.appsByUnits.length === 0
+      }
     },
     components: {
       AfModalForm,
@@ -73,7 +98,8 @@
       QOptionGroup,
       AfSelect,
       AfInput,
-      QCheckbox
+      QCheckbox,
+      AfAutocomplete
     },
     methods: {
       __validate () {
@@ -89,7 +115,11 @@
       close () {
         this.$refs.form.close()
         this.$emit('close')
-      }
+      },
+      inclFilter,
+      ...mapActions([
+        'getAppsByUnits'
+      ])
     }
   }
 </script>
