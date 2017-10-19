@@ -3,6 +3,7 @@
                  title="Додавання рекламації"
                  :valid="__validate()"
                  :okHandle="__onOkClick"
+                 @close="__close"
   >
     <div></div>
     <af-field-set caption="Параметри">
@@ -46,6 +47,7 @@
           label="Розділ"
           :staticData="unitsAutoComplete"
           :filter="inclFilter"
+          @change="onUnitChange"
         />
       </div>
       <div>
@@ -57,6 +59,39 @@
           :disable="appsDisabled"
         />
       </div>
+      <div>
+        <af-select
+          label="Дія в розділі"
+          v-model="recFuncs"
+          :options="funcsByUnits"
+          multiple
+          :disable="funcsDisabled"
+        />
+      </div>
+    </af-field-set>
+    <af-field-set caption="Реліз, що використовується">
+      <div>
+        <af-select
+          ref="versFrom"
+          label="Версія"
+          v-model="recVersion"
+          :options="versionSelectList"
+        />
+      </div>
+      <!--af-multi-select
+        label="Реліз"
+        :value="currentFilterEdit.claimRelease.value"
+        :options="releaseSelectList"
+        :disable="currentFilterEdit.claimRelease.disable"
+        @change="updateFilter('claimRelease', $event)"
+      /-->
+      <!--af-multi-select
+        label="Збірка"
+        :value="currentFilterEdit.claimBuild.value"
+        :options="buildsSelectList"
+        :disable="currentFilterEdit.claimBuild.disable"
+        @change="updateFilter('claimBuild', $event)"
+      /-->
     </af-field-set>
   </af-modal-form>
 </template>
@@ -65,7 +100,7 @@
   import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete} from '../../base'
   import {QOptionGroup, QCheckbox} from 'quasar-framework'
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
-  import {mapGetters, mapActions} from 'vuex'
+  import {mapGetters} from 'vuex'
   import {inclFilter} from '../../../routines'
 
   export default {
@@ -77,8 +112,10 @@
         recPriority: 5,
         recSendToProgr: false,
         recAuthor: -1,
-        recUnit: [],
-        recApps: []
+        recUnit: '',
+        recApps: [],
+        recFuncs: [],
+        recVersion: ''
       }
     },
     props: {},
@@ -86,10 +123,15 @@
       ...mapGetters([
         'initiatorSelect',
         'unitsAutoComplete',
-        'appsByUnits'
+        'appsByUnits',
+        'funcsByUnits',
+        'versionSelectList'
       ]),
       appsDisabled () {
-        return this.appsByUnits.length === 0
+        return this.recUnit && (this.appsByUnits.length === 0)
+      },
+      funcsDisabled () {
+        return this.recUnit && (this.funcsByUnits.length === 0)
       }
     },
     components: {
@@ -107,19 +149,26 @@
       },
       __onOkClick () {
         console.log('__onOkClick')
+        this.close()
       },
       open () {
+        console.log(this.$store.state.main.curReleases['stable'].version)
         this.$refs.form.open()
+        this.recVersion = this.$store.state.main.curReleases['stable'].version
         this.$emit('open')
       },
       close () {
         this.$refs.form.close()
+      },
+      __close () {
         this.$emit('close')
       },
-      inclFilter,
-      ...mapActions([
-        'getAppsByUnits'
-      ])
+      onUnitChange () {
+        this.recApps = []
+        this.recFuncs = []
+        void this.$store.dispatch('getAppsByUnits', {socket: this.$socket, units: this.recUnit})
+      },
+      inclFilter
     }
   }
 </script>

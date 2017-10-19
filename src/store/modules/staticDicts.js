@@ -6,11 +6,11 @@ import {
   STATIC_BUILDS_LOADED,
   ALL_PERSONS_LOADED,
   APPS_BY_UNIT_GOT,
-  UNITS_EDIT_CHANGED
+  UNITS_EDIT_CHANGED,
+  FUNCS_BY_UNIT_GOT
 } from '../mutation-types'
 import cache from '../../cache'
 import * as _ from 'lodash'
-import {Events} from 'quasar-framework'
 
 function array2AutoComplete (arr) {
   return {
@@ -31,7 +31,8 @@ const state = {
   appsNames: cache.get('appsNames', []),
   allBuilds: cache.get('allBuilds', []),
   allPersons: cache.get('allPersons', []),
-  unitApps: []
+  unitApps: [],
+  unitFuncs: []
 }
 
 const mutations = {
@@ -54,10 +55,14 @@ const mutations = {
     cache.set('allPersons', pl)
   },
   [APPS_BY_UNIT_GOT] (state, pl) {
-    Events.$emit('data:appunits', pl)
+    state.unitApps = pl
+  },
+  [FUNCS_BY_UNIT_GOT] (state, pl) {
+    state.unitFuncs = pl
   },
   [UNITS_EDIT_CHANGED] (state) {
     state.unitApps = []
+    state.unitFuncs = []
   }
 }
 
@@ -85,14 +90,26 @@ const getters = {
   },
   appsByUnits: state => {
     return state.unitApps.map(app => ({label: app.appName, value: app.appName}))
+  },
+  funcsByUnits: state => {
+    return state.unitFuncs.map(app => ({label: app.funcName, value: app.funcName}))
   }
 }
 
 const actions = {
   getAppsByUnits ({ commit, getters }, { socket, units }) {
     commit(UNITS_EDIT_CHANGED)
-    if (!socket) return
-    socket.emit('get_apps_by_unit', { sessionID: getters.sessionID, units })
+    clearTimeout(this.timerUnitChange)
+    this.timerUnitChange = setTimeout(
+      () => {
+        if (!socket || !units) return
+        socket.emit('get_apps_by_unit', { sessionID: getters.sessionID, units })
+        if (units.split(';').length > 1) return
+        socket.emit('get_funcs_by_unit', { sessionID: getters.sessionID, units })
+      },
+      1000,
+      units
+    )
   }
 }
 

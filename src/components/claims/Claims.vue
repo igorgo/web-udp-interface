@@ -24,7 +24,10 @@
       </q-btn>
     </q-fixed-position>
     <af-load-cover :progress="progress"/>
-    <claim-new ref="formNew"/>
+    <claim-new
+      ref="formNew"
+      @close="onNewClose"
+    />
   </div>
 </template>
 
@@ -85,7 +88,12 @@
       addClaim () {
         // todo: open form for add new claim
         // this.$router.push('/claim/new')
+        mapEvent(this, false)
         this.$refs.formNew.open()
+      },
+      onNewClose () {
+        console.log('add closed')
+        mapEvent(this, true)
       },
       __onKeyArrowDown () {
         if (!this.progress && this.claimRecordIndexActive < this.claimList.length - 1) {

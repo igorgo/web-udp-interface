@@ -39,8 +39,9 @@
         const tokens = this.value.split(';')
         tokens[tokens.length - 1] = result.value
         const val = tokens.join(';')
-        this.$emit('input', val)
-        this.$emit('change', val)
+        this.__input(val)
+        // this.$emit('input', val)
+        // this.$emit('change', val)
       }
     }
   }
