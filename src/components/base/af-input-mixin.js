@@ -14,7 +14,9 @@ export default {
       type: Boolean,
       default: true
     },
-    required: Boolean
+    required: Boolean,
+    minRows: Number,
+    fixedFont: Boolean
   },
   components: { QInput },
   methods: {
@@ -31,28 +33,29 @@ export default {
         }
       }] : []
     },
-    __color () {
+    __valid () {
+      let b = true
+      if (this.max) {
+        b = b && ((this.value <= this.max) || (!this.$props.required && this.value === null))
+      }
+      if (this.min) {
+        b = b && ((this.value >= this.min) || (!this.$props.required && this.value === null))
+      }
       if (this.$props.required) {
         if ((this.type === 'text') || (this.type === 'textarea')) {
-          return this.value && this.value.trim().length > 0 ? 'primary' : 'secondary'
+          b = b && !!this.value && this.value.trim().length > 0
         }
         else if (this.type === 'number') {
-          let b = true
-          if (this.max) {
-            b = b && (this.value <= this.max)
-          }
-          if (this.min) {
-            b = b && (this.value >= this.min)
-          }
-          return this.value && b ? 'primary' : 'secondary'
+          b = b && (this.value !== null)
         }
         else {
-          return this.value ? 'primary' : 'secondary'
+          b = b && !!this.value
         }
       }
-      else {
-        return 'primary'
-      }
+      return b
+    },
+    __color () {
+      return this.__valid ? 'primary' : 'secondary'
     }
   }
 }

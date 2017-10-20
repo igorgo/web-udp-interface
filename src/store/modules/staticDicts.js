@@ -11,6 +11,7 @@ import {
 } from '../mutation-types'
 import cache from '../../cache'
 import * as _ from 'lodash'
+import {formatDate} from '../../routines'
 
 function array2AutoComplete (arr) {
   return {
@@ -30,6 +31,7 @@ const state = {
   unitsNames: cache.get('unitsNames', []),
   appsNames: cache.get('appsNames', []),
   allBuilds: cache.get('allBuilds', []),
+  activeBuilds: cache.get('activeBuilds', []),
   allPersons: cache.get('allPersons', []),
   unitApps: [],
   unitFuncs: []
@@ -48,6 +50,33 @@ const mutations = {
   },
   [STATIC_BUILDS_LOADED] (state, pl) {
     state.allBuilds = pl
+    state.activeBuilds = []
+    state.allBuilds.forEach(b => {
+      if (b.version.startsWith('A')) {
+        state.activeBuilds = [...state.activeBuilds, ...b.releases]
+      }
+    })
+    state.activeBuilds.sort((a, b) => {
+      if (a.release < b.release) {
+        return 1
+      }
+      if (a.release > b.release) {
+        return -1
+      }
+      return 0
+    })
+    state.activeBuilds.forEach(r => {
+      r.builds = r.builds.sort((a, b) => {
+        if (a.build < b.build) {
+          return 1
+        }
+        if (a.build > b.build) {
+          return -1
+        }
+        return 0
+      })
+    })
+    cache.set('activeBuilds', state.activeBuilds)
     cache.set('allBuilds', pl)
   },
   [ALL_PERSONS_LOADED] (state, pl) {
@@ -79,20 +108,14 @@ const getters = {
     const r = v !== -1 ? _.findIndex(state.allBuilds[v]['releases'], item => item['release'] === rel) : -1
     return r !== -1 ? state.allBuilds[v]['releases'][r]['builds'] : []
   },
-  initiatorSelect: state => {
-    return [
-      {
-        label: '',
-        value: -1
-      },
-      ...state.allPersons.map((pers, idx) => ({ label: pers.label, value: idx }))
-    ]
-  },
-  appsByUnits: state => {
-    return state.unitApps.map(app => ({label: app.appName, value: app.appName}))
-  },
-  funcsByUnits: state => {
-    return state.unitFuncs.map(app => ({label: app.funcName, value: app.funcName}))
+  initiatorSelect: state => state.allPersons.map((pers, idx) => ({ label: pers.label, value: idx })),
+  appsByUnits: state => state.unitApps.map(app => ({label: app.appName, value: app.appName})),
+  funcsByUnits: state => state.unitFuncs.map(app => ({label: app.funcName, value: app.funcName})),
+  activeReleasesForSelect: state => state.activeBuilds.map(r => ({label: r.release, value: r.release})),
+  activeBuildsForSelect: state => (rel) => {
+    const i = state.activeBuilds.findIndex(r => rel === r.release)
+    if (i === -1) return []
+    return state.activeBuilds[i].builds.map(b => ({ label: `${b.build} (${formatDate(b.date)})`, value: b.build }))
   }
 }
 

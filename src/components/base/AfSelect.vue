@@ -9,7 +9,8 @@
     :multiple="multiple"
     :filter="filter"
     :autofocus-filter="autofocusFilter"
-    :disable="disable"
+    :disabled="disable"
+    :after="additionalBtns"
   />
 </template>
 
@@ -21,7 +22,8 @@
     mixins: [QSelect],
     props: {
       label: String,
-      required: Boolean
+      required: Boolean,
+      clearable: Boolean
     },
     components: {QSelect},
     methods: {
@@ -32,16 +34,40 @@
     },
     computed: {
       __color () {
+        return this.__valid ? 'primary' : 'secondary'
+      },
+      __valid () {
         if (this.required) {
-          if ((typeof this.value) === 'number') {
-            return (this.value !== -1) ? 'primary' : 'secondary'
+          let valid = false
+          switch (typeof this.value) {
+            case 'number':
+              valid = this.value >= 0
+              break
+            case 'object':
+              if (Array.isArray(this.value)) valid = this.value.length > 0
+              else valid = !!this.value
+              break
+            default:
+              valid = !!this.value
           }
-          else {
-            return (this.value) ? 'primary' : 'secondary'
-          }
+          return valid
         }
         else {
-          return 'primary'
+          return true
+        }
+      },
+      additionalBtns () {
+        if (this.clearable) {
+          return [
+            {
+              icon: 'cancel',
+              content: true,
+              handler: () => { this.__change(this.multiple ? [] : '') }
+            }
+          ]
+        }
+        else {
+          return []
         }
       }
     }

@@ -6,11 +6,14 @@ import main from './modules/main'
 import filters from './modules/filters'
 import claims from './modules/claims'
 import staticDicts from './modules/staticDicts'
-import { Toast, Platform, SessionStorage } from 'quasar-framework'
+import {Toast, Platform, SessionStorage} from 'quasar-framework'
+import {SET_ACTION_PROGRESS, RESET_ACTION_PROGRESS} from './mutation-types'
+
 Vue.use(Vuex)
 
 const state = {
-  connect: false
+  connect: false,
+  actionInProgress: false
 }
 
 export default new Vuex.Store({
@@ -24,21 +27,35 @@ export default new Vuex.Store({
   },
   actions: {
     socket_oraExecError (ctx, msg) {
+      ctx.commit(RESET_ACTION_PROGRESS)
       Toast.create.negative(msg.message)
     },
     rootLogoff ({getters}, {socket, router, route = '/main'}) {
       router && router.push(route)
       socket && socket.emit('logoff', { sessionID: getters.sessionID })
+    },
+    setActionProgress ({commit}) {
+      commit(SET_ACTION_PROGRESS)
+    },
+    resetActionProgress ({commit}) {
+      commit(RESET_ACTION_PROGRESS)
     }
   },
   getters: {
     isNotTouch () {
       return !Platform.has.touch
-    }
+    },
+    isActionInProgress: state => state.actionInProgress
   },
   mutations: {
     SOCKET_CONNECT: (state) => {
       state.connect = true
+    },
+    [SET_ACTION_PROGRESS] (state) {
+      state.actionInProgress = true
+    },
+    [RESET_ACTION_PROGRESS] (state) {
+      state.actionInProgress = false
     }
   },
   strict: true,

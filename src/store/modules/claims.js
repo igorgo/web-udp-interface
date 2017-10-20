@@ -12,7 +12,8 @@ import {
   CLAIMS_FILES_GOT,
   CLAIMS_LIST_SCROLL,
   CLAIM_AVAIL_ACTIONS_GOT,
-  CLAIM_FILE_ATTACHED
+  CLAIM_FILE_ATTACHED,
+  CLAIM_INSERT_DONE
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -97,6 +98,7 @@ const getters = {
 
 const mutations = {
   [CLAIMS_LIST] (state, result) {
+    state.newAddedClaimId = null
     state.claimList = result.claims
     state.allClaimsCount = result.allCnt
     state.currentClaimLimit = result.limit
@@ -170,6 +172,11 @@ const mutations = {
   },
   [CLAIM_AVAIL_ACTIONS_GOT] (state, { id, actionsMask }) {
     if (state.claimList[state.claimRecordIndexActive].id === id) state.claimActionsMask = actionsMask
+  },
+  [CLAIM_INSERT_DONE] (state, { id }) {
+    Events.$emit('progress:reset')
+    state.newAddedClaimId = id
+    Events.$emit('claims:inserted')
   }
 }
 
@@ -285,6 +292,10 @@ const actions = {
     const i = state.claimRecordIndexActive + n
     if ((i >= 0) && (i < state.claimList.length)) commit(CLAIMS_LIST_SCROLL, i)
     Events.$emit('claims:list:scroll:to', { pos: i })
+  },
+  doClaimInsert ({commit, getters}, { socket, ...rest }) {
+    Events.$emit('progress:set')
+    socket.emit('do_claim_insert', { sessionID: getters.sessionID, ...rest })
   }
 }
 

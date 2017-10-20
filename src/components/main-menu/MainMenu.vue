@@ -3,7 +3,7 @@
   <q-list no-border link inset-delimiter>
     <q-list-header class="text-center af-header-title">
       <!--suppress HtmlUnknownTarget -->
-      <img style="max-width: 80%;" src="~assets/afina_sql_col.svg">
+      <img style="max-width: 80%;opacity: 0.8;" src="~assets/afina_sql_col.svg">
     </q-list-header>
     <q-list-header class="text-center af-header-title" v-if="authorized">
       <q-icon style="font-size: 2em" name="account circle"/>

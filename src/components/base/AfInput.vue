@@ -10,6 +10,9 @@
     :color="__color"
     :min="min"
     :max="max"
+    :min-rows="minRows"
+    :fixed-font="fixedFont"
+    :class="{'af-fixed-font': fixedFont}"
   />
 </template>
 <script>

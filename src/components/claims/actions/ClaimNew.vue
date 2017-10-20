@@ -15,9 +15,10 @@
             :options="recTypes"
           />
         </div>
-        <div class="col-xs-6 col-sm-9 row items-center xs-gutter">
+        <div class="col-xs-6 col-sm-9 row items-center xs-gutter" v-if="isPmo">
           <div class="col-sm-8">
             <af-input
+              ref="prior"
               type="number"
               :min="1"
               :max="10"
@@ -34,29 +35,35 @@
           </div>
         </div>
       </div>
-      <div>
+      <div v-if="isPmo">
         <af-select
           label="Ініціатор"
           v-model="recAuthor"
           :options="initiatorSelect"
+          clearable
         />
       </div>
       <div>
         <af-autocomplete
+          ref="unit"
           v-model="recUnit"
           label="Розділ"
           :staticData="unitsAutoComplete"
           :filter="inclFilter"
           @change="onUnitChange"
+          required
         />
       </div>
       <div>
         <af-select
+          ref="app"
           label="Застосунок"
           v-model="recApps"
           :options="appsByUnits"
           multiple
-          :disable="appsDisabled"
+          :disabled="appsDisabled"
+          required
+          clearable
         />
       </div>
       <div>
@@ -65,33 +72,60 @@
           v-model="recFuncs"
           :options="funcsByUnits"
           multiple
-          :disable="funcsDisabled"
+          :disabled="funcsDisabled"
+          clearable
         />
       </div>
     </af-field-set>
     <af-field-set caption="Реліз, що використовується">
-      <div>
-        <af-select
-          ref="versFrom"
-          label="Версія"
-          v-model="recVersion"
-          :options="versionSelectList"
-        />
+      <div class="row xs-gutter no-vert-gutter">
+        <div class="col-12 col-sm-4">
+          <af-select
+            ref="relFrom"
+            label="Реліз"
+            v-model="recRelease"
+            :options="activeReleasesForSelect"
+            required
+            clearable
+            @change="onRelChange"
+          />
+        </div>
+        <div class="col-12 col-sm-8">
+          <af-select
+            ref="bldFrom"
+            label="Збірка"
+            v-model="recBuild"
+            :options="buildSelectList"
+            required
+            clearable
+            :disabled="!recRelease"
+          />
+        </div>
       </div>
-      <!--af-multi-select
-        label="Реліз"
-        :value="currentFilterEdit.claimRelease.value"
-        :options="releaseSelectList"
-        :disable="currentFilterEdit.claimRelease.disable"
-        @change="updateFilter('claimRelease', $event)"
-      /-->
-      <!--af-multi-select
-        label="Збірка"
-        :value="currentFilterEdit.claimBuild.value"
-        :options="buildsSelectList"
-        :disable="currentFilterEdit.claimBuild.disable"
-        @change="updateFilter('claimBuild', $event)"
-      /-->
+    </af-field-set>
+    <af-field-set caption="Реліз виконання" v-if="isPmo">
+      <div class="row xs-gutter no-vert-gutter">
+        <div class="col">
+          <af-select
+            ref="relTo"
+            label="Реліз"
+            v-model="recReleaseTo"
+            :options="activeReleasesForSelect"
+            :required="recSendToProgr"
+            clearable
+          />
+        </div>
+      </div>
+    </af-field-set>
+    <af-field-set caption="Зміст">
+      <af-input
+        ref="cont"
+        type="textarea"
+        :min-rows="5"
+        v-model="recContent"
+        fixed-font
+        required
+      />
     </af-field-set>
   </af-modal-form>
 </template>
@@ -101,7 +135,7 @@
   import {QOptionGroup, QCheckbox} from 'quasar-framework'
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
   import {mapGetters} from 'vuex'
-  import {inclFilter} from '../../../routines'
+  import {inclFilter, mapEvent} from '../../../routines'
 
   export default {
     data () {
@@ -115,7 +149,13 @@
         recUnit: '',
         recApps: [],
         recFuncs: [],
-        recVersion: ''
+        recRelease: '',
+        recBuild: '',
+        recReleaseTo: '',
+        recContent: '',
+        eventMapper: {
+          'claims:inserted': this.__onClaimInserted
+        }
       }
     },
     props: {},
@@ -125,13 +165,19 @@
         'unitsAutoComplete',
         'appsByUnits',
         'funcsByUnits',
-        'versionSelectList'
+        'activeReleasesForSelect'
       ]),
+      isPmo () {
+        return this.$store.state.auth.isPmo
+      },
       appsDisabled () {
         return this.recUnit && (this.appsByUnits.length === 0)
       },
       funcsDisabled () {
         return this.recUnit && (this.funcsByUnits.length === 0)
+      },
+      buildSelectList () {
+        return this.$store.getters.activeBuildsForSelect(this.recRelease)
       }
     },
     components: {
@@ -145,20 +191,42 @@
     },
     methods: {
       __validate () {
-        return true
+        if (Object.keys(this.$refs).length === 0) return false
+        return this.$refs.unit.__valid &&
+          this.$refs.app.__valid &&
+          this.$refs.relFrom.__valid &&
+          this.$refs.bldFrom.__valid &&
+          this.$refs.cont.__valid &&
+          (!this.$refs.prior || this.$refs.prior.__valid) &&
+          (!this.$refs.relTo || this.$refs.relTo.__valid)
       },
       __onOkClick () {
-        console.log('__onOkClick')
-        this.close()
+        void this.$store.dispatch('doClaimInsert', {
+          socket: this.$socket,
+          cType: this.recType,
+          cPriority: this.recPriority,
+          cSend: this.recSendToProgr ? 1 : 0,
+          cInit: this.recAuthor >= 0 ? this.$store.state.staticDicts.allPersons[this.recAuthor].code : null,
+          cApp: this.recApps.join(';'),
+          cUnit: this.recUnit,
+          cFunc: this.recFuncs.join(';'),
+          cContent: this.recContent,
+          cRelFrom: this.recRelease,
+          cBldFrom: this.recBuild,
+          cRelTo: this.recReleaseTo
+        })
       },
       open () {
-        console.log(this.$store.state.main.curReleases['stable'].version)
         this.$refs.form.open()
-        this.recVersion = this.$store.state.main.curReleases['stable'].version
-        this.$emit('open')
+        this.$refs.relFrom.__change(this.$store.state.main.curReleases['stable'].releaseName)
+        // this.$emit('open')
       },
       close () {
         this.$refs.form.close()
+      },
+      __onClaimInserted () {
+        this.$emit('complete')
+        this.close()
       },
       __close () {
         this.$emit('close')
@@ -166,9 +234,18 @@
       onUnitChange () {
         this.recApps = []
         this.recFuncs = []
-        void this.$store.dispatch('getAppsByUnits', {socket: this.$socket, units: this.recUnit})
+        void this.$store.dispatch('getAppsByUnits', { socket: this.$socket, units: this.recUnit })
+      },
+      onRelChange (val) {
+        this.recBuild = ''
       },
       inclFilter
+    },
+    created () {
+      mapEvent(this, true)
+    },
+    beforeDestroy () {
+      mapEvent(this, false)
     }
   }
 </script>

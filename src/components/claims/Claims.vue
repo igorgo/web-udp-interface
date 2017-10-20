@@ -27,6 +27,7 @@
     <claim-new
       ref="formNew"
       @close="onNewClose"
+      @complete="onNewComplete"
     />
   </div>
 </template>
@@ -92,8 +93,10 @@
         this.$refs.formNew.open()
       },
       onNewClose () {
-        console.log('add closed')
         mapEvent(this, true)
+      },
+      onNewComplete () {
+        void this.$store.dispatch('sendClaimsRequest', {socket: this.$socket})
       },
       __onKeyArrowDown () {
         if (!this.progress && this.claimRecordIndexActive < this.claimList.length - 1) {

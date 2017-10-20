@@ -19,6 +19,7 @@
         >Скасування
         </q-btn>
       </af-form>
+      <af-load-cover :progress="isActionInProgress"/>
     </div>
   </q-modal>
 </template>
@@ -26,6 +27,8 @@
 <script>
   import {QModal, QBtn} from 'quasar-framework'
   import AfForm from './AfForm.vue'
+  import AfLoadCover from './AfLoadCover.vue'
+  import {mapGetters} from 'vuex'
 
   export default {
     data () {
@@ -33,7 +36,12 @@
         isOpen: false
       }
     },
-    components: {QModal, AfForm, QBtn},
+    components: {QModal, AfForm, QBtn, AfLoadCover},
+    computed: {
+      ...mapGetters([
+        'isActionInProgress'
+      ])
+    },
     methods: {
       open () {
         this.isOpen = true
