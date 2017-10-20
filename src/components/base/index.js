@@ -7,6 +7,8 @@ import AfFieldValueList from './AfFieldValueList.vue'
 import AfInput from './AfInput.vue'
 import AfAutocomplete from './AfAutocomplete.vue'
 import AfMultiSelect from './AfMultiSelect.vue'
+import AfModalForm from './AfModalForm.vue'
+import AfSelect from './AfSelect.vue'
 
 export {
   AfForm,
@@ -17,5 +19,7 @@ export {
   AfFieldValueList,
   AfInput,
   AfAutocomplete,
-  AfMultiSelect
+  AfMultiSelect,
+  AfModalForm,
+  AfSelect
 }

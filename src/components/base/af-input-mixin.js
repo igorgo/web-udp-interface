@@ -8,11 +8,15 @@ export default {
     value: { required: true },
     icon: String,
     type: String,
+    min: Number,
+    max: Number,
     clearable: {
       type: Boolean,
       default: true
     },
-    required: Boolean
+    required: Boolean,
+    minRows: Number,
+    fixedFont: Boolean
   },
   components: { QInput },
   methods: {
@@ -29,13 +33,29 @@ export default {
         }
       }] : []
     },
-    __color () {
+    __valid () {
+      let b = true
+      if (this.max) {
+        b = b && ((this.value <= this.max) || (!this.$props.required && this.value === null))
+      }
+      if (this.min) {
+        b = b && ((this.value >= this.min) || (!this.$props.required && this.value === null))
+      }
       if (this.$props.required) {
-        return this.$props.value && this.$props.value.trim().length > 0 ? 'primary' : 'secondary'
+        if ((this.type === 'text') || (this.type === 'textarea')) {
+          b = b && !!this.value && this.value.trim().length > 0
+        }
+        else if (this.type === 'number') {
+          b = b && (this.value !== null)
+        }
+        else {
+          b = b && !!this.value
+        }
       }
-      else {
-        return 'primary'
-      }
+      return b
+    },
+    __color () {
+      return this.__valid ? 'primary' : 'secondary'
     }
   }
 }

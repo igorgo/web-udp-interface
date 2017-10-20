@@ -45,6 +45,21 @@ export const CLAIM_TYPE_BY_ID = {
   4424: 'ЗАУВАЖЕННЯ'
 }
 
+export const CLAIM_TYPE_OPTIONS = [
+  {
+    label: 'ДОРОБКА',
+    value: 'ДОРАБОТКА'
+  },
+  {
+    label: 'ЗАУВАЖЕННЯ',
+    value: 'ЗАМЕЧАНИЕ'
+  },
+  {
+    label: 'ПОМИЛКА',
+    value: 'ОШИБКА'
+  }
+]
+
 export const DAY_NAMES = [
   'неділя', 'понеділок', 'вівторок', 'середа', 'четвер', 'п\'ятниця', 'субота'
 ]

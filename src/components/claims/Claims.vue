@@ -24,6 +24,11 @@
       </q-btn>
     </q-fixed-position>
     <af-load-cover :progress="progress"/>
+    <claim-new
+      ref="formNew"
+      @close="onNewClose"
+      @complete="onNewComplete"
+    />
   </div>
 </template>
 
@@ -34,10 +39,22 @@
   import { QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop, TouchPan, scroll } from 'quasar-framework'
   import { AfLoadCover } from '../base'
   import { mapState } from 'vuex'
+  import {ClaimNew} from './actions'
   import {mapEvent} from '../../routines'
 
   export default {
-    components: { ClaimHeader, QScrollArea, ClaimRow, QList, QFixedPosition, QBtn, QIcon, ClaimPaginator, AfLoadCover },
+    components: {
+      ClaimHeader,
+      QScrollArea,
+      ClaimRow,
+      QList,
+      QFixedPosition,
+      QBtn,
+      QIcon,
+      ClaimPaginator,
+      AfLoadCover,
+      ClaimNew
+    },
     computed: {
       ...mapState({
         currentCondition: state => state.claims.currentCondition,
@@ -71,7 +88,15 @@
       },
       addClaim () {
         // todo: open form for add new claim
-        this.$router.push('/claim/new')
+        // this.$router.push('/claim/new')
+        mapEvent(this, false)
+        this.$refs.formNew.open()
+      },
+      onNewClose () {
+        mapEvent(this, true)
+      },
+      onNewComplete () {
+        void this.$store.dispatch('sendClaimsRequest', {socket: this.$socket})
       },
       __onKeyArrowDown () {
         if (!this.progress && this.claimRecordIndexActive < this.claimList.length - 1) {

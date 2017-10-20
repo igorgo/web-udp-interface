@@ -22,7 +22,8 @@ const state = {
   authorized: false,
   userFullName: cache.get('userFullName'),
   sessionID: cache.get('sessionID'),
-  userData: cache.get('userData')
+  userData: cache.get('userData'),
+  isPmo: false
 }
 
 const mutations = {
@@ -34,20 +35,25 @@ const mutations = {
     state.authorized = false
     state.userFullName = ''
     state.sessionID = ''
+    state.isPmo = false
     cache.unset('sessionID')
     cache.unset('userFullName')
+    cache.unset('isPmo')
   },
   [types.AUTH_AUTHORIZED] (state, msg) {
     state.authorized = true
     state.userFullName = msg.userFullName
     state.sessionID = msg.sessionID
+    state.isPmo = !!msg.isPmo
     cache.set('sessionID', msg.sessionID)
     cache.set('userFullName', msg.userFullName)
+    cache.set('isPmo', !!msg.isPmo)
   },
   [types.AUTH_SESSION_NOT_VALID] (state) {
     state.authorized = false
     state.userFullName = ''
     state.sessionID = ''
+    state.isPmo = false
     cache.clear()
     Events.$emit('app:session:not:valid')
   },

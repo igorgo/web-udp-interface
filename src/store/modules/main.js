@@ -17,14 +17,16 @@ function makeCurReleases (cursor) {
       lastBuildNumber: cursor[rownum]['BLDNUMB'],
       lastBuildDate: formatDate(cursor[rownum]['DBUILDATE']),
       openedIssues: cursor[rownum]['OPENED'],
-      closedIssues: cursor[rownum]['CLOSED']
+      closedIssues: cursor[rownum]['CLOSED'],
+      version: cursor[rownum]['version']
     } : {
       releaseName: null,
       releaseDate: null,
       lastBuildNumber: null,
       lastBuildDate: null,
       openedIssues: null,
-      closedIssues: null
+      closedIssues: null,
+      version: null
     }
   }
 
