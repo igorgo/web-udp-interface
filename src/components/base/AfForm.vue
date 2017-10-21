@@ -4,20 +4,20 @@
       class="afinasql-bg"
     >
       {{title}}
-      <div slot="subtitle" v-if="subtitle" :class="subtitleClass" class="afinasql-bg">
+      <div slot="subtitle" v-if="subtitle" :class="subtitleClass || 'text-white'">
         <div>
-          <span>{{subtitle}}</span><span><slot name="after-subtitle" /></span>
+          <span>{{subtitle}}</span><span><slot name="after-subtitle"/></span>
         </div>
         <div>
-          <slot name="under-subtitle" />
+          <slot name="under-subtitle"/>
         </div>
       </div>
-    <div slot="right" class="afinasql-bg">
-      <slot name="titleActions"></slot>
-    </div>
+      <div slot="right" class="afinasql-bg">
+        <slot name="titleActions"></slot>
+      </div>
     </q-card-title>
     <q-card-main ref="form-body">
-      <template v-if="scrollable">
+      <template v-if="needScroll">
         <q-scroll-area class="af-form-body">
           <slot></slot>
         </q-scroll-area>
@@ -33,12 +33,17 @@
 </template>
 
 <script>
-  import { QCard, QCardTitle, QCardMain, QCardActions, QScrollArea } from 'quasar-framework'
+  import {QCard, QCardTitle, QCardMain, QCardActions, QScrollArea} from 'quasar-framework'
+
   export default {
     name: 'af-form',
     components: { QCard, QCardTitle, QCardMain, QCardActions, QScrollArea },
-    computed: {
+    data () {
+      return {
+        needScroll: false
+      }
     },
+    computed: {},
     methods: {
     },
     props: {
@@ -47,7 +52,14 @@
       darktext: Boolean,
       subtitle: String,
       subtitleClass: String,
-      scrollable: Boolean
+      scrollable: {
+        type: Number,
+        default: 600
+      }
+    },
+    created () {
+      console.log(Math.max(document.documentElement.clientHeight, window.innerHeight || 0))
+      this.needScroll = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) < this.scrollable
     }
   }
 </script>

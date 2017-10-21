@@ -5,7 +5,7 @@
       :subtitle="currentFilterEdit.name"
       style="max-width: 800px;"
       class="col"
-      scrollable
+      :scrollable="812"
     >
       <q-btn
         icon="edit"
