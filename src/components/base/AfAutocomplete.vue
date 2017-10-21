@@ -40,8 +40,6 @@
         tokens[tokens.length - 1] = result.value
         const val = tokens.join(';')
         this.__input(val)
-        // this.$emit('input', val)
-        // this.$emit('change', val)
       }
     }
   }

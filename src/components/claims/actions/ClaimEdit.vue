@@ -1,49 +1,14 @@
 <template>
   <af-modal-form ref="form"
-                 title="Додавання рекламації"
+                 title="Виправлення рекламації"
                  :valid="__validate()"
                  :okHandle="__onOkClick"
                  @close="__close"
-                 :scrollable="800"
+                 :scrollable="720"
   >
+    <!-- померять scrollable-->
     <div></div>
     <af-field-set caption="Параметри">
-      <div class="row">
-        <div class="col-xs-6 col-sm-3">
-          <q-option-group
-            type="radio"
-            v-model="recType"
-            :options="recTypes"
-          />
-        </div>
-        <div class="col-xs-6 col-sm-9 row items-center xs-gutter" v-if="isPmo">
-          <div class="col-sm-8">
-            <af-input
-              ref="prior"
-              type="number"
-              :min="1"
-              :max="10"
-              label="Пріоритет"
-              v-model="recPriority"
-              required
-            />
-          </div>
-          <div class="col-sm-4 float-right">
-            <q-checkbox
-              v-model="recSendToProgr"
-              label="На розгляд"
-            />
-          </div>
-        </div>
-      </div>
-      <div v-if="isPmo">
-        <af-select
-          label="Ініціатор"
-          v-model="recAuthor"
-          :options="initiatorSelect"
-          clearable
-        />
-      </div>
       <div>
         <af-autocomplete
           ref="unit"
@@ -69,6 +34,7 @@
       </div>
       <div>
         <af-select
+          ref="func"
           label="Дія в розділі"
           v-model="recFuncs"
           :options="funcsByUnits"
@@ -112,7 +78,7 @@
             label="Реліз"
             v-model="recReleaseTo"
             :options="activeReleasesForSelect"
-            :required="recSendToProgr"
+            :required="hasHistory"
             clearable
           />
         </div>
@@ -126,6 +92,7 @@
         v-model="recContent"
         fixed-font
         required
+        :disabled="hasHistory"
       />
     </af-field-set>
   </af-modal-form>
@@ -133,8 +100,6 @@
 
 <script>
   import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete} from '../../base'
-  import {QOptionGroup, QCheckbox} from 'quasar-framework'
-  import {CLAIM_TYPE_OPTIONS} from '../../../constants'
   import {mapGetters} from 'vuex'
   import {inclFilter, mapEvent} from '../../../routines'
 
@@ -142,11 +107,6 @@
     data () {
       return {
         isOpen: false,
-        recType: 'ДОРАБОТКА',
-        recTypes: CLAIM_TYPE_OPTIONS,
-        recPriority: 5,
-        recSendToProgr: false,
-        recAuthor: -1,
         recUnit: '',
         recApps: [],
         recFuncs: [],
@@ -155,14 +115,13 @@
         recReleaseTo: '',
         recContent: '',
         eventMapper: {
-          'claims:inserted': this.__onClaimInserted
+          'app:clame:updated': this.__onClaimUpdated
         }
       }
     },
     props: {},
     computed: {
       ...mapGetters([
-        'initiatorSelect',
         'unitsAutoComplete',
         'appsByUnits',
         'funcsByUnits',
@@ -179,15 +138,16 @@
       },
       buildSelectList () {
         return this.$store.getters.activeBuildsForSelect(this.recRelease)
+      },
+      hasHistory () {
+        return this.$store.state.claims.claimHistory.length > 0
       }
     },
     components: {
       AfModalForm,
       AfFieldSet,
-      QOptionGroup,
       AfSelect,
       AfInput,
-      QCheckbox,
       AfAutocomplete
     },
     methods: {
@@ -198,16 +158,12 @@
           this.$refs.relFrom.__valid &&
           this.$refs.bldFrom.__valid &&
           this.$refs.cont.__valid &&
-          (!this.$refs.prior || this.$refs.prior.__valid) &&
           (!this.$refs.relTo || this.$refs.relTo.__valid)
       },
       __onOkClick () {
-        void this.$store.dispatch('doClaimInsert', {
+        void this.$store.dispatch('doClaimUpdate', {
           socket: this.$socket,
-          cType: this.recType,
-          cPriority: this.recPriority,
-          cSend: this.recSendToProgr ? 1 : 0,
-          cInit: this.recAuthor >= 0 ? this.$store.state.staticDicts.allPersons[this.recAuthor].code : null,
+          cId: this.$store.state.claims.claimRecord.id,
           cApp: this.recApps.join(';'),
           cUnit: this.recUnit,
           cFunc: this.recFuncs.join(';'),
@@ -218,14 +174,21 @@
         })
       },
       open () {
+        const r = this.$store.state.claims.claimRecord
+        this.recUnit = r.unit
+        this.recApps = r.app ? r.app.split(';') : []
+        this.recFuncs = r.action ? r.action.split(';') : []
+        this.recRelease = r.relFrom
+        this.recBuild = r.buildFrom
+        this.recReleaseTo = r.relTo
+        this.recContent = r.content
         this.$refs.form.open()
-        this.$refs.relFrom.__change(this.$store.state.main.curReleases['stable'].releaseName)
       },
       close () {
         this.$refs.form.close()
       },
-      __onClaimInserted () {
-        this.$emit('complete')
+      __onClaimUpdated () {
+        this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx: null })
         this.close()
       },
       __close () {

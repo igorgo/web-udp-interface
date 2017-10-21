@@ -13,6 +13,7 @@
     :min-rows="minRows"
     :fixed-font="fixedFont"
     :class="{'af-fixed-font': fixedFont}"
+    :autofocus="autofocus"
   />
 </template>
 <script>

@@ -1,9 +1,3 @@
-/*!
- *
- * Copyright(c) 2017 igor-go <igorgo16@gmail.com>
- * MIT Licensed
- */
-
 import {SessionStorage as storage} from 'quasar-framework'
 import * as _ from 'lodash'
 

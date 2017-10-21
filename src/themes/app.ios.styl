@@ -12,3 +12,82 @@
 // Custom App variables must be declared before importing Quasar.
 // Quasar will use its default values when a custom variable isn't provided.
 @import '~quasar-framework/dist/quasar.ios.styl'
+.content
+  margin 10px 15px 0 15px
+
+h5
+  color $afinasql
+
+pre
+  white-space pre-wrap
+  white-space -moz-pre-wrap
+  white-space -pre-wrap
+  white-space -o-pre-wrap
+  word-wrap break-word
+
+.afina-bg
+  background $afina !important
+  color white
+
+.afinasql-bg
+  background $afinasql !important
+  color white
+
+.af-disabled-nonactive
+  color $af-disabled-fg !important
+
+.af-disabled-active
+  color $af-disabled-fg-invert !important
+
+.af-enabled-nonactive
+  color $af-enabled-fg !important
+
+.af-enabled-active
+  color $af-enabled-fg-invert !important
+
+.af-selectable
+  -webkit-user-select text !important
+  -moz-user-select text !important
+  -ms-user-select text !important
+  user-select text !important
+
+.af-field-set+.q-collapsible-closed .q-item-main
+  border-bottom 1px solid $primary
+.af-field-set .q-collapsible-sub-item
+  padding-top: 0
+.af-field-set-slot
+  padding 4px 8px 4px 8px
+  border 1px solid $primary
+  background-color $teal-1
+.af-field-set-slot .q-if
+  font-size 14px
+  min-height 16px
+  margin-bottom 4px
+  margin-top 4px
+  padding-bottom: 3px
+.af-field-set > .q-item
+  min-height 20px
+  padding-bottom 5px
+  padding-top 0
+.af-form-body-lo
+  height calc(100vh - 190px)
+.af-form-body-mod
+  height calc(100vh - 126px)
+.af-base-form .q-card-primary
+  padding: 10px 10px
+.af-base-form .q-card-main
+  padding: 10px 0
+.af-base-form .q-card-actions
+  padding-top 0
+  padding-bottom  0
+  border-top 1px solid $primary
+.af-error-title
+  color $yellow-12
+.af-msd-btn
+  padding 2px
+.af-fixed-font
+  font-family monospace, monospace
+  font-size 80%
+.af-conf-message
+  padding-top: 10px;
+  margin-bottom: -10px;

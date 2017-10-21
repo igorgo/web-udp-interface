@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-  <div class="content" v-touch-pan.horizontal.nomouse="onPanning">
+  <div class="content relative-position" v-touch-pan.horizontal.nomouse="onPanning">
     <q-scroll-area ref="scroll" class="claim-body">
       <claim-header ref="navigator"/>
       <q-list ref="list" no-border>
@@ -60,7 +60,7 @@
         currentCondition: state => state.claims.currentCondition,
         currentClaimLimit: state => state.claims.currentClaimLimit,
         claimList: state => state.claims.claimList,
-        progress: state => state.claims.getClaimsInProgress,
+        progress: state => state.actionInProgress,
         claimRecordIndexActive: state => state.claims.claimRecordIndexActive,
         claimListPages: state => state.claims.claimListPages,
         currentClaimPage: state => state.claims.currentClaimPage
@@ -87,8 +87,6 @@
         }
       },
       addClaim () {
-        // todo: open form for add new claim
-        // this.$router.push('/claim/new')
         mapEvent(this, false)
         this.$refs.formNew.open()
       },

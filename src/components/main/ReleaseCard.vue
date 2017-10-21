@@ -30,9 +30,6 @@
         </div>
       </q-transition>
     </q-card-main>
-    <q-inner-loading :visible="!releasesLoaded">
-      <q-spinner-gears size="50px" color="primary"></q-spinner-gears>
-    </q-inner-loading>
   </q-card>
 </template>
 

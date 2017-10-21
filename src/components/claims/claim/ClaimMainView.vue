@@ -16,7 +16,7 @@
       </q-fixed-position>
     </q-scroll-area>
     <q-fixed-position corner="top-right" :offset="[10, 5]" class="z-absolute"
-                      v-show="(!claimViewLoading) && actionsMask">
+                      v-show="(!isActionInProgress) && actionsMask">
       <q-btn
         color="white"
         round
@@ -35,7 +35,8 @@
       </q-btn>
     </q-fixed-position>
     <claim-attach ref="formAttach"/>
-    <af-load-cover :progress="claimViewLoading"/>
+    <claim-edit ref="formEdit" @close="onModalClose"/>
+    <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
 
@@ -44,17 +45,26 @@
   import {mapEvent} from '../../../routines'
   import {
     ClaimAttach,
+    ClaimEdit
+  } from '../actions'
+  import {
     ClaimCard,
     ClaimViewNavigator,
     ClaimViewFiles,
-    ClaimViewHistory,
+    ClaimViewHistory
+  } from './index'
+  import {
     AfUnderConsruct,
-    AfLoadCover
-  } from '../../'
+    AfLoadCover,
+    AfConfirmDialog
+  } from '../../base'
   import {
     TouchPan, QFixedPosition, QBtn, BackToTop, QScrollArea,
     scroll, QPopover, QList, QItemSide, QItemMain, QItem
   } from 'quasar-framework'
+  import {
+    MSG_CLAIM_DELETE_CONFIRM
+  } from '../../../constants'
 
   export default {
     components: {
@@ -65,6 +75,7 @@
       ClaimViewFiles,
       ClaimViewHistory,
       ClaimAttach,
+      ClaimEdit,
       QFixedPosition,
       QBtn,
       QScrollArea,
@@ -80,7 +91,7 @@
       }),
       ...mapGetters([
         'isNotTouch',
-        'claimViewLoading',
+        'isActionInProgress',
         'isFirstRecord',
         'isLastRecord',
         'isActionAvail'
@@ -161,10 +172,13 @@
         this.$refs.nav.claimStepRecord(step)
       },
       onPanning (obj) {
-        if (obj.isFinal && !this.claimViewLoading) {
+        if (obj.isFinal && !this.isActionInProgress) {
           if (obj.direction === 'left') this.onNextClaim()
           else this.onPrevClaim()
         }
+      },
+      onModalClose () {
+        mapEvent(this, true)
       },
       scrollDown () {
         this.__scroll(true)
@@ -172,19 +186,31 @@
       scrollUp () {
         this.__scroll(false)
       },
+      goBackToList (doNotUppdate = false) {
+        void this.$store.dispatch('claimsSetDoNotUpdate', doNotUppdate)
+        this.$router.back()
+      },
       __scroll (down) {
         const target = scroll.getScrollTarget(this.$refs['card'].$el)
         const cPos = scroll.getScrollPosition(target)
         scroll.setScrollPosition(target, cPos + (down ? 50 : -50))
       },
       backToList () {
-        this.$refs.nav.goBackToList()
+        this.goBackToList(true)
+      },
+      __deleteClaim () {
+        this.$store.dispatch('doClaimDelete', {socket: this.$socket})
+        this.$q.events.$once('app:clame:deleted', () => {
+          this.goBackToList()
+        })
+        console.log('delete1111')
       },
       onAction (action) {
         this.$refs.popover.close()
         switch (action) {
           case 'edit':
-            console.log('edit')
+            mapEvent(this, false)
+            this.$refs.formEdit.open()
             break
           case 'status':
             console.log('status')
@@ -206,10 +232,9 @@
             break
           case 'attach':
             this.$refs.formAttach.open()
-            console.log('attach')
             break
           case 'delete':
-            console.log('delete')
+            AfConfirmDialog.confirm(MSG_CLAIM_DELETE_CONFIRM, this.__deleteClaim)
             break
           case 'setHelpNeed':
             console.log('setHelpNeed')

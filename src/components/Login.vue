@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-center">
+  <div class="row justify-center relative-position">
     <af-form
       title="Вхід в систему"
       :subtitle="authError"
@@ -7,6 +7,7 @@
       class="col"
       style="max-width: 800px;"
       ref="form"
+      on-layout
     >
       <af-field-set caption="Облікові дані">
         <af-input
@@ -14,6 +15,7 @@
           v-model="username"
           icon="account box"
           required
+          autofocus
         />
         <af-input
           label="Пароль"
@@ -29,23 +31,24 @@
         @click="doLogin"
         slot="bottom-buttons"
         :disabled="!isValid"
-      >Увійти
+      >УВІЙТИ
       </q-btn>
       <q-btn
         flat
         color="negative"
         @click="doCancel"
         slot="bottom-buttons"
-      >Скасування
+      >СКАСУВАННЯ
       </q-btn>
     </af-form>
+    <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
 
 <script>
   import {QBtn} from 'quasar-framework'
-  import {AfForm, AfFieldSet, AfInput} from './base'
-  import {mapState} from 'vuex'
+  import {AfForm, AfFieldSet, AfInput, AfLoadCover} from './base'
+  import {mapState, mapGetters} from 'vuex'
   import {mapEvent, strNotEmpty} from '../routines'
 
   export default {
@@ -56,7 +59,8 @@
         username: '',
         userpass: '',
         eventMapper: {
-          'key:enter': this.doLogin
+          'key:enter': this.doLogin,
+          'app:userdata:loaded': this.toClaims
         }
       }
     },
@@ -64,19 +68,23 @@
       AfForm,
       QBtn,
       AfInput,
-      AfFieldSet
+      AfFieldSet,
+      AfLoadCover
     },
     methods: {
       doLogin () {
         if (!this.isValid) return
-        const message = {
+        void this.$store.dispatch('authDoLogin', {
+          socket: this.$socket,
           user: this.username,
           pass: this.userpass
-        }
-        this.$socket.emit('authenticate', message)
+        })
       },
       doCancel () {
         this.$router.back()
+      },
+      toClaims () {
+        this.authorized && this.$router.push('/claims')
       }
     },
     computed: {
@@ -84,6 +92,9 @@
         authError: state => state.auth.authError,
         authorized: state => state.auth.authorized
       }),
+      ...mapGetters([
+        'isActionInProgress'
+      ]),
       isValid () {
         return strNotEmpty(this.username) && strNotEmpty(this.userpass)
       }
@@ -95,13 +106,6 @@
     },
     beforeDestroy () {
       mapEvent(this, false)
-    },
-    watch: {
-      authorized (value) {
-        if (value) {
-          this.$router.push('/claims')
-        }
-      }
     }
   }
 </script>

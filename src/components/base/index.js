@@ -9,6 +9,8 @@ import AfAutocomplete from './AfAutocomplete.vue'
 import AfMultiSelect from './AfMultiSelect.vue'
 import AfModalForm from './AfModalForm.vue'
 import AfSelect from './AfSelect.vue'
+import AfUploader from './AfUploader.vue'
+import AfConfirmDialog from './AfConfirmDialog'
 
 export {
   AfForm,
@@ -21,5 +23,7 @@ export {
   AfAutocomplete,
   AfMultiSelect,
   AfModalForm,
-  AfSelect
+  AfSelect,
+  AfUploader,
+  AfConfirmDialog
 }
