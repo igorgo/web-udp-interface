@@ -16,13 +16,17 @@ export default {
     },
     required: Boolean,
     minRows: Number,
-    fixedFont: Boolean
+    fixedFont: Boolean,
+    autofocus: Boolean
   },
   components: { QInput },
   methods: {
     __input (val) {
       this.$emit('input', val)
       this.$emit('change', val)
+    },
+    __change (val) {
+      this.__input(val)
     }
   },
   computed: {

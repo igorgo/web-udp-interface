@@ -19,7 +19,7 @@ export default {
     AfLoadCover
   },
   mounted () {
-    this.$store.dispatch('getCurReleases')
+    this.$store.dispatch('getCurReleases', {socket: this.$socket})
   },
   computed: {
     ...mapGetters([

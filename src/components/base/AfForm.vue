@@ -18,7 +18,7 @@
     </q-card-title>
     <q-card-main ref="form-body">
       <template v-if="needScroll">
-        <q-scroll-area class="af-form-body">
+        <q-scroll-area :class="scrollClass">
           <slot></slot>
         </q-scroll-area>
       </template>
@@ -43,7 +43,11 @@
         needScroll: false
       }
     },
-    computed: {},
+    computed: {
+      scrollClass () {
+        return this.onLayout ? 'af-form-body-lo' : 'af-form-body-mod'
+      }
+    },
     methods: {
     },
     props: {
@@ -55,10 +59,13 @@
       scrollable: {
         type: Number,
         default: 600
+      },
+      onLayout: {
+        type: Boolean,
+        default: false
       }
     },
     created () {
-      console.log(Math.max(document.documentElement.clientHeight, window.innerHeight || 0))
       this.needScroll = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) < this.scrollable
     }
   }

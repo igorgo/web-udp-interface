@@ -4,6 +4,7 @@
                  :valid="__validate()"
                  :okHandle="__onOkClick"
                  @close="__close"
+                 :scrollable="800"
   >
     <div></div>
     <af-field-set caption="Параметри">

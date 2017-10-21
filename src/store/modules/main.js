@@ -53,10 +53,10 @@ const mutations = {
 }
 
 const actions = {
-  getCurReleases ({state}) {
+  getCurReleases ({state}, {socket}) {
     if (!state.releasesLoaded) {
       Events.$emit('progress:set')
-      this.$socket.emit('get_cur_releases')
+      socket.emit('get_cur_releases')
     }
   }
 }

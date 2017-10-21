@@ -7,6 +7,7 @@
       class="col"
       style="max-width: 800px;"
       ref="form"
+      on-layout
     >
       <af-field-set caption="Облікові дані">
         <af-input
@@ -14,6 +15,7 @@
           v-model="username"
           icon="account box"
           required
+          autofocus
         />
         <af-input
           label="Пароль"

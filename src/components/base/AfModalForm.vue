@@ -1,7 +1,11 @@
 <template>
   <q-modal maximized v-model="isOpen">
     <div class="row justify-center relative-position">
-      <af-form :title="title" :style="'width: ' + formWidth + 'px;'">
+      <af-form
+        :title="title"
+        :style="'width: ' + formWidth + 'px;'"
+        :scrollable="scrollable"
+      >
         <slot></slot>
         <q-btn
           flat
@@ -69,7 +73,8 @@
       okCaption: {
         type: String,
         default: 'OK'
-      }
+      },
+      scrollable: Number
     }
   }
 </script>

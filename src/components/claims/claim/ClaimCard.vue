@@ -56,7 +56,7 @@
               { label: 'Автор', value: this.record.registeredByAgent },
               { label: 'Виконавець', value: this.record.executor },
               { label: 'Реліз виявлення', value: this.record.buildFrom },
-              { label: 'Реліз виконання', value: this.record.buildTo }
+              { label: 'Реліз виконання', value: this.record.buildToComb }
             ]
           ]
         }

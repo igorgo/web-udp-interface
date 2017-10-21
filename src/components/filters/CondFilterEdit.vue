@@ -6,6 +6,7 @@
       style="max-width: 800px;"
       class="col"
       :scrollable="812"
+      on-layout
     >
       <q-btn
         icon="edit"
