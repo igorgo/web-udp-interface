@@ -13,7 +13,8 @@ import {
   CLAIM_AVAIL_ACTIONS_GOT,
   CLAIM_FILE_ATTACHED,
   CLAIM_INSERT_DONE,
-  CLAIM_DELETE_DONE
+  CLAIM_DELETE_DONE,
+  CLAIM_UPDATE_DONE
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -188,6 +189,10 @@ const mutations = {
   [CLAIM_DELETE_DONE] () {
     Events.$emit('progress:reset')
     Events.$emit('app:clame:deleted')
+  },
+  [CLAIM_UPDATE_DONE] () {
+    Events.$emit('progress:reset')
+    Events.$emit('app:clame:updated')
   }
 }
 
@@ -304,11 +309,15 @@ const actions = {
     if ((i >= 0) && (i < state.claimList.length)) commit(CLAIMS_LIST_SCROLL, i)
     Events.$emit('claims:list:scroll:to', { pos: i })
   },
-  doClaimInsert ({commit, getters}, { socket, ...rest }) {
+  doClaimInsert ({getters}, { socket, ...rest }) {
     Events.$emit('progress:set')
     socket.emit('do_claim_insert', { sessionID: getters.sessionID, ...rest })
   },
-  doClaimDelete ({state, getters}, { socket, id }) {
+  doClaimUpdate ({getters}, { socket, ...rest }) {
+    Events.$emit('progress:set')
+    socket.emit('do_claim_update', { sessionID: getters.sessionID, ...rest })
+  },
+  doClaimDelete ({state, getters}, {socket}) {
     Events.$emit('progress:set')
     socket.emit('do_claim_delete', { sessionID: getters.sessionID, id: state.claimRecord.id })
   }

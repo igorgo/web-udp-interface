@@ -35,6 +35,7 @@
       </q-btn>
     </q-fixed-position>
     <claim-attach ref="formAttach"/>
+    <claim-edit ref="formEdit" @close="onModalClose"/>
     <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
@@ -43,7 +44,8 @@
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {mapEvent} from '../../../routines'
   import {
-    ClaimAttach
+    ClaimAttach,
+    ClaimEdit
   } from '../actions'
   import {
     ClaimCard,
@@ -73,6 +75,7 @@
       ClaimViewFiles,
       ClaimViewHistory,
       ClaimAttach,
+      ClaimEdit,
       QFixedPosition,
       QBtn,
       QScrollArea,
@@ -174,6 +177,9 @@
           else this.onPrevClaim()
         }
       },
+      onModalClose () {
+        mapEvent(this, true)
+      },
       scrollDown () {
         this.__scroll(true)
       },
@@ -203,7 +209,8 @@
         this.$refs.popover.close()
         switch (action) {
           case 'edit':
-            console.log('edit')
+            mapEvent(this, false)
+            this.$refs.formEdit.open()
             break
           case 'status':
             console.log('status')
