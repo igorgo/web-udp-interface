@@ -29,14 +29,14 @@
         @click="doLogin"
         slot="bottom-buttons"
         :disabled="!isValid"
-      >Увійти
+      >УВІЙТИ
       </q-btn>
       <q-btn
         flat
         color="negative"
         @click="doCancel"
         slot="bottom-buttons"
-      >Скасування
+      >СКАСУВАННЯ
       </q-btn>
     </af-form>
   </div>
@@ -56,7 +56,8 @@
         username: '',
         userpass: '',
         eventMapper: {
-          'key:enter': this.doLogin
+          'key:enter': this.doLogin,
+          'app:userdata:loaded': this.toClaims
         }
       }
     },
@@ -69,14 +70,17 @@
     methods: {
       doLogin () {
         if (!this.isValid) return
-        const message = {
+        void this.$store.dispatch('authDoLogin', {
+          socket: this.$socket,
           user: this.username,
           pass: this.userpass
-        }
-        this.$socket.emit('authenticate', message)
+        })
       },
       doCancel () {
         this.$router.back()
+      },
+      toClaims () {
+        this.authorized && this.$router.push('/claims')
       }
     },
     computed: {
@@ -95,13 +99,6 @@
     },
     beforeDestroy () {
       mapEvent(this, false)
-    },
-    watch: {
-      authorized (value) {
-        if (value) {
-          this.$router.push('/claims')
-        }
-      }
     }
   }
 </script>
