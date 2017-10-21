@@ -1,8 +1,3 @@
-/*!
- *
- * Copyright(c) 2017 igor-go <igorgo16@gmail.com>
- * MIT Licensed
- */
 import {date} from 'quasar-framework'
 import {DAY_NAMES, MONTH_NAMES} from './constants'
 

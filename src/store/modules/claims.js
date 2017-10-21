@@ -12,7 +12,8 @@ import {
   CLAIMS_LIST_SCROLL,
   CLAIM_AVAIL_ACTIONS_GOT,
   CLAIM_FILE_ATTACHED,
-  CLAIM_INSERT_DONE
+  CLAIM_INSERT_DONE,
+  CLAIM_DELETE_DONE
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -183,6 +184,10 @@ const mutations = {
     Events.$emit('progress:reset')
     state.newAddedClaimId = id
     Events.$emit('claims:inserted')
+  },
+  [CLAIM_DELETE_DONE] () {
+    Events.$emit('progress:reset')
+    Events.$emit('app:clame:deleted')
   }
 }
 
@@ -302,6 +307,10 @@ const actions = {
   doClaimInsert ({commit, getters}, { socket, ...rest }) {
     Events.$emit('progress:set')
     socket.emit('do_claim_insert', { sessionID: getters.sessionID, ...rest })
+  },
+  doClaimDelete ({state, getters}, { socket, id }) {
+    Events.$emit('progress:set')
+    socket.emit('do_claim_delete', { sessionID: getters.sessionID, id: state.claimRecord.id })
   }
 }
 

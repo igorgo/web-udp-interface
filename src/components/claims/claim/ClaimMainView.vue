@@ -180,15 +180,23 @@
       scrollUp () {
         this.__scroll(false)
       },
+      goBackToList (doNotUppdate = false) {
+        void this.$store.dispatch('claimsSetDoNotUpdate', doNotUppdate)
+        this.$router.back()
+      },
       __scroll (down) {
         const target = scroll.getScrollTarget(this.$refs['card'].$el)
         const cPos = scroll.getScrollPosition(target)
         scroll.setScrollPosition(target, cPos + (down ? 50 : -50))
       },
       backToList () {
-        this.$refs.nav.goBackToList()
+        this.goBackToList(true)
       },
       __deleteClaim () {
+        this.$store.dispatch('doClaimDelete', {socket: this.$socket})
+        this.$q.events.$once('app:clame:deleted', () => {
+          this.goBackToList()
+        })
         console.log('delete1111')
       },
       onAction (action) {

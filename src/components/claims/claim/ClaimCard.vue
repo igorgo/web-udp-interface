@@ -26,7 +26,6 @@
 </template>
 
 <script>
-  // import {} from 'quasar-framework'
   import {mapState, mapGetters} from 'vuex'
   import {formatDateTime} from '../../../routines'
   import {HELP_STATUS} from '../../../constants'

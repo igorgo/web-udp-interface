@@ -87,8 +87,6 @@
         }
       },
       addClaim () {
-        // todo: open form for add new claim
-        // this.$router.push('/claim/new')
         mapEvent(this, false)
         this.$refs.formNew.open()
       },

@@ -219,7 +219,6 @@
       open () {
         this.$refs.form.open()
         this.$refs.relFrom.__change(this.$store.state.main.curReleases['stable'].releaseName)
-        // this.$emit('open')
       },
       close () {
         this.$refs.form.close()

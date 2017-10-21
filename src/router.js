@@ -24,29 +24,9 @@ const routes = [
       {path: '/main', component: load('main/Main')}
     ]
   },
-  /*
-  { path: '/',
-    component: load('Main'),
-    children: [
-      {
-        path: 'aaa',
-        component: load('Hello')
-      }
-    ]
-  },
-  */
-  // Always leave this last one
   { path: '*', component: load('Error404') } // Not found
 ]
 
 const Router = new VueRouter({routes})
-
-/*
-Router.beforeEach((to, from, next) => {
-  document.documentElement.scrollTop = 0
-  document.body.scrollTop = 0
-  next()
-})
-*/
 
 export default Router

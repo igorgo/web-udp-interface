@@ -98,7 +98,6 @@ const mutations = {
 const getters = {
   unitsAutoComplete: state => array2AutoComplete(state.unitsNames),
   appsAutoComplete: state => array2AutoComplete(state.appsNames),
-  // versionSelectList: state => [{label: '', value: ''}].concat(state.allBuilds.map(item => { return {label: item.version, value: item.version} }))
   releasesByVersion: state => ver => {
     const v = _.findIndex(state.allBuilds, item => item['version'] === ver)
     return v !== -1 ? state.allBuilds[v]['releases'] : []

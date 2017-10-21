@@ -71,7 +71,6 @@
           }
           reader.readAsArrayBuffer(file)
         })
-        // this.close()
       },
       __onFileAttached ({ id, filename }) {
         if (id === this.recId) {
