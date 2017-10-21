@@ -31,6 +31,7 @@ const state = {
 const mutations = {
   [AUTH_UNAUTHORIZED] (state, msg) {
     Events.$emit('app:unauthorized')
+    Events.$emit('progress:reset')
   },
   [AUTH_ERROR] (state, msg) {
     state.authError = msg.message
@@ -41,6 +42,7 @@ const mutations = {
     cache.unset('sessionID')
     cache.unset('userFullName')
     cache.unset('isPmo')
+    Events.$emit('progress:reset')
   },
   [AUTH_AUTHORIZED] (state, msg) {
     state.authorized = true
@@ -50,6 +52,7 @@ const mutations = {
     cache.set('sessionID', msg.sessionID)
     cache.set('userFullName', msg.userFullName)
     cache.set('isPmo', !!msg.isPmo)
+    Events.$emit('progress:reset')
   },
   [AUTH_SESSION_NOT_VALID] (state) {
     state.authorized = false
@@ -58,6 +61,7 @@ const mutations = {
     state.isPmo = false
     cache.clear()
     Events.$emit('app:session:not:valid')
+    Events.$emit('progress:reset')
   },
   [AUTH_SESSION_VALIDATED] (state) {
     state.authorized = true
@@ -81,6 +85,7 @@ const actions = {
   },
   authDoLogin ({commit}, {socket, ...pl}) {
     commit(AUTH_CLEAR_ERROR)
+    Events.$emit('progress:set')
     socket.emit('authenticate', pl)
   }
 }

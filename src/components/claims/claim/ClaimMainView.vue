@@ -16,7 +16,7 @@
       </q-fixed-position>
     </q-scroll-area>
     <q-fixed-position corner="top-right" :offset="[10, 5]" class="z-absolute"
-                      v-show="(!claimViewLoading) && actionsMask">
+                      v-show="(!isActionInProgress) && actionsMask">
       <q-btn
         color="white"
         round
@@ -35,7 +35,7 @@
       </q-btn>
     </q-fixed-position>
     <claim-attach ref="formAttach"/>
-    <af-load-cover :progress="claimViewLoading"/>
+    <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
 
@@ -43,18 +43,26 @@
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {mapEvent} from '../../../routines'
   import {
-    ClaimAttach,
+    ClaimAttach
+  } from '../actions'
+  import {
     ClaimCard,
     ClaimViewNavigator,
     ClaimViewFiles,
-    ClaimViewHistory,
+    ClaimViewHistory
+  } from './index'
+  import {
     AfUnderConsruct,
-    AfLoadCover
-  } from '../../'
+    AfLoadCover,
+    AfConfirmDialog
+  } from '../../base'
   import {
     TouchPan, QFixedPosition, QBtn, BackToTop, QScrollArea,
     scroll, QPopover, QList, QItemSide, QItemMain, QItem
   } from 'quasar-framework'
+  import {
+    MSG_CLAIM_DELETE_CONFIRM
+  } from '../../../constants'
 
   export default {
     components: {
@@ -80,7 +88,7 @@
       }),
       ...mapGetters([
         'isNotTouch',
-        'claimViewLoading',
+        'isActionInProgress',
         'isFirstRecord',
         'isLastRecord',
         'isActionAvail'
@@ -161,7 +169,7 @@
         this.$refs.nav.claimStepRecord(step)
       },
       onPanning (obj) {
-        if (obj.isFinal && !this.claimViewLoading) {
+        if (obj.isFinal && !this.isActionInProgress) {
           if (obj.direction === 'left') this.onNextClaim()
           else this.onPrevClaim()
         }
@@ -179,6 +187,9 @@
       },
       backToList () {
         this.$refs.nav.goBackToList()
+      },
+      __deleteClaim () {
+        console.log('delete1111')
       },
       onAction (action) {
         this.$refs.popover.close()
@@ -206,10 +217,9 @@
             break
           case 'attach':
             this.$refs.formAttach.open()
-            console.log('attach')
             break
           case 'delete':
-            console.log('delete')
+            AfConfirmDialog.confirm(MSG_CLAIM_DELETE_CONFIRM, this.__deleteClaim)
             break
           case 'setHelpNeed':
             console.log('setHelpNeed')

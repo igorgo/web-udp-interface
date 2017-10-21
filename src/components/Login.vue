@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-center">
+  <div class="row justify-center relative-position">
     <af-form
       title="Вхід в систему"
       :subtitle="authError"
@@ -39,13 +39,14 @@
       >СКАСУВАННЯ
       </q-btn>
     </af-form>
+    <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
 
 <script>
   import {QBtn} from 'quasar-framework'
-  import {AfForm, AfFieldSet, AfInput} from './base'
-  import {mapState} from 'vuex'
+  import {AfForm, AfFieldSet, AfInput, AfLoadCover} from './base'
+  import {mapState, mapGetters} from 'vuex'
   import {mapEvent, strNotEmpty} from '../routines'
 
   export default {
@@ -65,7 +66,8 @@
       AfForm,
       QBtn,
       AfInput,
-      AfFieldSet
+      AfFieldSet,
+      AfLoadCover
     },
     methods: {
       doLogin () {
@@ -88,6 +90,9 @@
         authError: state => state.auth.authError,
         authorized: state => state.auth.authorized
       }),
+      ...mapGetters([
+        'isActionInProgress'
+      ]),
       isValid () {
         return strNotEmpty(this.username) && strNotEmpty(this.userpass)
       }

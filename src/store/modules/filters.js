@@ -4,7 +4,6 @@ import {
   FILTER_GET,
   FILTER_MODIFY,
   FILTER_CLEAR,
-  FILTER_COVER,
   FILTER_SAVED,
   FILTER_DELETED,
   FILTER_LIST_SCROLL,
@@ -32,7 +31,6 @@ const state = {
     name: '',
     ...emptyFilter
   },
-  getFilterInProgress: false,
   invokedByClaims: false,
   listIndex: -1,
   doNotUpdate: false
@@ -112,19 +110,16 @@ const mutations = {
       imExecutor: result['P_CLAIM_IM_PERF'],
       claimContent: result['P_CLAIM_CONTENT']
     }
-    state.getFilterInProgress = false
+    Events.$emit('progress:reset')
   },
   [FILTER_SAVED] (state, {P_OUT_RN}) {
     state.currentFilter.rn = P_OUT_RN
-    state.getFilterInProgress = false
+    Events.$emit('progress:reset')
     Events.$emit('filter:saved')
   },
   [FILTER_DELETED] () {
-    state.getFilterInProgress = false
+    Events.$emit('progress:reset')
     Events.$emit('filter:deleted')
-  },
-  [FILTER_COVER] (state) {
-    state.getFilterInProgress = true
   },
   [FILTER_GET] (state, from) {
     state.invokedByClaims = from === 'claims'
@@ -176,7 +171,7 @@ const actions = {
     }
     else {
       if (!socket) return
-      commit(FILTER_COVER)
+      Events.$emit('progress:set')
       socket.emit('get_claim_condition', { sessionID: getters.sessionID, conditionId })
     }
   },
@@ -192,7 +187,7 @@ const actions = {
   },
   deleteConditionFilter ({state, commit, getters}, {socket}) {
     if ((socket && state.currentFilter.rn)) {
-      commit(FILTER_COVER)
+      Events.$emit('progress:set')
       socket.emit('delete_claim_condition', {sessionID: getters.sessionID, rn: state.currentFilter.rn})
     }
   },

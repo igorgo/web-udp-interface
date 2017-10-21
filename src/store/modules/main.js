@@ -1,13 +1,8 @@
-/*!
- *
- * Copyright(c) 2017 igor-go <igorgo16@gmail.com>
- * MIT Licensed
- */
-
 import {MAIN_SET_CUR_RELEASES, LINKED_FILE_GOT} from '../mutation-types'
 import cache from '../../cache'
 import {formatDate} from '../../routines'
 import fileSaver from 'file-saver'
+import {Events} from 'quasar-framework'
 
 function makeCurReleases (cursor) {
   function makeRelease (rownum) {
@@ -49,6 +44,7 @@ const mutations = {
     state.curReleases = makeCurReleases(result)
     state.releasesLoaded = true
     cache.set('curReleases', makeCurReleases(result))
+    Events.$emit('progress:reset')
   },
   [LINKED_FILE_GOT] (state, {fileData, fileName, mimeType}) {
     const blob = new Blob([fileData], {type: mimeType})
@@ -57,6 +53,12 @@ const mutations = {
 }
 
 const actions = {
+  getCurReleases ({state}) {
+    if (!state.releasesLoaded) {
+      Events.$emit('progress:set')
+      this.$socket.emit('get_cur_releases')
+    }
+  }
 }
 
 export default {

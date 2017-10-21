@@ -12,31 +12,6 @@
       />
     </af-field-set>
   </af-modal-form>
-  <!--q-modal maximized v-model="isOpen">
-    <div class="row justify-center relative-position">
-      <af-form title="Додавання файлів" style="width: 800px;">
-        <af-field-set caption="Файли">
-          <af-uploader ref="uploader"></af-uploader>
-        </af-field-set>
-        <q-btn
-          flat
-          :disabled="!hasExpandedContent"
-          color="primary"
-          @click="doAttach"
-          slot="bottom-buttons"
-        >Додати
-        </q-btn>
-        <q-btn
-          flat
-          color="negative"
-          @click="close"
-          slot="bottom-buttons"
-        >Скасування
-        </q-btn>
-      </af-form>
-      <af-load-cover :progress="uploading"/>
-    </div>
-  </q-modal-->
 </template>
 
 <script>
@@ -78,7 +53,6 @@
       open () {
         this.__reset()
         this.$refs.form && this.$refs.form.open()
-        // this.$refs.modalcontent.open()
       },
       doAttach () {
         const sessionID = this.sessionID

@@ -4,7 +4,6 @@ import {
   CLAIMS_SORT_CHANGE,
   CLAIMS_PAGE_CHANGE,
   CLAIMS_SORT_ORDER_CHANGE,
-  CLAIMS_START_REQUEST,
   CLAIMS_RECORD_GOT,
   CLAIMS_START_RECORD_REQUEST,
   CLAIMS_SET_DO_NOT_UPDATE,
@@ -24,6 +23,21 @@ const REQUEST_RECORD = 0b001
 const REQUEST_HISTORY = 0b010
 const REQUEST_FILES = 0b100
 const REQUEST_ALL_FINISH = 0b111
+
+function changeRequestsState (state, status, reset) {
+  if (reset) {
+    state.recordRequestsState = 0
+  }
+  else {
+    state.recordRequestsState += status
+  }
+  if (state.recordRequestsState === REQUEST_ALL_FINISH) {
+    Events.$emit('progress:reset')
+  }
+  else {
+    Events.$emit('progress:set')
+  }
+}
 
 const actionsFlags = {
   'edit': 0b00000000001,
@@ -48,7 +62,6 @@ const state = {
   currentClaimSort: cache.get(['userData', 'CLAIM_SORT'], 2),
   claimSortDesc: cache.get(['userData', 'CLAIM_SORT_ORDER'], 1),
   claimListPages: 1,
-  getClaimsInProgress: false,
   newAddedClaimId: null,
   claimRecord: { id: null },
   claimHistory: [],
@@ -89,7 +102,6 @@ const getters = {
     }
     return result
   },
-  claimViewLoading: state => state.recordRequestsState !== REQUEST_ALL_FINISH,
   isFirstRecord: state => (state.currentClaimPage === 1) && (state.claimRecordIndexActive === 0),
   isLastRecord: state => (state.currentClaimPage === state.claimListPages) &&
     (state.claimRecordIndexActive === (state.claimList.length - 1)),
@@ -106,7 +118,7 @@ const mutations = {
     state.claimListPages = Math.floor(state.allClaimsCount / state.currentClaimLimit) + 1
     cache.set('claimListPage', result.page)
     cache.set(['userData', 'LIST_LIMIT'], result.limit)
-    state.getClaimsInProgress = false
+    Events.$emit('progress:reset')
     if (state.claimRecordIndexWait !== null) {
       Events.$emit('claims:ready:to:step', { idx: state.claimRecordIndexWait })
       state.claimRecordIndexWait = null
@@ -132,36 +144,30 @@ const mutations = {
   [CLAIMS_SORT_CHANGE] (state, value) {
     state.currentClaimSort = value
   },
-  [CLAIMS_START_REQUEST] (state) {
-    state.getClaimsInProgress = true
-  },
   [CLAIMS_START_RECORD_REQUEST] (state, { idx, shiftPage = 0 }) {
-    state.recordRequestsState = 0
+    changeRequestsState(state, null, true)
     state.claimRecordIndexRequested = idx
     if (shiftPage) {
       state.claimRecordIndexWait = idx
       state.currentClaimPage += shiftPage
     }
-    // state.claimRecord = { id: null }
-    // state.claimHistory = []
-    // state.claimFiles = []
     state.claimActionsMask = 0
   },
   [CLAIMS_RECORD_GOT] (state, record) {
     state.claimRecord = record
-    state.recordRequestsState += REQUEST_RECORD
+    changeRequestsState(state, REQUEST_RECORD)
     state.claimRecordIndexActive = state.claimRecordIndexRequested
     state.claimRecordIndexRequested = null
     Events.$emit('claims:record:got')
   },
   [CLAIMS_HISTORY_GOT] (state, { history }) {
     state.claimHistory = history
-    state.recordRequestsState += REQUEST_HISTORY
+    changeRequestsState(state, REQUEST_HISTORY)
     Events.$emit('claims:history:got')
   },
   [CLAIMS_FILES_GOT] (state, { files }) {
     state.claimFiles = files
-    state.recordRequestsState += REQUEST_FILES
+    changeRequestsState(state, REQUEST_FILES)
     Events.$emit('claims:files:got')
   },
   [CLAIMS_SET_DO_NOT_UPDATE] (state, value) {
@@ -243,7 +249,7 @@ const actions = {
       sortStr = SORT_OPTIONS[state.currentClaimSort].field
       if (state.claimSortDesc) sortStr += ' DESC'
     }
-    commit(CLAIMS_START_REQUEST)
+    Events.$emit('progress:set')
     socket.emit('get_claim_list', {
       sessionID: getters.sessionID,
       conditionId: state.currentCondition,

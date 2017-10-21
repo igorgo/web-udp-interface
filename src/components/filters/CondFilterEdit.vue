@@ -1,5 +1,5 @@
 <template>
-  <div class="row justify-center">
+  <div class="row justify-center relative-position">
     <af-form
       title="Фільтр"
       :subtitle="currentFilterEdit.name"
@@ -132,7 +132,7 @@
         class="float-right"
       />
     </af-form>
-    <af-load-cover :progress="progress"/>
+    <af-load-cover :progress="isActionInProgress"/>
     <q-modal ref="nameEditModal" minimized :content-css="{padding: '10px'}">
       <h6>Найменуваня фільтра</h6>
       <af-input
@@ -248,7 +248,6 @@
     },
     computed: {
       ...mapState({
-        progress: state => state.filters.getFilterInProgress,
         invokedByClaims: state => state.filters.invokedByClaims
       }),
       ...mapGetters([
@@ -257,7 +256,8 @@
         'versionSelectList',
         'releaseSelectList',
         'buildsSelectList',
-        'currentFilterEdit'
+        'currentFilterEdit',
+        'isActionInProgress'
       ]),
       nameEditModalValidator () {
         return this.filterName && this.filterName.trim().length > 0
