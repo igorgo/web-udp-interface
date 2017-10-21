@@ -29,6 +29,7 @@
   // import {} from 'quasar-framework'
   import {mapState, mapGetters} from 'vuex'
   import {formatDateTime} from '../../../routines'
+  import {HELP_STATUS} from '../../../constants'
   import {AfFieldValueList} from '../../base'
 
   export default {
@@ -50,7 +51,7 @@
               { label: 'Зареєстровано', value: formatDateTime(this.record.registeredAt) },
               { label: 'Стан змінено', value: formatDateTime(this.record.changedAt) },
               { label: 'Відпрацювати до', value: formatDateTime(this.record.execTill) },
-              { label: 'Стан хелпу', value: this.record.helpSign }
+              { label: 'Стан хелпу', value: HELP_STATUS[this.record.helpSign] }
             ],
             [
               { label: 'Автор', value: this.record.registeredByAgent },
