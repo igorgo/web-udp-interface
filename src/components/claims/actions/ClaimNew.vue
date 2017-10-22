@@ -132,11 +132,11 @@
 </template>
 
 <script>
-  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete} from '../../base'
+  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete, AfEventsMapper, AfMfMixin} from '../../base'
   import {QOptionGroup, QCheckbox} from 'quasar-framework'
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
   import {mapGetters} from 'vuex'
-  import {inclFilter, mapEvent} from '../../../routines'
+  import {inclFilter} from '../../../routines'
 
   export default {
     data () {
@@ -154,12 +154,13 @@
         recBuild: '',
         recReleaseTo: '',
         recContent: '',
-        eventMapper: {
+        eventsMap: {
           'claims:inserted': this.__onClaimInserted
         }
       }
     },
     props: {},
+    mixins: [AfEventsMapper, AfMfMixin],
     computed: {
       ...mapGetters([
         'initiatorSelect',
@@ -240,12 +241,6 @@
         this.recBuild = ''
       },
       inclFilter
-    },
-    created () {
-      mapEvent(this, true)
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
     }
   }
 </script>

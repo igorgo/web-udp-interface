@@ -64,12 +64,12 @@ export function strNotEmpty (str) {
   return str ? str.trim().length > 0 : false
 }
 
-export function mapEvent ({eventMapper, $q}, listen) {
-  if (!eventMapper) return
-  for (let i in eventMapper) {
-    if (eventMapper.hasOwnProperty(i)) {
-      if (listen) $q.events.$on(i, eventMapper[i])
-      else $q.events.$off(i, eventMapper[i])
+export function mapEvents ({eventsMap, $q}, listen) {
+  if (!eventsMap) return
+  for (let i in eventsMap) {
+    if (eventsMap.hasOwnProperty(i)) {
+      if (listen) $q.events.$on(i, eventsMap[i])
+      else $q.events.$off(i, eventsMap[i])
     }
   }
 }

@@ -16,17 +16,15 @@
 
 <script>
   import {mapState, mapGetters, mapActions} from 'vuex'
-  import {mapEvent} from '../../../routines'
-  import {AfFieldSet, AfUploader, AfModalForm} from '../../base'
+  import {AfFieldSet, AfUploader, AfModalForm, AfEventsMapper, AfMfMixin} from '../../base'
 
   export default {
     name: 'claim-attach',
-    props: {
-    },
+    mixins: [AfEventsMapper, AfMfMixin],
     data () {
       return {
         files: [],
-        eventMapper: {
+        eventsMap: {
           'claims:file:attached': this.__onFileAttached
         }
       }
@@ -92,12 +90,6 @@
       ...mapGetters([
         'sessionID'
       ])
-    },
-    created () {
-      mapEvent(this, true)
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
     }
   }
 </script>

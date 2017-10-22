@@ -3,7 +3,6 @@
                  title="Виправлення рекламації"
                  :valid="__validate()"
                  :okHandle="__onOkClick"
-                 @close="__close"
                  :scrollable="720"
   >
     <!-- померять scrollable-->
@@ -99,9 +98,9 @@
 </template>
 
 <script>
-  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete} from '../../base'
+  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete, AfMfMixin, AfEventsMapper} from '../../base'
   import {mapGetters} from 'vuex'
-  import {inclFilter, mapEvent} from '../../../routines'
+  import {inclFilter} from '../../../routines'
 
   export default {
     data () {
@@ -114,12 +113,13 @@
         recBuild: '',
         recReleaseTo: '',
         recContent: '',
-        eventMapper: {
+        eventsMap: {
           'app:clame:updated': this.__onClaimUpdated
         }
       }
     },
     props: {},
+    mixins: [AfMfMixin, AfEventsMapper],
     computed: {
       ...mapGetters([
         'unitsAutoComplete',
@@ -184,15 +184,9 @@
         this.recContent = r.content
         this.$refs.form.open()
       },
-      close () {
-        this.$refs.form.close()
-      },
       __onClaimUpdated () {
         this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx: null })
         this.close()
-      },
-      __close () {
-        this.$emit('close')
       },
       onUnitChange () {
         this.recApps = []
@@ -203,12 +197,6 @@
         this.recBuild = ''
       },
       inclFilter
-    },
-    created () {
-      mapEvent(this, true)
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
     }
   }
 </script>

@@ -170,7 +170,7 @@
       return {
         filterName: '',
         justSave: true,
-        eventMapper: {
+        eventsMap: {
           'filter:saved': this.onFilterSaved,
           'filter:deleted': this.onFilterDeleted
         }
@@ -265,13 +265,13 @@
       }
     },
     created () {
-      for (let i in this.eventMapper) {
-        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$on(i, this.eventMapper[i])
+      for (let i in this.eventsMap) {
+        if (this.eventsMap.hasOwnProperty(i)) this.$q.events.$on(i, this.eventsMap[i])
       }
     },
     beforeDestroy () {
-      for (let i in this.eventMapper) {
-        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$off(i, this.eventMapper[i])
+      for (let i in this.eventsMap) {
+        if (this.eventsMap.hasOwnProperty(i)) this.$q.events.$off(i, this.eventsMap[i])
       }
     }
   }

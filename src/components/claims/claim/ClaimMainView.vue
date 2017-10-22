@@ -35,14 +35,13 @@
       </q-btn>
     </q-fixed-position>
     <claim-attach ref="formAttach"/>
-    <claim-edit ref="formEdit" @close="onModalClose"/>
+    <claim-edit ref="formEdit"/>
     <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
 
 <script>
   import {mapState, mapGetters, mapActions} from 'vuex'
-  import {mapEvent} from '../../../routines'
   import {
     ClaimAttach,
     ClaimEdit
@@ -56,7 +55,8 @@
   import {
     AfUnderConsruct,
     AfLoadCover,
-    AfConfirmDialog
+    AfConfirmDialog,
+    AfEventsMapper
   } from '../../base'
   import {
     TouchPan, QFixedPosition, QBtn, BackToTop, QScrollArea,
@@ -177,9 +177,6 @@
           else this.onPrevClaim()
         }
       },
-      onModalClose () {
-        mapEvent(this, true)
-      },
       scrollDown () {
         this.__scroll(true)
       },
@@ -209,7 +206,6 @@
         this.$refs.popover.close()
         switch (action) {
           case 'edit':
-            mapEvent(this, false)
             this.$refs.formEdit.open()
             break
           case 'status':
@@ -247,7 +243,7 @@
     },
     data () {
       return {
-        eventMapper: {
+        eventsMap: {
           'key:arrow:left:ctrl': this.onPrevClaim,
           'key:arrow:right:ctrl': this.onNextClaim,
           'key:arrow:up': this.scrollUp,
@@ -256,12 +252,7 @@
         }
       }
     },
-    created () {
-      mapEvent(this, true)
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
-    }
+    mixins: [AfEventsMapper]
   }
 </script>
 

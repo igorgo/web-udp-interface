@@ -47,18 +47,18 @@
 
 <script>
   import {QBtn} from 'quasar-framework'
-  import {AfForm, AfFieldSet, AfInput, AfLoadCover} from './base'
+  import {AfForm, AfFieldSet, AfInput, AfLoadCover, AfEventsMapper} from './base'
   import {mapState, mapGetters} from 'vuex'
-  import {mapEvent, strNotEmpty} from '../routines'
+  import {strNotEmpty} from '../routines'
 
   export default {
     name: '',
-    props: [],
+    mixins: [AfEventsMapper],
     data () {
       return {
         username: '',
         userpass: '',
-        eventMapper: {
+        eventsMap: {
           'key:enter': this.doLogin,
           'app:userdata:loaded': this.toClaims
         }
@@ -98,14 +98,6 @@
       isValid () {
         return strNotEmpty(this.username) && strNotEmpty(this.userpass)
       }
-    },
-    created () {
-      mapEvent(this, true)
-    },
-    mounted () {
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
     }
   }
 </script>

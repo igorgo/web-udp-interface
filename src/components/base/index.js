@@ -11,6 +11,8 @@ import AfModalForm from './AfModalForm.vue'
 import AfSelect from './AfSelect.vue'
 import AfUploader from './AfUploader.vue'
 import AfConfirmDialog from './AfConfirmDialog'
+import AfMfMixin from './af-modal-form-mixin'
+import AfEventsMapper from './af-events-mapper'
 
 export {
   AfForm,
@@ -25,5 +27,7 @@ export {
   AfModalForm,
   AfSelect,
   AfUploader,
-  AfConfirmDialog
+  AfConfirmDialog,
+  AfMfMixin,
+  AfEventsMapper
 }

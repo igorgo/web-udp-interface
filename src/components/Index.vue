@@ -37,7 +37,7 @@
   export default {
     data () {
       return {
-        eventMapper: {
+        eventsMap: {
           'app:unauthorized': this.__onUnauthorized,
           'app:session:not:valid': this.__onSessionNonValid
         }
@@ -63,13 +63,13 @@
       }
     },
     created () {
-      for (let i in this.eventMapper) {
-        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$on(i, this.eventMapper[i])
+      for (let i in this.eventsMap) {
+        if (this.eventsMap.hasOwnProperty(i)) this.$q.events.$on(i, this.eventsMap[i])
       }
     },
     beforeDestroy () {
-      for (let i in this.eventMapper) {
-        if (this.eventMapper.hasOwnProperty(i)) this.$q.events.$off(i, this.eventMapper[i])
+      for (let i in this.eventsMap) {
+        if (this.eventsMap.hasOwnProperty(i)) this.$q.events.$off(i, this.eventsMap[i])
       }
     }
 
