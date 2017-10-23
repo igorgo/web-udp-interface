@@ -14,7 +14,10 @@ import {
   CLAIM_FILE_ATTACHED,
   CLAIM_INSERT_DONE,
   CLAIM_DELETE_DONE,
-  CLAIM_UPDATE_DONE
+  CLAIM_UPDATE_DONE,
+  CLAIM_NEXT_POINTS_GOT,
+  CLAIM_NEXT_EXECS_GOT,
+  SOCKET_CLAIM_STATUS_DONE
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -193,6 +196,16 @@ const mutations = {
   [CLAIM_UPDATE_DONE] () {
     Events.$emit('progress:reset')
     Events.$emit('app:clame:updated')
+  },
+  [CLAIM_NEXT_POINTS_GOT] (state, {points}) {
+    Events.$emit('app:nextpoints:got', points)
+  },
+  [CLAIM_NEXT_EXECS_GOT] (state, {executors}) {
+    Events.$emit('app:nextexecs:got', executors)
+  },
+  [SOCKET_CLAIM_STATUS_DONE] () {
+    Events.$emit('progress:reset')
+    Events.$emit('app:clame:status:done')
   }
 }
 
@@ -317,9 +330,24 @@ const actions = {
     Events.$emit('progress:set')
     socket.emit('do_claim_update', { sessionID: getters.sessionID, ...rest })
   },
+  doClaimStatus ({getters, state}, { socket, ...rest }) {
+    Events.$emit('progress:set')
+    socket.emit('do_claim_status', {
+      sessionID: getters.sessionID,
+      cId: state.claimRecord.id,
+      cType: state.claimRecord.claimType,
+      ...rest
+    })
+  },
   doClaimDelete ({state, getters}, {socket}) {
     Events.$emit('progress:set')
     socket.emit('do_claim_delete', { sessionID: getters.sessionID, id: state.claimRecord.id })
+  },
+  claimGetNextPoints ({state, getters}, {socket}) {
+    socket.emit('get_claim_next_points', { sessionID: getters.sessionID, id: state.claimRecord.id })
+  },
+  claimGetNextExecs ({state, getters}, {socket, pointId}) {
+    socket.emit('get_claim_next_execs', { sessionID: getters.sessionID, id: state.claimRecord.id, pointId })
   }
 }
 

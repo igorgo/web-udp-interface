@@ -36,6 +36,7 @@
     </q-fixed-position>
     <claim-attach ref="formAttach"/>
     <claim-edit ref="formEdit"/>
+    <claim-set-status ref="formStatus"/>
     <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
@@ -44,7 +45,8 @@
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {
     ClaimAttach,
-    ClaimEdit
+    ClaimEdit,
+    ClaimSetStatus
   } from '../actions'
   import {
     ClaimCard,
@@ -76,6 +78,7 @@
       ClaimViewHistory,
       ClaimAttach,
       ClaimEdit,
+      ClaimSetStatus,
       QFixedPosition,
       QBtn,
       QScrollArea,
@@ -209,7 +212,7 @@
             this.$refs.formEdit.open()
             break
           case 'status':
-            console.log('status')
+            this.$refs.formStatus.open()
             break
           case 'assign':
             console.log('assign')
