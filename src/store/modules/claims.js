@@ -200,7 +200,7 @@ const mutations = {
   },
   [CLAIM_ANNULL_DONE] () {
     Events.$emit('progress:reset')
-    Events.$emit('app:clame:annul')
+    Events.$emit('app:clame:annulled')
   },
   [CLAIM_NEXT_POINTS_GOT] (state, {points}) {
     Events.$emit('app:nextpoints:got', points)
