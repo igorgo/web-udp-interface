@@ -1,8 +1,8 @@
 <template>
   <af-modal-form ref="form"
                  title="Додавання рекламації"
-                 :valid="__validate()"
-                 :okHandle="__onOkClick"
+                 :valid="validate()"
+                 :okHandle="onOkClick"
                  @close="__close"
                  :scrollable="800"
   >
@@ -62,7 +62,7 @@
           v-model="recApps"
           :options="appsByUnits"
           multiple
-          :disabled="appsDisabled"
+          :disable="appsDisabled"
           required
           clearable
         />
@@ -73,7 +73,7 @@
           v-model="recFuncs"
           :options="funcsByUnits"
           multiple
-          :disabled="funcsDisabled"
+          :disable="funcsDisabled"
           clearable
         />
       </div>
@@ -99,7 +99,7 @@
             :options="buildSelectList"
             required
             clearable
-            :disabled="!recRelease"
+            :disable="!recRelease"
           />
         </div>
       </div>
@@ -132,11 +132,11 @@
 </template>
 
 <script>
-  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete} from '../../base'
+  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete, AfEventsMapper, AfMfMixin} from '../../base'
   import {QOptionGroup, QCheckbox} from 'quasar-framework'
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
   import {mapGetters} from 'vuex'
-  import {inclFilter, mapEvent} from '../../../routines'
+  import {inclFilter} from '../../../routines'
 
   export default {
     data () {
@@ -154,12 +154,13 @@
         recBuild: '',
         recReleaseTo: '',
         recContent: '',
-        eventMapper: {
+        eventsMap: {
           'claims:inserted': this.__onClaimInserted
         }
       }
     },
     props: {},
+    mixins: [AfEventsMapper, AfMfMixin],
     computed: {
       ...mapGetters([
         'initiatorSelect',
@@ -191,17 +192,17 @@
       AfAutocomplete
     },
     methods: {
-      __validate () {
+      validate () {
         if (Object.keys(this.$refs).length === 0) return false
-        return this.$refs.unit.__valid &&
-          this.$refs.app.__valid &&
-          this.$refs.relFrom.__valid &&
-          this.$refs.bldFrom.__valid &&
-          this.$refs.cont.__valid &&
-          (!this.$refs.prior || this.$refs.prior.__valid) &&
-          (!this.$refs.relTo || this.$refs.relTo.__valid)
+        return this.$refs.unit.isValid &&
+          this.$refs.app.isValid &&
+          this.$refs.relFrom.isValid &&
+          this.$refs.bldFrom.isValid &&
+          this.$refs.cont.isValid &&
+          (!this.$refs.prior || this.$refs.prior.isValid) &&
+          (!this.$refs.relTo || this.$refs.relTo.isValid)
       },
-      __onOkClick () {
+      onOkClick () {
         void this.$store.dispatch('doClaimInsert', {
           socket: this.$socket,
           cType: this.recType,
@@ -240,12 +241,6 @@
         this.recBuild = ''
       },
       inclFilter
-    },
-    created () {
-      mapEvent(this, true)
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
     }
   }
 </script>

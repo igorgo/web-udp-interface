@@ -17,7 +17,8 @@ export default {
     required: Boolean,
     minRows: Number,
     fixedFont: Boolean,
-    autofocus: Boolean
+    autofocus: Boolean,
+    disable: Boolean
   },
   components: { QInput },
   methods: {
@@ -37,7 +38,7 @@ export default {
         }
       }] : []
     },
-    __valid () {
+    isValid () {
       let b = true
       if (this.max) {
         b = b && ((this.value <= this.max) || (!this.$props.required && this.value === null))
@@ -59,7 +60,7 @@ export default {
       return b
     },
     __color () {
-      return this.__valid ? 'primary' : 'secondary'
+      return this.isValid ? 'primary' : 'secondary'
     }
   }
 }

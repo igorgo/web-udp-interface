@@ -26,7 +26,6 @@
     <af-load-cover :progress="progress"/>
     <claim-new
       ref="formNew"
-      @close="onNewClose"
       @complete="onNewComplete"
     />
   </div>
@@ -37,10 +36,9 @@
   import ClaimRow from './ClaimRow.vue'
   import ClaimPaginator from './ClaimPaginator.vue'
   import { QScrollArea, QList, QFixedPosition, QBtn, QIcon, BackToTop, TouchPan, scroll } from 'quasar-framework'
-  import { AfLoadCover } from '../base'
+  import { AfLoadCover, AfEventsMapper } from '../base'
   import { mapState } from 'vuex'
   import {ClaimNew} from './actions'
-  import {mapEvent} from '../../routines'
 
   export default {
     components: {
@@ -55,6 +53,7 @@
       AfLoadCover,
       ClaimNew
     },
+    mixins: [AfEventsMapper],
     computed: {
       ...mapState({
         currentCondition: state => state.claims.currentCondition,
@@ -87,11 +86,7 @@
         }
       },
       addClaim () {
-        mapEvent(this, false)
         this.$refs.formNew.open()
-      },
-      onNewClose () {
-        mapEvent(this, true)
       },
       onNewComplete () {
         void this.$store.dispatch('sendClaimsRequest', {socket: this.$socket})
@@ -130,7 +125,7 @@
     },
     data () {
       return {
-        eventMapper: {
+        eventsMap: {
           'key:arrow:down': this.__onKeyArrowDown,
           'key:enter': this.__onKeyEnter,
           'key:insert': this.addClaim,
@@ -141,12 +136,6 @@
           'claims:list:scroll:to': this.scrollToRecord
         }
       }
-    },
-    created () {
-      mapEvent(this, true)
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
     },
     directives: {
       BackToTop,

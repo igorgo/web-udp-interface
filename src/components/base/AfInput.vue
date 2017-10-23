@@ -14,6 +14,8 @@
     :fixed-font="fixedFont"
     :class="{'af-fixed-font': fixedFont}"
     :autofocus="autofocus"
+    :disabled="disable"
+    :disable="disable"
   />
 </template>
 <script>

@@ -17,12 +17,12 @@
   import {QList, QFixedPosition, QIcon, QBtn} from 'quasar-framework'
   import CondFilter from './CondFilter.vue'
   import {mapState} from 'vuex'
-  import {mapEvent} from '../../routines'
+  import {AfEventsMapper} from '../base'
 
   export default {
     data () {
       return {
-        eventMapper: {
+        eventsMap: {
           'key:arrow:down': this.__onKeyArrowDown,
           'key:arrow:up': this.__onKeyArrowUp,
           'key:f2': this.__editFilter,
@@ -30,6 +30,7 @@
         }
       }
     },
+    mixins: [AfEventsMapper],
     components: {
       CondFilter,
       QList,
@@ -63,12 +64,6 @@
     },
     mounted: function () {
       void this.$store.dispatch('getConditionsList', this.$socket)
-    },
-    created () {
-      mapEvent(this, true)
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
     }
   }
 </script>

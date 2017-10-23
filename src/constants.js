@@ -60,6 +60,28 @@ export const CLAIM_TYPE_OPTIONS = [
   }
 ]
 
+export const NOTES_HEADER_OPTIONS = [
+  {
+    label: 'Коментар',
+    value: 'Примечание'
+  },
+  {
+    label: 'Новини релізу',
+    value: 'Инсталлятор'
+  },
+  {
+    label: 'Документування',
+    value: 'Документування'
+  },
+  {
+    label: 'Уточнення',
+    value: 'Уточнение'
+  }
+]
+
+export const DEFAULT_HEADER = 'Примечание'
+export const DEFAULT_HEADER_INST = 'Инсталлятор'
+
 export const DAY_NAMES = [
   'неділя', 'понеділок', 'вівторок', 'середа', 'четвер', 'п\'ятниця', 'субота'
 ]

@@ -1,7 +1,7 @@
 <template>
   <af-modal-form ref="form"
                  title="Додавання файлів"
-                 :valid="__validate()"
+                 :valid="validate()"
                  :okHandle="doAttach"
                  ok-caption="Додати"
   >
@@ -16,17 +16,15 @@
 
 <script>
   import {mapState, mapGetters, mapActions} from 'vuex'
-  import {mapEvent} from '../../../routines'
-  import {AfFieldSet, AfUploader, AfModalForm} from '../../base'
+  import {AfFieldSet, AfUploader, AfModalForm, AfEventsMapper, AfMfMixin} from '../../base'
 
   export default {
     name: 'claim-attach',
-    props: {
-    },
+    mixins: [AfEventsMapper, AfMfMixin],
     data () {
       return {
         files: [],
-        eventMapper: {
+        eventsMap: {
           'claims:file:attached': this.__onFileAttached
         }
       }
@@ -40,7 +38,7 @@
       ...mapActions([
         'getClaimRecord'
       ]),
-      __validate () {
+      validate () {
         return this.files.length > 0
       },
       onUploaderChange (files) {
@@ -92,12 +90,6 @@
       ...mapGetters([
         'sessionID'
       ])
-    },
-    created () {
-      mapEvent(this, true)
-    },
-    beforeDestroy () {
-      mapEvent(this, false)
     }
   }
 </script>

@@ -10,6 +10,7 @@
     :filter="filter"
     :autofocus-filter="autofocusFilter"
     :disabled="disable"
+    :disable="disable"
     :after="additionalBtns"
   />
 </template>
@@ -34,9 +35,9 @@
     },
     computed: {
       __color () {
-        return this.__valid ? 'primary' : 'secondary'
+        return this.isValid ? 'primary' : 'secondary'
       },
-      __valid () {
+      isValid () {
         if (this.required) {
           let valid = false
           switch (typeof this.value) {
