@@ -14,6 +14,7 @@ import {
   CLAIM_FILE_ATTACHED,
   CLAIM_INSERT_DONE,
   CLAIM_DELETE_DONE,
+  CLAIM_ANNULL_DONE,
   CLAIM_UPDATE_DONE,
   CLAIM_NEXT_POINTS_GOT,
   CLAIM_NEXT_EXECS_GOT,
@@ -197,6 +198,10 @@ const mutations = {
     Events.$emit('progress:reset')
     Events.$emit('app:clame:updated')
   },
+  [CLAIM_ANNULL_DONE] () {
+    Events.$emit('progress:reset')
+    Events.$emit('app:clame:annul')
+  },
   [CLAIM_NEXT_POINTS_GOT] (state, {points}) {
     Events.$emit('app:nextpoints:got', points)
   },
@@ -342,6 +347,10 @@ const actions = {
   doClaimDelete ({state, getters}, {socket}) {
     Events.$emit('progress:set')
     socket.emit('do_claim_delete', { sessionID: getters.sessionID, id: state.claimRecord.id })
+  },
+  doClaimAnnull ({state, getters}, {socket}) {
+    Events.$emit('progress:set')
+    socket.emit('do_claim_annull', { sessionID: getters.sessionID, id: state.claimRecord.id })
   },
   claimGetNextPoints ({state, getters}, {socket}) {
     socket.emit('get_claim_next_points', { sessionID: getters.sessionID, id: state.claimRecord.id })

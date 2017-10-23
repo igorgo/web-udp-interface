@@ -65,7 +65,8 @@
     scroll, QPopover, QList, QItemSide, QItemMain, QItem
   } from 'quasar-framework'
   import {
-    MSG_CLAIM_DELETE_CONFIRM
+    MSG_CLAIM_DELETE_CONFIRM,
+    MSG_CLAIM_ANNULL_CONFIRM
   } from '../../../constants'
 
   export default {
@@ -205,6 +206,13 @@
         })
         console.log('delete1111')
       },
+      __annulClaim () {
+        this.$store.dispatch('doClaimAnnull', {socket: this.$socket})
+        this.$q.events.$once('app:clame:annulled', () => {
+          this.goBackToList()
+        })
+        console.log('annull1111')
+      },
       onAction (action) {
         this.$refs.popover.close()
         switch (action) {
@@ -224,7 +232,7 @@
             console.log('comment')
             break
           case 'annul':
-            console.log('annul')
+            AfConfirmDialog.confirm(MSG_CLAIM_ANNULL_CONFIRM, this.__annulClaim)
             break
           case 'prioritize':
             console.log('prioritize')
