@@ -1,7 +1,7 @@
 <template>
   <af-modal-form ref="form"
                  title="Додавання файлів"
-                 :valid="__validate()"
+                 :valid="validate()"
                  :okHandle="doAttach"
                  ok-caption="Додати"
   >
@@ -38,7 +38,7 @@
       ...mapActions([
         'getClaimRecord'
       ]),
-      __validate () {
+      validate () {
         return this.files.length > 0
       },
       onUploaderChange (files) {

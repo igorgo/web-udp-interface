@@ -2,7 +2,7 @@
   <div class="content">
     <div class="row justify-around">
       <div class="col text-center">
-        <q-btn small color="primary" icon="arrow back" class="claim-nav-title" :disabled="isFirstRecord"
+        <q-btn small color="primary" icon="arrow back" class="claim-nav-title" :disable="isFirstRecord"
                @click="claimStepRecord(-1)"><span>Попередня</span></q-btn>
       </div>
       <div class="col text-center" id="claim-nav-back">
@@ -12,7 +12,7 @@
         </q-btn>
       </div>
       <div class="col text-center">
-        <q-btn small color="primary" icon-right="arrow forward" class="claim-nav-title" :disabled="isLastRecord"
+        <q-btn small color="primary" icon-right="arrow forward" class="claim-nav-title" :disable="isLastRecord"
                @click="claimStepRecord(1)"><span>Наступна</span></q-btn>
       </div>
     </div>

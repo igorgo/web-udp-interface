@@ -30,7 +30,7 @@
         color="primary"
         @click="doLogin"
         slot="bottom-buttons"
-        :disabled="!isValid"
+        :disable="!isValid"
       >УВІЙТИ
       </q-btn>
       <q-btn

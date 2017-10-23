@@ -1,11 +1,10 @@
 <template>
   <af-modal-form ref="form"
                  title="Виправлення рекламації"
-                 :valid="__validate()"
-                 :okHandle="__onOkClick"
+                 :valid="validate()"
+                 :okHandle="onOkClick"
                  :scrollable="720"
   >
-    <!-- померять scrollable-->
     <div></div>
     <af-field-set caption="Параметри">
       <div>
@@ -26,7 +25,7 @@
           v-model="recApps"
           :options="appsByUnits"
           multiple
-          :disabled="appsDisabled"
+          :disable="appsDisabled"
           required
           clearable
         />
@@ -38,7 +37,7 @@
           v-model="recFuncs"
           :options="funcsByUnits"
           multiple
-          :disabled="funcsDisabled"
+          :disable="funcsDisabled"
           clearable
         />
       </div>
@@ -64,7 +63,7 @@
             :options="buildSelectList"
             required
             clearable
-            :disabled="!recRelease"
+            :disable="!recRelease"
           />
         </div>
       </div>
@@ -91,7 +90,7 @@
         v-model="recContent"
         fixed-font
         required
-        :disabled="hasHistory"
+        :disable="hasHistory"
       />
     </af-field-set>
   </af-modal-form>
@@ -151,16 +150,16 @@
       AfAutocomplete
     },
     methods: {
-      __validate () {
+      validate () {
         if (Object.keys(this.$refs).length === 0) return false
-        return this.$refs.unit.__valid &&
-          this.$refs.app.__valid &&
-          this.$refs.relFrom.__valid &&
-          this.$refs.bldFrom.__valid &&
-          this.$refs.cont.__valid &&
-          (!this.$refs.relTo || this.$refs.relTo.__valid)
+        return this.$refs.unit.isValid &&
+          this.$refs.app.isValid &&
+          this.$refs.relFrom.isValid &&
+          this.$refs.bldFrom.isValid &&
+          this.$refs.cont.isValid &&
+          (!this.$refs.relTo || this.$refs.relTo.isValid)
       },
-      __onOkClick () {
+      onOkClick () {
         void this.$store.dispatch('doClaimUpdate', {
           socket: this.$socket,
           cId: this.$store.state.claims.claimRecord.id,
@@ -186,7 +185,7 @@
       },
       __onClaimUpdated () {
         this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx: null })
-        this.close()
+        this.$refs.form.close()
       },
       onUnitChange () {
         this.recApps = []

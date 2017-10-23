@@ -13,14 +13,14 @@
           color="primary"
           @click="okHandle"
           slot="bottom-buttons"
-        >{{okCaption}}
+        >{{okCaption.toUpperCase()}}
         </q-btn>
         <q-btn
           flat
           color="negative"
           @click="close()"
           slot="bottom-buttons"
-        >Скасування
+        >СКАСУВАННЯ
         </q-btn>
       </af-form>
       <af-load-cover :progress="isActionInProgress"/>
