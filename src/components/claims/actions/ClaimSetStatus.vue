@@ -66,22 +66,11 @@
         </div>
       </div>
     </af-field-set>
-    <af-field-set caption="Коментар">
-      <af-select
-        ref="noteHeader"
-        label="Тип"
-        v-model="cNoteHeader"
-        :options="headers"
-        required
-      />
-      <af-input
-        ref="note"
-        type="textarea"
-        :min-rows="5"
-        v-model="cNote"
-        fixed-font
-      />
-    </af-field-set>
+    <claim-note-field-set
+      ref="comment"
+      :header="cNoteHeader"
+      :note="cNote"
+    />
   </af-modal-form>
 </template>
 
@@ -89,7 +78,8 @@
   import {} from 'quasar-framework'
   import {mapState, mapGetters} from 'vuex'
   import {AfEventsMapper, AfModalForm, AfMfMixin, AfFieldSet, AfSelect, AfInput} from '../../base'
-  import {NOTES_HEADER_OPTIONS, DEFAULT_HEADER, DEFAULT_HEADER_INST} from '../../../constants'
+  import ClaimNoteFieldSet from './ClaimNoteFieldSet.vue'
+  import {DEFAULT_HEADER, DEFAULT_HEADER_INST} from '../../../constants'
 
   export default {
     mixins: [AfMfMixin, AfEventsMapper],
@@ -112,7 +102,6 @@
         executors: [],
         cNote: null,
         cNoteHeader: null,
-        headers: NOTES_HEADER_OPTIONS,
         needExecutors: true,
         needRelease: false,
         needBuild: false
@@ -122,7 +111,8 @@
       AfModalForm,
       AfFieldSet,
       AfSelect,
-      AfInput
+      AfInput,
+      ClaimNoteFieldSet
     },
     methods: {
       validate () {
@@ -132,8 +122,8 @@
           (this.$refs.relTo ? this.$refs.relTo.isValid : true) &&
           (this.$refs.bldTo ? this.$refs.bldTo.isValid : true) &&
           (this.$refs.priority ? this.$refs.priority.isValid : true) &&
-          this.$refs.noteHeader.isValid &&
-          this.$refs.note.isValid
+          this.$refs.comment.$refs.noteHeader.isValid &&
+          this.$refs.comment.$refs.note.isValid
       },
       onOkClick () {
         void this.$store.dispatch('doClaimStatus', {
