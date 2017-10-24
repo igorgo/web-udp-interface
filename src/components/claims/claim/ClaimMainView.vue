@@ -37,6 +37,7 @@
     <claim-attach ref="formAttach"/>
     <claim-edit ref="formEdit"/>
     <claim-set-status ref="formStatus"/>
+    <claim-return ref="formReturn"/>
     <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
@@ -46,7 +47,8 @@
   import {
     ClaimAttach,
     ClaimEdit,
-    ClaimSetStatus
+    ClaimSetStatus,
+    ClaimReturn
   } from '../actions'
   import {
     ClaimCard,
@@ -80,6 +82,7 @@
       ClaimAttach,
       ClaimEdit,
       ClaimSetStatus,
+      ClaimReturn,
       QFixedPosition,
       QBtn,
       QScrollArea,
@@ -204,14 +207,12 @@
         this.$q.events.$once('app:clame:deleted', () => {
           this.goBackToList()
         })
-        console.log('delete1111')
       },
       __annulClaim () {
         this.$store.dispatch('doClaimAnnull', {socket: this.$socket})
         this.$q.events.$once('app:clame:annulled', () => {
           this.goBackToList()
         })
-        console.log('annull1111')
       },
       onAction (action) {
         this.$refs.popover.close()
@@ -226,7 +227,7 @@
             console.log('assign')
             break
           case 'return':
-            console.log('return')
+            this.$refs.formReturn.open()
             break
           case 'comment':
             console.log('comment')

@@ -18,7 +18,9 @@ import {
   CLAIM_UPDATE_DONE,
   CLAIM_NEXT_POINTS_GOT,
   CLAIM_NEXT_EXECS_GOT,
-  SOCKET_CLAIM_STATUS_DONE
+  SOCKET_CLAIM_STATUS_DONE,
+  CLAIM_RET_MESSAGE_GOT,
+  CLAIM_RETURN_DONE
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -211,6 +213,14 @@ const mutations = {
   [SOCKET_CLAIM_STATUS_DONE] () {
     Events.$emit('progress:reset')
     Events.$emit('app:clame:status:done')
+  },
+  [CLAIM_RET_MESSAGE_GOT] (state, {message}) {
+    Events.$emit('progress:reset')
+    Events.$emit('app:clame:retmsg:got', message)
+  },
+  [CLAIM_RETURN_DONE] () {
+    Events.$emit('progress:reset')
+    Events.$emit('app:clame:returned')
   }
 }
 
@@ -357,6 +367,14 @@ const actions = {
   },
   claimGetNextExecs ({state, getters}, {socket, pointId}) {
     socket.emit('get_claim_next_execs', { sessionID: getters.sessionID, id: state.claimRecord.id, pointId })
+  },
+  claimGetReturnMessage ({state, getters}, {socket}) {
+    Events.$emit('progress:set')
+    socket.emit('get_claim_ret_message', { sessionID: getters.sessionID, id: state.claimRecord.id })
+  },
+  doClaimReturn ({state, getters}, {socket, cNoteHeader, cNote}) {
+    Events.$emit('progress:set')
+    socket.emit('do_claim_return', {sessionID: getters.sessionID, cId: state.claimRecord.id, cNoteHeader, cNote})
   }
 }
 
