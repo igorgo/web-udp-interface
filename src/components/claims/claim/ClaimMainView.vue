@@ -38,6 +38,7 @@
     <claim-edit ref="formEdit"/>
     <claim-set-status ref="formStatus"/>
     <claim-return ref="formReturn"/>
+    <claim-send ref="formSend"/>
     <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
@@ -48,7 +49,8 @@
     ClaimAttach,
     ClaimEdit,
     ClaimSetStatus,
-    ClaimReturn
+    ClaimReturn,
+    ClaimSend
   } from '../actions'
   import {
     ClaimCard,
@@ -83,6 +85,7 @@
       ClaimEdit,
       ClaimSetStatus,
       ClaimReturn,
+      ClaimSend,
       QFixedPosition,
       QBtn,
       QScrollArea,
@@ -215,7 +218,6 @@
         })
       },
       onAction (action) {
-        this.$refs.popover.close()
         switch (action) {
           case 'edit':
             this.$refs.formEdit.open()
@@ -224,7 +226,7 @@
             this.$refs.formStatus.open()
             break
           case 'assign':
-            console.log('assign')
+            this.$refs.formSend.open()
             break
           case 'return':
             this.$refs.formReturn.open()
@@ -251,6 +253,7 @@
             console.log('setHelpStatus')
             break
         }
+        this.$refs.popover.close()
       }
     },
     data () {

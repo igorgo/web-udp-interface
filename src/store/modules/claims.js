@@ -20,7 +20,9 @@ import {
   CLAIM_NEXT_EXECS_GOT,
   SOCKET_CLAIM_STATUS_DONE,
   CLAIM_RET_MESSAGE_GOT,
-  CLAIM_RETURN_DONE
+  CLAIM_RETURN_DONE,
+  CLAIM_SEND_DONE,
+  CLAIM_CURR_EXECS_GOT
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -221,6 +223,14 @@ const mutations = {
   [CLAIM_RETURN_DONE] () {
     Events.$emit('progress:reset')
     Events.$emit('app:clame:returned')
+  },
+  [CLAIM_CURR_EXECS_GOT] (state, {executors}) {
+    Events.$emit('progress:reset')
+    Events.$emit('app:claim:curr:execs:got', executors)
+  },
+  [CLAIM_SEND_DONE] () {
+    Events.$emit('progress:reset')
+    Events.$emit('app:claim:send:done')
   }
 }
 
@@ -375,6 +385,21 @@ const actions = {
   doClaimReturn ({state, getters}, {socket, cNoteHeader, cNote}) {
     Events.$emit('progress:set')
     socket.emit('do_claim_return', {sessionID: getters.sessionID, cId: state.claimRecord.id, cNoteHeader, cNote})
+  },
+  doClaimSend ({state, getters}, {socket, cSendTo, cNoteHeader, cNote}) {
+    Events.$emit('progress:set')
+    socket.emit('do_claim_send', {
+      sessionID: getters.sessionID,
+      cId: state.claimRecord.id,
+      cType: state.claimRecord.claimType,
+      cStatus: state.claimRecord.claimState,
+      cSendTo,
+      cNoteHeader,
+      cNote
+    })
+  },
+  claimGetCurrExecs ({state, getters}, {socket, id}) {
+    socket.emit('get_claim_cur_execs', {sessionID: getters.sessionID, id: state.claimRecord.id})
   }
 }
 
