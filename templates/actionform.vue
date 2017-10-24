@@ -16,19 +16,16 @@
 <script>
   import {} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
-  import {AfEventsMapper, AfModalForm, AfMfMixin, AfFieldSet} from '../src/components/base' // change relative path
+  import {AfModalForm, AfMfMixin, AfFieldSet} from '../src/components/base' // change relative path
 
   export default {
     name: '',
-    mixins: [AfEventsMapper, AfMfMixin],
+    mixins: [AfMfMixin],
     props: [],
     data () {
       return {
         formTitle: 'ChangeTitle',
-        formMaxHeight: 600, // change this
-        eventsMap: {
-          // 'event': this.method
-        }
+        formMaxHeight: 600 // change this
       }
     },
     components: {
@@ -43,7 +40,8 @@
         // return this.$refs.ref.isValid &&
       },
       onOkClick () {
-        // void this.$store.dispatch('', {})
+        // this.$q.events.$once('event', handler)
+        // void this.$store.dispatch('', {socket: this.$socket})
       },
       open () {
         // init field values

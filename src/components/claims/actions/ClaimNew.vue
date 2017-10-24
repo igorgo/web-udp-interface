@@ -132,7 +132,7 @@
 </template>
 
 <script>
-  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete, AfEventsMapper, AfMfMixin} from '../../base'
+  import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete, AfMfMixin} from '../../base'
   import {QOptionGroup, QCheckbox} from 'quasar-framework'
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
   import {mapGetters} from 'vuex'
@@ -153,14 +153,11 @@
         recRelease: '',
         recBuild: '',
         recReleaseTo: '',
-        recContent: '',
-        eventsMap: {
-          'claims:inserted': this.__onClaimInserted
-        }
+        recContent: ''
       }
     },
     props: {},
-    mixins: [AfEventsMapper, AfMfMixin],
+    mixins: [AfMfMixin],
     computed: {
       ...mapGetters([
         'initiatorSelect',
@@ -203,6 +200,7 @@
           (!this.$refs.relTo || this.$refs.relTo.isValid)
       },
       onOkClick () {
+        this.$q.events.$once('claims:inserted', this.__onClaimInserted)
         void this.$store.dispatch('doClaimInsert', {
           socket: this.$socket,
           cType: this.recType,

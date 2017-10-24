@@ -68,8 +68,7 @@
     </af-field-set>
     <claim-note-field-set
       ref="comment"
-      :header="cNoteHeader"
-      :note="cNote"
+      v-model="noteObj"
     />
   </af-modal-form>
 </template>
@@ -77,19 +76,14 @@
 <script>
   import {} from 'quasar-framework'
   import {mapState, mapGetters} from 'vuex'
-  import {AfEventsMapper, AfModalForm, AfMfMixin, AfFieldSet, AfSelect, AfInput} from '../../base'
+  import {AfModalForm, AfMfMixin, AfFieldSet, AfSelect, AfInput} from '../../base'
   import ClaimNoteFieldSet from './ClaimNoteFieldSet.vue'
   import {DEFAULT_HEADER, DEFAULT_HEADER_INST} from '../../../constants'
 
   export default {
-    mixins: [AfMfMixin, AfEventsMapper],
+    mixins: [AfMfMixin],
     data () {
       return {
-        eventsMap: {
-          'app:nextpoints:got': this.setStatusOptions,
-          'app:nextexecs:got': this.setExecsOptions,
-          'app:clame:status:done': this.onActionComplete
-        },
         formTitle: 'Зміна статусу',
         formMaxHeight: 600,
         cStatus: null,
@@ -100,8 +94,10 @@
         statuses: {},
         statusesOptions: [],
         executors: [],
-        cNote: null,
-        cNoteHeader: null,
+        noteObj: {
+          note: null,
+          header: null
+        },
         needExecutors: true,
         needRelease: false,
         needBuild: false
@@ -126,12 +122,13 @@
           this.$refs.comment.$refs.note.isValid
       },
       onOkClick () {
+        this.$q.events.$once('app:clame:status:done', this.onActionComplete)
         void this.$store.dispatch('doClaimStatus', {
           socket: this.$socket,
           cStatus: this.statuses[this.cStatus].statCode,
           cSendTo: this.cSend,
-          cNoteHeader: this.cNoteHeader,
-          cNote: this.cNote,
+          cNoteHeader: this.noteObj.header,
+          cNote: this.noteObj.note,
           cPriority: this.cPriority,
           cRelTo: this.cRelTo,
           cBldTo: this.cBldTo
@@ -151,14 +148,17 @@
         this.cSend = null
         this.cBldTo = this.claimRec.buildTo
         this.cPriority = this.claimRec.priority
-        this.cNote = null
-        this.cNoteHeader = DEFAULT_HEADER
+        this.noteObj.note = null
+        this.noteObj.header = DEFAULT_HEADER
+        this.$q.events.$once('app:nextpoints:got', this.setStatusOptions)
         void this.$store.dispatch('claimGetNextPoints', { socket: this.$socket })
         this.$refs.relTo && this.$refs.relTo.$on('change', this.onRelChange)
       },
       setStatusOptions (points) {
-        this.statusesOptions = points.map(p => ({label: p.statCode, value: p.statId}))
-        points.forEach(p => { this.statuses[p.statId] = {statCode: p.statCode, statType: p.statType} })
+        this.statusesOptions = points.map(p => ({ label: p.statCode, value: p.statId }))
+        points.forEach(p => {
+          this.statuses[p.statId] = { statCode: p.statCode, statType: p.statType }
+        })
       },
       setExecsOptions (options) {
         this.executors = options
@@ -167,13 +167,14 @@
       onStatusChanged (val) {
         this.needRelease = this.statuses[val].statType > 0
         this.needBuild = this.statuses[val].statType === 2
-        this.cNoteHeader = this.needBuild ? DEFAULT_HEADER_INST : DEFAULT_HEADER
+        this.noteObj.header = this.needBuild ? DEFAULT_HEADER_INST : DEFAULT_HEADER
         this.cSend = null
         this.executors = []
         this.needExecutors = true
         this.cRelTo = this.claimRec.relTo
         this.cBldTo = this.claimRec.buildTo
         this.cPriority = this.claimRec.priority
+        this.$q.events.$once('app:nextexecs:got', this.setExecsOptions)
         void this.$store.dispatch('claimGetNextExecs', { socket: this.$socket, pointId: val })
       },
       onRelChange () {
@@ -203,6 +204,3 @@
     }
   }
 </script>
-
-<style lang="stylus">
-</style>

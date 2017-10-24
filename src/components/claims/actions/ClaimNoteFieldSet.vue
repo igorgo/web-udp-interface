@@ -1,9 +1,12 @@
 <template>
-  <af-field-set caption="Коментар">
+  <af-field-set
+    caption="Коментар"
+
+  >
     <af-select
       ref="noteHeader"
       label="Тип"
-      v-model="header"
+      v-model="value.header"
       :options="headers"
       required
     />
@@ -11,7 +14,7 @@
       ref="note"
       type="textarea"
       :min-rows="5"
-      v-model="note"
+      v-model="value.note"
       fixed-font
     />
   </af-field-set>
@@ -22,7 +25,9 @@
   import {NOTES_HEADER_OPTIONS} from '../../../constants'
   export default {
     name: 'claim-note-field-set',
-    props: ['header', 'note'],
+    props: {
+      value: Object
+    },
     data () {
       return {
         headers: NOTES_HEADER_OPTIONS

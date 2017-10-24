@@ -16,17 +16,14 @@
 
 <script>
   import {mapState, mapGetters, mapActions} from 'vuex'
-  import {AfFieldSet, AfUploader, AfModalForm, AfEventsMapper, AfMfMixin} from '../../base'
+  import {AfFieldSet, AfUploader, AfModalForm, AfMfMixin} from '../../base'
 
   export default {
     name: 'claim-attach',
-    mixins: [AfEventsMapper, AfMfMixin],
+    mixins: [AfMfMixin],
     data () {
       return {
-        files: [],
-        eventsMap: {
-          'claims:file:attached': this.__onFileAttached
-        }
+        files: []
       }
     },
     components: {
@@ -56,6 +53,7 @@
         const sessionID = this.sessionID
         const id = this.recId
         this.$q.events.$emit('progress:set')
+        this.$q.events.$on('claims:file:attached', this.__onFileAttached)
         this.files.forEach(file => {
           let reader = new FileReader()
           if (reader._realReader) reader = reader._realReader // Support Android Crosswalk
@@ -76,6 +74,7 @@
           this.$nextTick(() => {
             if (this.files.length === 0) {
               this.$q.events.$emit('progress:reset')
+              this.$q.events.$off('claims:file:attached', this.__onFileAttached)
               this.getClaimRecord({ socket: this.$socket, idx: null })
               this.$refs.form.close()
             }
