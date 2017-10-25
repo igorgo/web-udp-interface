@@ -52,7 +52,7 @@
     components: { QList, QItemSeparator, QListHeader, QIcon, MainMenuItem },
     methods: {
       logoff () {
-        void this.$store.dispatch('rootLogoff', { router: this.$router, socket: this.$socket })
+        void this.$store.dispatch('authDoLogoff', { router: this.$router, socket: this.$socket })
       }
     },
     computed: {

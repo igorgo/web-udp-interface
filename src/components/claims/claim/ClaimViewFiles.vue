@@ -1,9 +1,10 @@
 <template>
     <div v-if="files.length">
       <hr/>
-      <div v-for="item in files">
+      <div v-for="item in files" class="vertical-middle">
         <q-btn icon="file download" small flat round @click="download(item.id)"/>
         <span>{{item.path}} ({{fileSize(item.sizeBite)}})</span>
+        <q-btn v-if="item.own" icon="delete" small flat round @click="deleteDoc(item.id);"/>
       </div>
       <hr/>
     </div>
@@ -24,10 +25,13 @@
     methods: {
       ...mapActions([]),
       download (id) {
-        this.$socket.emit('get_linked_file', { sessionID: this.$store.getters.sessionID, id })
+        void this.$store.dispatch('downloadLinkedFile', { socket: this.$socket, id })
       },
       fileSize (size) {
         return hrFileSize(size)
+      },
+      deleteDoc (id) {
+        console.log(id)
       }
     },
     computed: {

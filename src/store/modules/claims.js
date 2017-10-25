@@ -1,26 +1,11 @@
 import {
-  CLAIMS_LIST,
   CLAIMS_FILTER_CHANGE,
   CLAIMS_SORT_CHANGE,
   CLAIMS_PAGE_CHANGE,
   CLAIMS_SORT_ORDER_CHANGE,
-  CLAIMS_RECORD_GOT,
   CLAIMS_START_RECORD_REQUEST,
   CLAIMS_SET_DO_NOT_UPDATE,
-  CLAIMS_HISTORY_GOT,
-  CLAIMS_FILES_GOT,
   CLAIMS_LIST_SCROLL,
-  CLAIM_AVAIL_ACTIONS_GOT,
-  CLAIM_FILE_ATTACHED,
-  CLAIM_INSERT_DONE,
-  CLAIM_DELETE_DONE,
-  CLAIM_ANNULL_DONE,
-  CLAIM_UPDATE_DONE,
-  CLAIM_NEXT_POINTS_GOT,
-  CLAIM_NEXT_EXECS_GOT,
-  SOCKET_CLAIM_STATUS_DONE,
-  CLAIM_RET_MESSAGE_GOT,
-  CLAIM_RETURN_DONE,
   CLAIM_SEND_DONE,
   CLAIM_CURR_EXECS_GOT
 } from '../mutation-types'
@@ -28,6 +13,28 @@ import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
 import {Events} from 'quasar-framework'
 import {formatDate, formatOnlyTime, formatDateFull} from '../../routines'
+import {
+  AE_PROGRESS_SET,
+  AE_PROGRESS_RESET
+} from '../../app-events'
+import {
+  mutateSockOk,
+  SE_LINKFILES_FIND,
+  SE_LINKFILES_UPLOAD,
+  SE_CLAIMS_FIND,
+  SE_CLAIMS_FIND_ONE,
+  SE_CLAIMS_HISTORY_FIND,
+  SE_CLAIMS_NEXTPOINTS_FIND,
+  SE_CLAIMS_NEXTEXECS_FIND,
+  SE_CLAIMS_AVAIL_ACTIONS_FIND,
+  SE_CLAIMS_DELETE,
+  SE_CLAIMS_ANNUL,
+  SE_CLAIMS_UPDATE,
+  SE_CLAIMS_SET_STATUS,
+  SE_CLAIMS_INSERT,
+  SE_CLAIMS_RETURN,
+  SE_CLAIMS_RETURN_MESSAGE
+} from '../../socket-events'
 
 const REQUEST_RECORD = 0b001
 const REQUEST_HISTORY = 0b010
@@ -42,10 +49,10 @@ function changeRequestsState (state, status, reset) {
     state.recordRequestsState += status
   }
   if (state.recordRequestsState === REQUEST_ALL_FINISH) {
-    Events.$emit('progress:reset')
+    Events.$emit(AE_PROGRESS_RESET)
   }
   else {
-    Events.$emit('progress:set')
+    Events.$emit(AE_PROGRESS_SET)
   }
 }
 
@@ -119,16 +126,16 @@ const getters = {
 }
 
 const mutations = {
-  [CLAIMS_LIST] (state, result) {
+  [mutateSockOk(SE_CLAIMS_FIND)] (state, {claims}) {
     state.newAddedClaimId = null
-    state.claimList = result.claims
-    state.allClaimsCount = result.allCnt
-    state.currentClaimLimit = result.limit
-    state.currentClaimPage = result.page
+    state.claimList = claims.claims
+    state.allClaimsCount = claims.allCnt
+    state.currentClaimLimit = claims.limit
+    state.currentClaimPage = claims.page
     state.claimListPages = Math.floor(state.allClaimsCount / state.currentClaimLimit) + 1
-    cache.set('claimListPage', result.page)
-    cache.set(['userData', 'LIST_LIMIT'], result.limit)
-    Events.$emit('progress:reset')
+    cache.set('claimListPage', claims.page)
+    cache.set(['userData', 'LIST_LIMIT'], claims.limit)
+    Events.$emit(AE_PROGRESS_RESET)
     if (state.claimRecordIndexWait !== null) {
       Events.$emit('claims:ready:to:step', { idx: state.claimRecordIndexWait })
       state.claimRecordIndexWait = null
@@ -138,7 +145,7 @@ const mutations = {
       Events.$emit('claims:new-portion')
     }
   },
-  [CLAIM_FILE_ATTACHED] (state, pl) {
+  [mutateSockOk(SE_LINKFILES_UPLOAD)] (state, pl) {
     Events.$emit('claims:file:attached', pl)
   },
   [CLAIMS_FILTER_CHANGE] (state, val) {
@@ -163,19 +170,19 @@ const mutations = {
     }
     state.claimActionsMask = 0
   },
-  [CLAIMS_RECORD_GOT] (state, record) {
+  [mutateSockOk(SE_CLAIMS_FIND_ONE)] (state, record) {
     state.claimRecord = record
     changeRequestsState(state, REQUEST_RECORD)
     state.claimRecordIndexActive = state.claimRecordIndexRequested
     state.claimRecordIndexRequested = null
     Events.$emit('claims:record:got')
   },
-  [CLAIMS_HISTORY_GOT] (state, { history }) {
+  [mutateSockOk(SE_CLAIMS_HISTORY_FIND)] (state, { history }) {
     state.claimHistory = history
     changeRequestsState(state, REQUEST_HISTORY)
     Events.$emit('claims:history:got')
   },
-  [CLAIMS_FILES_GOT] (state, { files }) {
+  [mutateSockOk(SE_LINKFILES_FIND)] (state, { files }) {
     state.claimFiles = files
     changeRequestsState(state, REQUEST_FILES)
     Events.$emit('claims:files:got')
@@ -186,42 +193,42 @@ const mutations = {
   [CLAIMS_LIST_SCROLL] (state, value) {
     state.claimRecordIndexActive = value
   },
-  [CLAIM_AVAIL_ACTIONS_GOT] (state, { id, actionsMask }) {
+  [mutateSockOk(SE_CLAIMS_AVAIL_ACTIONS_FIND)] (state, { id, actionsMask }) {
     if (state.claimList[state.claimRecordIndexActive].id === id) state.claimActionsMask = actionsMask
   },
-  [CLAIM_INSERT_DONE] (state, { id }) {
-    Events.$emit('progress:reset')
+  [mutateSockOk(SE_CLAIMS_INSERT)] (state, { id }) {
+    Events.$emit(AE_PROGRESS_RESET)
     state.newAddedClaimId = id
     Events.$emit('claims:inserted')
   },
-  [CLAIM_DELETE_DONE] () {
-    Events.$emit('progress:reset')
+  [mutateSockOk(SE_CLAIMS_DELETE)] () {
+    Events.$emit(AE_PROGRESS_RESET)
     Events.$emit('app:clame:deleted')
   },
-  [CLAIM_UPDATE_DONE] () {
-    Events.$emit('progress:reset')
+  [mutateSockOk(SE_CLAIMS_UPDATE)] () {
+    Events.$emit(AE_PROGRESS_RESET)
     Events.$emit('app:clame:updated')
   },
-  [CLAIM_ANNULL_DONE] () {
-    Events.$emit('progress:reset')
+  [mutateSockOk(SE_CLAIMS_ANNUL)] () {
+    Events.$emit(AE_PROGRESS_RESET)
     Events.$emit('app:clame:annulled')
   },
-  [CLAIM_NEXT_POINTS_GOT] (state, {points}) {
+  [mutateSockOk(SE_CLAIMS_NEXTPOINTS_FIND)] (state, {points}) {
     Events.$emit('app:nextpoints:got', points)
   },
-  [CLAIM_NEXT_EXECS_GOT] (state, {executors}) {
+  [mutateSockOk(SE_CLAIMS_NEXTEXECS_FIND)] (state, {executors}) {
     Events.$emit('app:nextexecs:got', executors)
   },
-  [SOCKET_CLAIM_STATUS_DONE] () {
-    Events.$emit('progress:reset')
+  [mutateSockOk(SE_CLAIMS_SET_STATUS)] () {
+    Events.$emit(AE_PROGRESS_RESET)
     Events.$emit('app:clame:status:done')
   },
-  [CLAIM_RET_MESSAGE_GOT] (state, {message}) {
-    Events.$emit('progress:reset')
+  [mutateSockOk(SE_CLAIMS_RETURN_MESSAGE)] (state, {message}) {
+    Events.$emit(AE_PROGRESS_RESET)
     Events.$emit('app:clame:retmsg:got', message)
   },
-  [CLAIM_RETURN_DONE] () {
-    Events.$emit('progress:reset')
+  [mutateSockOk(SE_CLAIMS_RETURN)] () {
+    Events.$emit(AE_PROGRESS_RESET)
     Events.$emit('app:clame:returned')
   },
   [CLAIM_CURR_EXECS_GOT] (state, {executors}) {
@@ -297,8 +304,8 @@ const actions = {
       sortStr = SORT_OPTIONS[state.currentClaimSort].field
       if (state.claimSortDesc) sortStr += ' DESC'
     }
-    Events.$emit('progress:set')
-    socket.emit('get_claim_list', {
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_FIND, {
       sessionID: getters.sessionID,
       conditionId: state.currentCondition,
       sortOrder: sortStr,
@@ -310,7 +317,7 @@ const actions = {
   getClaimRecord ({ commit, state, getters }, { socket, idx }) {
     if (idx === null) idx = state.claimRecordIndexActive
     commit(CLAIMS_START_RECORD_REQUEST, { idx })
-    socket.emit('get_claim_record', { sessionID: getters.sessionID, id: state.claimList[idx].id })
+    socket.emit(SE_CLAIMS_FIND_ONE, { sessionID: getters.sessionID, id: state.claimList[idx].id })
   },
   claimsSetDoNotUpdate ({ commit }, doNotUpdate) {
     commit(CLAIMS_SET_DO_NOT_UPDATE, doNotUpdate)
@@ -348,16 +355,16 @@ const actions = {
     Events.$emit('claims:list:scroll:to', { pos: i })
   },
   doClaimInsert ({getters}, { socket, ...rest }) {
-    Events.$emit('progress:set')
-    socket.emit('do_claim_insert', { sessionID: getters.sessionID, ...rest })
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_INSERT, { sessionID: getters.sessionID, ...rest })
   },
   doClaimUpdate ({getters}, { socket, ...rest }) {
-    Events.$emit('progress:set')
-    socket.emit('do_claim_update', { sessionID: getters.sessionID, ...rest })
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_UPDATE, { sessionID: getters.sessionID, ...rest })
   },
   doClaimStatus ({getters, state}, { socket, ...rest }) {
-    Events.$emit('progress:set')
-    socket.emit('do_claim_status', {
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_SET_STATUS, {
       sessionID: getters.sessionID,
       cId: state.claimRecord.id,
       cType: state.claimRecord.claimType,
@@ -365,26 +372,26 @@ const actions = {
     })
   },
   doClaimDelete ({state, getters}, {socket}) {
-    Events.$emit('progress:set')
-    socket.emit('do_claim_delete', { sessionID: getters.sessionID, id: state.claimRecord.id })
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_DELETE, { sessionID: getters.sessionID, id: state.claimRecord.id })
   },
   doClaimAnnull ({state, getters}, {socket}) {
-    Events.$emit('progress:set')
-    socket.emit('do_claim_annull', { sessionID: getters.sessionID, id: state.claimRecord.id })
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_ANNUL, { sessionID: getters.sessionID, id: state.claimRecord.id })
   },
   claimGetNextPoints ({state, getters}, {socket}) {
-    socket.emit('get_claim_next_points', { sessionID: getters.sessionID, id: state.claimRecord.id })
+    socket.emit(SE_CLAIMS_NEXTPOINTS_FIND, { sessionID: getters.sessionID, id: state.claimRecord.id })
   },
   claimGetNextExecs ({state, getters}, {socket, pointId}) {
-    socket.emit('get_claim_next_execs', { sessionID: getters.sessionID, id: state.claimRecord.id, pointId })
+    socket.emit(SE_CLAIMS_NEXTEXECS_FIND, { sessionID: getters.sessionID, id: state.claimRecord.id, pointId })
   },
   claimGetReturnMessage ({state, getters}, {socket}) {
-    Events.$emit('progress:set')
-    socket.emit('get_claim_ret_message', { sessionID: getters.sessionID, id: state.claimRecord.id })
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_RETURN_MESSAGE, { sessionID: getters.sessionID, id: state.claimRecord.id })
   },
   doClaimReturn ({state, getters}, {socket, cNoteHeader, cNote}) {
-    Events.$emit('progress:set')
-    socket.emit('do_claim_return', {sessionID: getters.sessionID, cId: state.claimRecord.id, cNoteHeader, cNote})
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_RETURN, {sessionID: getters.sessionID, cId: state.claimRecord.id, cNoteHeader, cNote})
   },
   doClaimSend ({state, getters}, {socket, cSendTo, cNoteHeader, cNote}) {
     Events.$emit('progress:set')

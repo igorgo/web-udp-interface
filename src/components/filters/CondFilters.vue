@@ -63,7 +63,7 @@
       }
     },
     mounted: function () {
-      void this.$store.dispatch('getConditionsList', this.$socket)
+      void this.$store.dispatch('getConditionsList', {socket: this.$socket})
     }
   }
 </script>

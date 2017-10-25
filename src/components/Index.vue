@@ -38,7 +38,7 @@
     data () {
       return {
         eventsMap: {
-          'app:unauthorized': this.__onUnauthorized,
+          'app:revalidate:session': this.__revalidateSession,
           'app:session:not:valid': this.__onSessionNonValid
         }
       }
@@ -52,9 +52,9 @@
       mainMenu
     },
     methods: {
-      __onUnauthorized () {
-        if (this.$store.state.auth.sessionID) {
-          this.$socket.emit('validate_session', {sessionID: this.$store.state.auth.sessionID})
+      __revalidateSession () {
+        if (this.$store.getters.sessionID) {
+          void this.$store.dispatch('validateSession', {socket: this.$socket})
         }
         else this.$router.push('/login')
       },

@@ -1,8 +1,17 @@
-import {MAIN_SET_CUR_RELEASES, LINKED_FILE_GOT} from '../mutation-types'
 import cache from '../../cache'
 import {formatDate} from '../../routines'
 import fileSaver from 'file-saver'
 import {Events} from 'quasar-framework'
+import {
+  AE_PROGRESS_SET,
+  AE_PROGRESS_RESET
+} from '../../app-events'
+import {
+  mutateSockOk,
+  SE_PUB_CURRENT_RELEASES,
+  SE_LINKFILES_DOWNLOAD,
+  SE_LINKFILES_UPLOAD
+} from '../../socket-events'
 
 function makeCurReleases (cursor) {
   function makeRelease (rownum) {
@@ -40,13 +49,13 @@ const getters = {
 }
 
 const mutations = {
-  [MAIN_SET_CUR_RELEASES] (state, result) {
-    state.curReleases = makeCurReleases(result)
+  [mutateSockOk(SE_PUB_CURRENT_RELEASES)] (state, {releases}) {
+    state.curReleases = makeCurReleases(releases)
     state.releasesLoaded = true
-    cache.set('curReleases', makeCurReleases(result))
-    Events.$emit('progress:reset')
+    cache.set('curReleases', makeCurReleases(releases))
+    Events.$emit(AE_PROGRESS_RESET)
   },
-  [LINKED_FILE_GOT] (state, {fileData, fileName, mimeType}) {
+  [mutateSockOk(SE_LINKFILES_DOWNLOAD)] (state, {fileData, fileName, mimeType}) {
     const blob = new Blob([fileData], {type: mimeType})
     fileSaver.saveAs(blob, fileName)
   }
@@ -55,9 +64,15 @@ const mutations = {
 const actions = {
   getCurReleases ({state}, {socket}) {
     if (!state.releasesLoaded) {
-      Events.$emit('progress:set')
-      socket.emit('get_cur_releases')
+      Events.$emit(AE_PROGRESS_SET)
+      socket.emit(SE_PUB_CURRENT_RELEASES)
     }
+  },
+  downloadLinkedFile ({getters}, {socket, id}) {
+    socket.emit(SE_LINKFILES_DOWNLOAD, { sessionID: getters.sessionID, id })
+  },
+  uploadLinkedFile ({getters}, {socket, id, filename, content}) {
+    socket.emit(SE_LINKFILES_UPLOAD, {sessionID: getters.sessionID, id, filename, content})
   }
 }
 

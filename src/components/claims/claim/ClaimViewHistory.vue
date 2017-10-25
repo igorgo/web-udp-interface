@@ -17,7 +17,10 @@
             Виконавець: <span class="af-hist-executor">{{content.newExecutor}}</span>
           </div>
         </div>
-        <pre v-if="content.comment" class="af-history-comment" :class="{'af-selectable' : isNotTouch}"><small>{{content.comment}}</small></pre>
+        <div v-if="content.comment">
+          <q-btn small round flat class="float-right" icon="mode edit" v-if="content.noteId" @click="editNote(content.noteId);"/>
+          <pre class="af-history-comment" :class="{'af-selectable' : isNotTouch}"><small>{{content.comment}}</small></pre>
+        </div>
         <div>
           <p class="text-italic text-grey">{{content.who}}, {{content.time}}</p>
         </div>
@@ -25,9 +28,10 @@
     </div>
   </div>
 </template>
+<!--q-btn small round flat class="float-right" icon="mode edit" v-if="content.noteId"/-->
 
 <script>
-  import {} from 'quasar-framework'
+  import {QBtn} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
 
   export default {
@@ -36,9 +40,12 @@
     data () {
       return {}
     },
-    components: {},
+    components: { QBtn },
     methods: {
-      ...mapActions([])
+      ...mapActions([]),
+      editNote (id) {
+        console.log(id)
+      }
     },
     computed: {
       ...mapState({

@@ -1,16 +1,23 @@
 import {
-  FILTER_LIST,
-  FILTER_GOT,
   FILTER_GET,
   FILTER_MODIFY,
   FILTER_CLEAR,
-  FILTER_SAVED,
-  FILTER_DELETED,
   FILTER_LIST_SCROLL,
   FILTER_SET_DO_NOT_UPDATE
 } from '../mutation-types'
 import { Events } from 'quasar-framework'
 import _ from 'lodash'
+import {
+  AE_PROGRESS_SET,
+  AE_PROGRESS_RESET
+} from '../../app-events'
+import {
+  mutateSockOk,
+  SE_CONDITIONS_CLAIMS_LIST,
+  SE_CONDITIONS_GET_ONE,
+  SE_CONDITIONS_SAVE,
+  SE_CONDITIONS_DELETE
+} from '../../socket-events'
 
 const emptyFilter = {
   claimNumb: '',
@@ -83,8 +90,8 @@ const getters = {
 }
 
 const mutations = {
-  [FILTER_LIST] (state, result) {
-    state.filters = result
+  [mutateSockOk(SE_CONDITIONS_CLAIMS_LIST)] (state, {filters}) {
+    state.filters = filters
     if (state.filters.length) {
       if (state.currentFilter.rn) {
         const i = _.findIndex(state.filters, f => f['RN'] === state.currentFilter.rn)
@@ -96,29 +103,29 @@ const mutations = {
   [FILTER_LIST_SCROLL] (state, i) {
     state.listIndex = i
   },
-  [FILTER_GOT] (state, result) {
+  [mutateSockOk(SE_CONDITIONS_GET_ONE)] (state, {filter}) {
     state.currentFilter = {
-      rn: result['P_RN'],
-      name: result['P_FILTER_NAME'],
-      claimNumb: result['P_CLAIM_NUMB'],
-      claimVersion: (result['P_CLAIM_VERS']),
-      claimRelease: result['P_CLAIM_RELEASE'],
-      claimBuild: result['P_CLAIM_BUILD'],
-      claimUnit: result['P_CLAIM_UNIT'],
-      claimApp: result['P_CLAIM_APP'],
-      imInitiator: result['P_CLAIM_IM_INIT'],
-      imExecutor: result['P_CLAIM_IM_PERF'],
-      claimContent: result['P_CLAIM_CONTENT']
+      rn: filter['P_RN'],
+      name: filter['P_FILTER_NAME'],
+      claimNumb: filter['P_CLAIM_NUMB'],
+      claimVersion: filter['P_CLAIM_VERS'],
+      claimRelease: filter['P_CLAIM_RELEASE'],
+      claimBuild: filter['P_CLAIM_BUILD'],
+      claimUnit: filter['P_CLAIM_UNIT'],
+      claimApp: filter['P_CLAIM_APP'],
+      imInitiator: filter['P_CLAIM_IM_INIT'],
+      imExecutor: filter['P_CLAIM_IM_PERF'],
+      claimContent: filter['P_CLAIM_CONTENT']
     }
-    Events.$emit('progress:reset')
+    Events.$emit(AE_PROGRESS_RESET)
   },
-  [FILTER_SAVED] (state, {P_OUT_RN}) {
+  [mutateSockOk(SE_CONDITIONS_SAVE)] (state, {P_OUT_RN}) {
     state.currentFilter.rn = P_OUT_RN
-    Events.$emit('progress:reset')
+    Events.$emit(AE_PROGRESS_RESET)
     Events.$emit('filter:saved')
   },
-  [FILTER_DELETED] () {
-    Events.$emit('progress:reset')
+  [mutateSockOk(SE_CONDITIONS_DELETE)] () {
+    Events.$emit(AE_PROGRESS_RESET)
     Events.$emit('filter:deleted')
   },
   [FILTER_GET] (state, from) {
@@ -171,8 +178,8 @@ const actions = {
     }
     else {
       if (!socket) return
-      Events.$emit('progress:set')
-      socket.emit('get_claim_condition', { sessionID: getters.sessionID, conditionId })
+      Events.$emit(AE_PROGRESS_SET)
+      socket.emit(SE_CONDITIONS_GET_ONE, { sessionID: getters.sessionID, conditionId })
     }
   },
   modifyFilterField ({commit}, {key, value}) {
@@ -183,12 +190,12 @@ const actions = {
   },
   saveConditionFilter ({state, getters}, {socket}) {
     if (!socket) return
-    socket.emit('save_claim_condition', {sessionID: getters.sessionID, ...state.currentFilter})
+    socket.emit(SE_CONDITIONS_SAVE, {sessionID: getters.sessionID, ...state.currentFilter})
   },
   deleteConditionFilter ({state, commit, getters}, {socket}) {
     if ((socket && state.currentFilter.rn)) {
-      Events.$emit('progress:set')
-      socket.emit('delete_claim_condition', {sessionID: getters.sessionID, rn: state.currentFilter.rn})
+      Events.$emit(AE_PROGRESS_SET)
+      socket.emit(SE_CONDITIONS_DELETE, {sessionID: getters.sessionID, rn: state.currentFilter.rn})
     }
   },
   conditionListScroll ({ state, commit }, n) {
@@ -201,10 +208,12 @@ const actions = {
   conditionSetDoNotUpdate ({commit}, doNotUpdate) {
     commit(FILTER_SET_DO_NOT_UPDATE, doNotUpdate)
   },
-  getConditionsList ({state, commit, getters}, socket) {
-    if (state.doNotUpdate) commit(FILTER_SET_DO_NOT_UPDATE, false)
+  getConditionsList ({state, commit, getters}, {socket}) {
+    if (state.doNotUpdate) {
+      commit(FILTER_SET_DO_NOT_UPDATE, false)
+    }
     else {
-      socket.emit('get_claim_conditions_list', {sessionID: getters.sessionID})
+      socket.emit(SE_CONDITIONS_CLAIMS_LIST, {sessionID: getters.sessionID})
     }
   }
 }
