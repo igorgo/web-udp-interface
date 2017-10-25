@@ -1,18 +1,20 @@
 'use strict'
 
 import {
-  STATIC_UNITNAMES_LOADED,
-  STATIC_APPNAMES_LOADED,
-  STATIC_BUILDS_LOADED,
-  ALL_PERSONS_LOADED,
-  APPS_BY_UNIT_GOT,
-  UNITS_EDIT_CHANGED,
-  FUNCS_BY_UNIT_GOT
+  UNITS_EDIT_CHANGED
 } from '../mutation-types'
 import cache from '../../cache'
 import * as _ from 'lodash'
 import {formatDate} from '../../routines'
-
+import {
+  mutateSockOk,
+  SE_STATDICT_ALL_UNITS,
+  SE_STATDICT_ALL_APPS,
+  SE_STATDICT_ALL_BUILDS,
+  SE_STATDICT_ALL_PERSONS,
+  SE_APPS_BY_UNIT,
+  SE_UNITFUNCS_BY_UNIT
+} from '../../socket-events'
 function array2AutoComplete (arr) {
   return {
     field: 'value',
@@ -38,18 +40,18 @@ const state = {
 }
 
 const mutations = {
-  [STATIC_UNITNAMES_LOADED] (state, pl) {
-    const unitsNames = pl.map(i => i['UNITNAME'])
+  [mutateSockOk(SE_STATDICT_ALL_UNITS)] (state, {units}) {
+    const unitsNames = units.map(i => i['UNITNAME'])
     state.unitsNames = unitsNames
     cache.set('unitsNames', unitsNames)
   },
-  [STATIC_APPNAMES_LOADED] (state, pl) {
+  [mutateSockOk(SE_STATDICT_ALL_APPS)] (state, pl) {
     const appsNames = pl.map(i => i['APPNAME'])
     state.appsNames = appsNames
     cache.set('appsNames', appsNames)
   },
-  [STATIC_BUILDS_LOADED] (state, pl) {
-    state.allBuilds = pl
+  [mutateSockOk(SE_STATDICT_ALL_BUILDS)] (state, {builds}) {
+    state.allBuilds = builds
     state.activeBuilds = []
     state.allBuilds.forEach(b => {
       if (b.version.startsWith('A')) {
@@ -77,17 +79,17 @@ const mutations = {
       })
     })
     cache.set('activeBuilds', state.activeBuilds)
-    cache.set('allBuilds', pl)
+    cache.set('allBuilds', builds)
   },
-  [ALL_PERSONS_LOADED] (state, pl) {
-    state.allPersons = pl
-    cache.set('allPersons', pl)
+  [mutateSockOk(SE_STATDICT_ALL_PERSONS)] (state, {persons}) {
+    state.allPersons = persons
+    cache.set('allPersons', persons)
   },
-  [APPS_BY_UNIT_GOT] (state, pl) {
-    state.unitApps = pl
+  [mutateSockOk(SE_APPS_BY_UNIT)] (state, {apps}) {
+    state.unitApps = apps
   },
-  [FUNCS_BY_UNIT_GOT] (state, pl) {
-    state.unitFuncs = pl
+  [mutateSockOk(SE_UNITFUNCS_BY_UNIT)] (state, {unitfuncs}) {
+    state.unitFuncs = unitfuncs
   },
   [UNITS_EDIT_CHANGED] (state) {
     state.unitApps = []
@@ -125,9 +127,9 @@ const actions = {
     this.timerUnitChange = setTimeout(
       () => {
         if (!socket || !units) return
-        socket.emit('get_apps_by_unit', { sessionID: getters.sessionID, units })
+        socket.emit(SE_APPS_BY_UNIT, { sessionID: getters.sessionID, units })
         if (units.split(';').length > 1) return
-        socket.emit('get_funcs_by_unit', { sessionID: getters.sessionID, units })
+        socket.emit(SE_UNITFUNCS_BY_UNIT, { sessionID: getters.sessionID, units })
       },
       1000,
       units

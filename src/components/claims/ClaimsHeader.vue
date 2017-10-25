@@ -74,7 +74,7 @@
     },
     name: 'claims-header',
     created: function () {
-      this.$socket.emit('get_claim_conditions_list', { sessionID: this.$store.getters.sessionID })
+      void this.$store.dispatch('getConditionsList', {socket: this.$socket})
     },
     methods: {
       onFilterChange (value) {

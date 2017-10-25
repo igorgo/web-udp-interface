@@ -1,14 +1,30 @@
 import {
   AUTH_CLEAR_ERROR,
-  AUTH_UNAUTHORIZED,
-  AUTH_ERROR,
-  AUTH_AUTHORIZED,
-  AUTH_SESSION_NOT_VALID,
-  AUTH_SESSION_VALIDATED,
-  AUTH_USER_DATA_LOADED
+  // AUTH_UNAUTHORIZED,
+  // AUTH_ERROR,
+  // AUTH_AUTHORIZED,
+  // AUTH_SESSION_NOT_VALID,
+  // AUTH_SESSION_VALIDATED,
+  // AUTH_USER_DATA_LOADED,
+  APP_SESSION_RESET
 } from '../mutation-types'
 import { Events } from 'quasar-framework'
 import cache from '../../cache'
+import {
+  mutateSockOk,
+  mutateSockErr,
+  actionSockOk,
+  actionSockErr,
+  SE_AUTH_LOGIN,
+  SE_AUTH_CHECK,
+  SE_AUTH_LOGOFF,
+  SE_AUTH_VALIDATE,
+  SE_USER_DATA_LOAD
+} from '../../socket-events'
+import {
+  AE_PROGRESS_SET,
+  AE_PROGRESS_RESET
+} from '../../app-events'
 
 function parseUserData (data) {
   let result = {}
@@ -29,11 +45,20 @@ const state = {
 }
 
 const mutations = {
-  [AUTH_UNAUTHORIZED] (state, msg) {
-    Events.$emit('app:unauthorized')
-    Events.$emit('progress:reset')
+  [APP_SESSION_RESET] (state) {
+    state.authorized = false
+    state.userFullName = ''
+    state.sessionID = ''
+    state.isPmo = false
+    cache.clear()
+    Events.$emit(AE_PROGRESS_RESET)
+    Events.$emit('app:session:not:valid')
   },
-  [AUTH_ERROR] (state, msg) {
+  [mutateSockErr(SE_AUTH_CHECK)] (state, msg) {
+    Events.$emit(AE_PROGRESS_RESET)
+    Events.$emit('app:revalidate:session')
+  },
+  [mutateSockErr(SE_AUTH_LOGIN)] (state, msg) {
     state.authError = msg.message
     state.authorized = false
     state.userFullName = ''
@@ -42,9 +67,9 @@ const mutations = {
     cache.unset('sessionID')
     cache.unset('userFullName')
     cache.unset('isPmo')
-    Events.$emit('progress:reset')
+    Events.$emit(AE_PROGRESS_RESET)
   },
-  [AUTH_AUTHORIZED] (state, msg) {
+  [mutateSockOk(SE_AUTH_LOGIN)] (state, msg) {
     state.authorized = true
     state.userFullName = msg.userFullName
     state.sessionID = msg.sessionID
@@ -52,22 +77,13 @@ const mutations = {
     cache.set('sessionID', msg.sessionID)
     cache.set('userFullName', msg.userFullName)
     cache.set('isPmo', !!msg.isPmo)
-    Events.$emit('progress:reset')
+    Events.$emit(AE_PROGRESS_RESET)
   },
-  [AUTH_SESSION_NOT_VALID] (state) {
-    state.authorized = false
-    state.userFullName = ''
-    state.sessionID = ''
-    state.isPmo = false
-    cache.clear()
-    Events.$emit('app:session:not:valid')
-    Events.$emit('progress:reset')
-  },
-  [AUTH_SESSION_VALIDATED] (state) {
+  [mutateSockOk(SE_AUTH_VALIDATE)] (state) {
     state.authorized = true
   },
-  [AUTH_USER_DATA_LOADED] (state, msg) {
-    state.userData = parseUserData(msg)
+  [mutateSockOk(SE_USER_DATA_LOAD)] (state, {userData}) {
+    state.userData = parseUserData(userData)
     cache.set('userData', state.userData)
     Events.$emit('app:userdata:loaded')
   },
@@ -85,8 +101,24 @@ const actions = {
   },
   authDoLogin ({commit}, {socket, ...pl}) {
     commit(AUTH_CLEAR_ERROR)
-    Events.$emit('progress:set')
-    socket.emit('authenticate', pl)
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_AUTH_LOGIN, pl)
+  },
+  authDoLogoff ({getters}, {socket, router, route = '/main'}) {
+    router && router.push(route)
+    socket && socket.emit(SE_AUTH_LOGOFF, { sessionID: getters.sessionID })
+  },
+  validateSession ({state}, {socket}) {
+    socket.emit(SE_AUTH_VALIDATE, {sessionID: state.sessionID})
+  },
+  [actionSockOk(SE_AUTH_LOGOFF)] ({commit}) {
+    commit(APP_SESSION_RESET)
+  },
+  [actionSockErr(SE_AUTH_LOGOFF)] ({commit}) {
+    commit(APP_SESSION_RESET)
+  },
+  [actionSockErr(SE_AUTH_VALIDATE)] ({commit}) {
+    commit(APP_SESSION_RESET)
   }
 }
 

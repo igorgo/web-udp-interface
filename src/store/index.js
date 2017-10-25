@@ -8,7 +8,7 @@ import claims from './modules/claims'
 import staticDicts from './modules/staticDicts'
 import {Toast, Platform, SessionStorage} from 'quasar-framework'
 import {SET_ACTION_PROGRESS, RESET_ACTION_PROGRESS} from './mutation-types'
-
+import {actionSockErr, SE_G_ORA_ERROR} from '../socket-events'
 Vue.use(Vuex)
 
 const state = {
@@ -26,13 +26,9 @@ export default new Vuex.Store({
     staticDicts
   },
   actions: {
-    socket_oraExecError (ctx, msg) {
-      ctx.commit(RESET_ACTION_PROGRESS)
-      Toast.create.negative(msg.message)
-    },
-    rootLogoff ({getters}, {socket, router, route = '/main'}) {
-      router && router.push(route)
-      socket && socket.emit('logoff', { sessionID: getters.sessionID })
+    [actionSockErr(SE_G_ORA_ERROR)] ({commit}, {message}) {
+      commit(RESET_ACTION_PROGRESS)
+      Toast.create.negative(message)
     },
     setActionProgress ({commit}) {
       commit(SET_ACTION_PROGRESS)

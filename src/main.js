@@ -57,8 +57,8 @@ Quasar.start(() => {
         this.$q.events.$emit(keyMapper[event.keyCode][modifiers])
       },
       onSocketConnect () {
-        if (this.$store.state.auth.sessionID) {
-          this.$socket.emit('validate_session', {sessionID: this.$store.state.auth.sessionID})
+        if (this.$store.getters.sessionID) {
+          this.$store.dispatch('validateSession', {socket: this.$socket})
         }
       }
     },
