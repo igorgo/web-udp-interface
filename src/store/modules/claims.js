@@ -5,9 +5,7 @@ import {
   CLAIMS_SORT_ORDER_CHANGE,
   CLAIMS_START_RECORD_REQUEST,
   CLAIMS_SET_DO_NOT_UPDATE,
-  CLAIMS_LIST_SCROLL,
-  CLAIM_SEND_DONE,
-  CLAIM_CURR_EXECS_GOT
+  CLAIMS_LIST_SCROLL
 } from '../mutation-types'
 import cache from '../../cache'
 import {SORT_OPTIONS} from '../../constants'
@@ -15,7 +13,22 @@ import {Events} from 'quasar-framework'
 import {formatDate, formatOnlyTime, formatDateFull} from '../../routines'
 import {
   AE_PROGRESS_SET,
-  AE_PROGRESS_RESET
+  AE_PROGRESS_RESET,
+  AE_CLAIMS_PAGE_SHIFTED,
+  AE_CLAIMS_PAGE_LOADED,
+  AE_CLAIMS_FILE_UPLOADED,
+  AE_CLAIMS_REC_INSERTED,
+  AE_CLAIMS_REC_DELETED,
+  AE_CLAIMS_REC_UPDATED,
+  AE_CLAIMS_REC_ANNULED,
+  AE_CLAIMS_REC_NEXTPOINTS_FOUND,
+  AE_CLAIMS_REC_NEXTEXECS_FOUND,
+  AE_CLAIMS_REC_STATUS_SET,
+  AE_CLAIMS_REC_RET_MESSAGE_FOUND,
+  AE_CLAIMS_REC_RETURNED,
+  AE_CLAIMS_REC_CURREXECS_FOUND,
+  AE_CLAIMS_REC_SENT,
+  AE_CLAIMS_PAGE_SCROLL_TO_REC
 } from '../../app-events'
 import {
   mutateSockOk,
@@ -33,7 +46,10 @@ import {
   SE_CLAIMS_SET_STATUS,
   SE_CLAIMS_INSERT,
   SE_CLAIMS_RETURN,
-  SE_CLAIMS_RETURN_MESSAGE
+  SE_CLAIMS_RETURN_MESSAGE,
+  SE_CLAIMS_SEND,
+  SE_CLAIMS_CURREXECS_FIND,
+  SE_USER_DATA_SAVE_PARAM
 } from '../../socket-events'
 
 const REQUEST_RECORD = 0b001
@@ -137,16 +153,16 @@ const mutations = {
     cache.set(['userData', 'LIST_LIMIT'], claims.limit)
     Events.$emit(AE_PROGRESS_RESET)
     if (state.claimRecordIndexWait !== null) {
-      Events.$emit('claims:ready:to:step', { idx: state.claimRecordIndexWait })
+      Events.$emit(AE_CLAIMS_PAGE_SHIFTED, { idx: state.claimRecordIndexWait })
       state.claimRecordIndexWait = null
     }
     else {
       state.claimRecordIndexActive = state.claimList.length ? 0 : null
-      Events.$emit('claims:new-portion')
+      Events.$emit(AE_CLAIMS_PAGE_LOADED)
     }
   },
   [mutateSockOk(SE_LINKFILES_UPLOAD)] (state, pl) {
-    Events.$emit('claims:file:attached', pl)
+    Events.$emit(AE_CLAIMS_FILE_UPLOADED, pl)
   },
   [CLAIMS_FILTER_CHANGE] (state, val) {
     state.currentCondition = val
@@ -170,22 +186,19 @@ const mutations = {
     }
     state.claimActionsMask = 0
   },
-  [mutateSockOk(SE_CLAIMS_FIND_ONE)] (state, record) {
-    state.claimRecord = record
+  [mutateSockOk(SE_CLAIMS_FIND_ONE)] (state, {claim}) {
+    state.claimRecord = claim
     changeRequestsState(state, REQUEST_RECORD)
     state.claimRecordIndexActive = state.claimRecordIndexRequested
     state.claimRecordIndexRequested = null
-    Events.$emit('claims:record:got')
   },
   [mutateSockOk(SE_CLAIMS_HISTORY_FIND)] (state, { history }) {
     state.claimHistory = history
     changeRequestsState(state, REQUEST_HISTORY)
-    Events.$emit('claims:history:got')
   },
   [mutateSockOk(SE_LINKFILES_FIND)] (state, { files }) {
     state.claimFiles = files
     changeRequestsState(state, REQUEST_FILES)
-    Events.$emit('claims:files:got')
   },
   [CLAIMS_SET_DO_NOT_UPDATE] (state, value) {
     state.doNotUpdate = value
@@ -199,45 +212,45 @@ const mutations = {
   [mutateSockOk(SE_CLAIMS_INSERT)] (state, { id }) {
     Events.$emit(AE_PROGRESS_RESET)
     state.newAddedClaimId = id
-    Events.$emit('claims:inserted')
+    Events.$emit(AE_CLAIMS_REC_INSERTED)
   },
   [mutateSockOk(SE_CLAIMS_DELETE)] () {
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('app:clame:deleted')
+    Events.$emit(AE_CLAIMS_REC_DELETED)
   },
   [mutateSockOk(SE_CLAIMS_UPDATE)] () {
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('app:clame:updated')
+    Events.$emit(AE_CLAIMS_REC_UPDATED)
   },
   [mutateSockOk(SE_CLAIMS_ANNUL)] () {
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('app:clame:annulled')
+    Events.$emit(AE_CLAIMS_REC_ANNULED)
   },
   [mutateSockOk(SE_CLAIMS_NEXTPOINTS_FIND)] (state, {points}) {
-    Events.$emit('app:nextpoints:got', points)
+    Events.$emit(AE_CLAIMS_REC_NEXTPOINTS_FOUND, points)
   },
   [mutateSockOk(SE_CLAIMS_NEXTEXECS_FIND)] (state, {executors}) {
-    Events.$emit('app:nextexecs:got', executors)
+    Events.$emit(AE_CLAIMS_REC_NEXTEXECS_FOUND, executors)
   },
   [mutateSockOk(SE_CLAIMS_SET_STATUS)] () {
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('app:clame:status:done')
+    Events.$emit(AE_CLAIMS_REC_STATUS_SET)
   },
   [mutateSockOk(SE_CLAIMS_RETURN_MESSAGE)] (state, {message}) {
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('app:clame:retmsg:got', message)
+    Events.$emit(AE_CLAIMS_REC_RET_MESSAGE_FOUND, message)
   },
   [mutateSockOk(SE_CLAIMS_RETURN)] () {
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('app:clame:returned')
+    Events.$emit(AE_CLAIMS_REC_RETURNED)
   },
-  [CLAIM_CURR_EXECS_GOT] (state, {executors}) {
-    Events.$emit('progress:reset')
-    Events.$emit('app:claim:curr:execs:got', executors)
+  [mutateSockOk(SE_CLAIMS_CURREXECS_FIND)] (state, {executors}) {
+    Events.$emit(AE_PROGRESS_RESET)
+    Events.$emit(AE_CLAIMS_REC_CURREXECS_FOUND, executors)
   },
-  [CLAIM_SEND_DONE] () {
-    Events.$emit('progress:reset')
-    Events.$emit('app:claim:send:done')
+  [mutateSockOk(SE_CLAIMS_SEND)] () {
+    Events.$emit(AE_PROGRESS_RESET)
+    Events.$emit(AE_CLAIMS_REC_SENT)
   }
 }
 
@@ -250,7 +263,7 @@ const actions = {
       socket,
       discardPage: true
     })
-    socket.emit('set_user_data_param', {
+    socket.emit(SE_USER_DATA_SAVE_PARAM, {
       sessionID: getters.sessionID,
       param: 'CLAIM_SORT',
       dataType: 'N',
@@ -266,7 +279,7 @@ const actions = {
       socket,
       discardPage: true
     })
-    socket.emit('set_user_data_param', {
+    socket.emit(SE_USER_DATA_SAVE_PARAM, {
       sessionID: getters.sessionID,
       param: 'CLAIM_SORT_ORDER',
       dataType: 'N',
@@ -286,7 +299,7 @@ const actions = {
       socket,
       discardPage: true
     })
-    socket.emit('set_user_data_param', {
+    socket.emit(SE_USER_DATA_SAVE_PARAM, {
       sessionID: getters.sessionID,
       param: 'LAST_COND',
       dataType: 'N',
@@ -296,7 +309,7 @@ const actions = {
   sendClaimsRequest ({ commit, state, getters }, { socket, discardPage = false }) {
     if (state.doNotUpdate) {
       commit(CLAIMS_SET_DO_NOT_UPDATE, false)
-      Events.$emit('claims:list:scroll:to', { pos: state.claimRecordIndexActive })
+      Events.$emit(AE_CLAIMS_PAGE_SCROLL_TO_REC, { pos: state.claimRecordIndexActive })
       return
     }
     let sortStr = ''
@@ -339,7 +352,7 @@ const actions = {
       }
     }
     if (needShiftPage) {
-      Events.$once('claims:ready:to:step', ({ idx }) => {
+      Events.$once(AE_CLAIMS_PAGE_SHIFTED, ({ idx }) => {
         dispatch('getClaimRecord', { socket, idx })
       })
       dispatch('sendClaimsRequest', { socket })
@@ -352,7 +365,7 @@ const actions = {
     if (state.claimRecordIndexActive === null) return
     const i = state.claimRecordIndexActive + n
     if ((i >= 0) && (i < state.claimList.length)) commit(CLAIMS_LIST_SCROLL, i)
-    Events.$emit('claims:list:scroll:to', { pos: i })
+    Events.$emit(AE_CLAIMS_PAGE_SCROLL_TO_REC, { pos: i })
   },
   doClaimInsert ({getters}, { socket, ...rest }) {
     Events.$emit(AE_PROGRESS_SET)
@@ -394,8 +407,8 @@ const actions = {
     socket.emit(SE_CLAIMS_RETURN, {sessionID: getters.sessionID, cId: state.claimRecord.id, cNoteHeader, cNote})
   },
   doClaimSend ({state, getters}, {socket, cSendTo, cNoteHeader, cNote}) {
-    Events.$emit('progress:set')
-    socket.emit('do_claim_send', {
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_CLAIMS_SEND, {
       sessionID: getters.sessionID,
       cId: state.claimRecord.id,
       cType: state.claimRecord.claimType,
@@ -406,7 +419,7 @@ const actions = {
     })
   },
   claimGetCurrExecs ({state, getters}, {socket, id}) {
-    socket.emit('get_claim_cur_execs', {sessionID: getters.sessionID, id: state.claimRecord.id})
+    socket.emit(SE_CLAIMS_CURREXECS_FIND, {sessionID: getters.sessionID, id: state.claimRecord.id})
   }
 }
 

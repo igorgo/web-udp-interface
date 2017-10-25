@@ -33,13 +33,17 @@
     QToolbarTitle
   } from 'quasar-framework'
   import mainMenu from './main-menu/MainMenu.vue'
+  import {
+    AE_SESSION_NOT_VALID,
+    AE_SESSION_REVALIDATE
+  } from '../app-events'
 
   export default {
     data () {
       return {
         eventsMap: {
-          'app:revalidate:session': this.__revalidateSession,
-          'app:session:not:valid': this.__onSessionNonValid
+          [AE_SESSION_REVALIDATE]: this.__revalidateSession,
+          [AE_SESSION_NOT_VALID]: this.__onSessionNonValid
         }
       }
     },

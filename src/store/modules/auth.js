@@ -23,7 +23,10 @@ import {
 } from '../../socket-events'
 import {
   AE_PROGRESS_SET,
-  AE_PROGRESS_RESET
+  AE_PROGRESS_RESET,
+  AE_SESSION_NOT_VALID,
+  AE_SESSION_REVALIDATE,
+  AE_USERDATA_LOADED
 } from '../../app-events'
 
 function parseUserData (data) {
@@ -52,11 +55,11 @@ const mutations = {
     state.isPmo = false
     cache.clear()
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('app:session:not:valid')
+    Events.$emit(AE_SESSION_NOT_VALID)
   },
   [mutateSockErr(SE_AUTH_CHECK)] (state, msg) {
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('app:revalidate:session')
+    Events.$emit(AE_SESSION_REVALIDATE)
   },
   [mutateSockErr(SE_AUTH_LOGIN)] (state, msg) {
     state.authError = msg.message
@@ -85,7 +88,7 @@ const mutations = {
   [mutateSockOk(SE_USER_DATA_LOAD)] (state, {userData}) {
     state.userData = parseUserData(userData)
     cache.set('userData', state.userData)
-    Events.$emit('app:userdata:loaded')
+    Events.$emit(AE_USERDATA_LOADED)
   },
   [AUTH_CLEAR_ERROR] (state) {
     state.authError = ''

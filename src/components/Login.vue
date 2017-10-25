@@ -50,6 +50,7 @@
   import {AfForm, AfFieldSet, AfInput, AfLoadCover, AfEventsMapper} from './base'
   import {mapState, mapGetters} from 'vuex'
   import {strNotEmpty} from '../routines'
+  import {AE_USERDATA_LOADED} from '../app-events'
 
   export default {
     name: '',
@@ -60,7 +61,7 @@
         userpass: '',
         eventsMap: {
           'key:enter': this.doLogin,
-          'app:userdata:loaded': this.toClaims
+          [AE_USERDATA_LOADED]: this.toClaims
         }
       }
     },

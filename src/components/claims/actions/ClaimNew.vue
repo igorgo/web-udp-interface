@@ -137,7 +137,7 @@
   import {CLAIM_TYPE_OPTIONS} from '../../../constants'
   import {mapGetters} from 'vuex'
   import {inclFilter} from '../../../routines'
-
+  import {AE_CLAIMS_REC_INSERTED} from '../../../app-events'
   export default {
     data () {
       return {
@@ -200,7 +200,7 @@
           (!this.$refs.relTo || this.$refs.relTo.isValid)
       },
       onOkClick () {
-        this.$q.events.$once('claims:inserted', this.__onClaimInserted)
+        this.$q.events.$once(AE_CLAIMS_REC_INSERTED, this.__onClaimInserted)
         void this.$store.dispatch('doClaimInsert', {
           socket: this.$socket,
           cType: this.recType,

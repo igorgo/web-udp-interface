@@ -151,6 +151,10 @@
   import {QCardTitle, QCheckbox, QBtn, QInput, QModal, Dialog} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {inclFilter} from '../../routines'
+  import {
+    AE_COND_CLAIMS_SAVED,
+    AE_COND_CLAIMS_DELETED
+  } from '../../app-events'
 
   export default {
     components: {
@@ -171,8 +175,8 @@
         filterName: '',
         justSave: true,
         eventsMap: {
-          'filter:saved': this.onFilterSaved,
-          'filter:deleted': this.onFilterDeleted
+          [AE_COND_CLAIMS_SAVED]: this.onFilterSaved,
+          [AE_COND_CLAIMS_DELETED]: this.onFilterDeleted
         }
       }
     },

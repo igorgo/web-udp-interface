@@ -15,11 +15,12 @@
 </template>
 
 <script>
-  import {mapState, mapGetters, mapActions} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
   import {AfFieldSet, AfUploader, AfModalForm, AfMfMixin} from '../../base'
   import {
     AE_PROGRESS_SET,
-    AE_PROGRESS_RESET
+    AE_PROGRESS_RESET,
+    AE_CLAIMS_FILE_UPLOADED
   } from '../../../app-events'
 
   export default {
@@ -56,7 +57,7 @@
       doAttach () {
         const id = this.recId
         this.$q.events.$emit(AE_PROGRESS_SET)
-        this.$q.events.$on('claims:file:attached', this.__onFileAttached)
+        this.$q.events.$on(AE_CLAIMS_FILE_UPLOADED, this.__onFileAttached)
         this.files.forEach(file => {
           let reader = new FileReader()
           if (reader._realReader) reader = reader._realReader // Support Android Crosswalk
@@ -77,7 +78,7 @@
           this.$nextTick(() => {
             if (this.files.length === 0) {
               this.$q.events.$emit(AE_PROGRESS_RESET)
-              this.$q.events.$off('claims:file:attached', this.__onFileAttached)
+              this.$q.events.$off(AE_CLAIMS_FILE_UPLOADED, this.__onFileAttached)
               this.getClaimRecord({ socket: this.$socket, idx: null })
               this.$refs.form.close()
             }
@@ -88,7 +89,7 @@
     computed: {
       ...mapState({
         recId: state => state.claims.claimRecord.id
-      }),
+      })
     }
   }
 </script>

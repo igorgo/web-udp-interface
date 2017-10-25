@@ -9,7 +9,9 @@ import { Events } from 'quasar-framework'
 import _ from 'lodash'
 import {
   AE_PROGRESS_SET,
-  AE_PROGRESS_RESET
+  AE_PROGRESS_RESET,
+  AE_COND_CLAIMS_SAVED,
+  AE_COND_CLAIMS_DELETED
 } from '../../app-events'
 import {
   mutateSockOk,
@@ -122,11 +124,11 @@ const mutations = {
   [mutateSockOk(SE_CONDITIONS_SAVE)] (state, {P_OUT_RN}) {
     state.currentFilter.rn = P_OUT_RN
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('filter:saved')
+    Events.$emit(AE_COND_CLAIMS_SAVED)
   },
   [mutateSockOk(SE_CONDITIONS_DELETE)] () {
     Events.$emit(AE_PROGRESS_RESET)
-    Events.$emit('filter:deleted')
+    Events.$emit(AE_COND_CLAIMS_DELETED)
   },
   [FILTER_GET] (state, from) {
     state.invokedByClaims = from === 'claims'

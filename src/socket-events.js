@@ -15,6 +15,7 @@ module.exports =
     SE_AUTH_CHECK: 'sock:auth:check',
     SE_AUTH_VALIDATE: 'sock:auth:validate',
     SE_USER_DATA_LOAD: 'sock:userdata:load',
+    SE_USER_DATA_SAVE_PARAM: 'sock:userdata:save:param',
     SE_PUB_CURRENT_RELEASES: 'sock:pub:curr:releases',
     SE_STATDICT_ALL_UNITS: 'sock:statdict:all:units',
     SE_STATDICT_ALL_APPS: 'sock:statdict:all:apps',
@@ -42,5 +43,6 @@ module.exports =
     SE_CLAIMS_INSERT: 'sock:claims:insert',
     SE_CLAIMS_RETURN: 'sock:claims:return',
     SE_CLAIMS_RETURN_MESSAGE: 'sock:claims:return:message',
-    SE_CLAIMS_SEND: 'sock:claims:send'
+    SE_CLAIMS_SEND: 'sock:claims:send',
+    SE_CLAIMS_CURREXECS_FIND: 'sock:claims:currexecs:find'
   }

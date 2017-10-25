@@ -19,6 +19,10 @@
   import {AfModalForm, AfMfMixin, AfFieldSet} from '../../base'
   import ClaimNoteFieldSet from './ClaimNoteFieldSet.vue'
   import {DEFAULT_HEADER} from '../../../constants'
+  import {
+    AE_CLAIMS_REC_RET_MESSAGE_FOUND,
+    AE_CLAIMS_REC_RETURNED
+  } from '../../../app-events'
 
   export default {
     mixins: [AfMfMixin],
@@ -45,7 +49,7 @@
           this.$refs.comment.$refs.note.isValid
       },
       onOkClick () {
-        this.$q.events.$once('app:clame:returned', () => {
+        this.$q.events.$once(AE_CLAIMS_REC_RETURNED, () => {
           this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx: null })
           this.$refs.form.close()
         })
@@ -57,7 +61,7 @@
       },
       open () {
         this.$refs.form.open()
-        this.$q.events.$once('app:clame:retmsg:got', (message) => {
+        this.$q.events.$once(AE_CLAIMS_REC_RET_MESSAGE_FOUND, (message) => {
           this.returnMessage = message
         })
         void this.$store.dispatch('claimGetReturnMessage', { socket: this.$socket })

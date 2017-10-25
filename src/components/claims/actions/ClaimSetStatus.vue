@@ -79,6 +79,11 @@
   import {AfModalForm, AfMfMixin, AfFieldSet, AfSelect, AfInput} from '../../base'
   import ClaimNoteFieldSet from './ClaimNoteFieldSet.vue'
   import {DEFAULT_HEADER, DEFAULT_HEADER_INST} from '../../../constants'
+  import {
+    AE_CLAIMS_REC_NEXTPOINTS_FOUND,
+    AE_CLAIMS_REC_NEXTEXECS_FOUND,
+    AE_CLAIMS_REC_STATUS_SET
+  } from '../../../app-events'
 
   export default {
     mixins: [AfMfMixin],
@@ -122,7 +127,7 @@
           this.$refs.comment.$refs.note.isValid
       },
       onOkClick () {
-        this.$q.events.$once('app:clame:status:done', this.onActionComplete)
+        this.$q.events.$once(AE_CLAIMS_REC_STATUS_SET, this.onActionComplete)
         void this.$store.dispatch('doClaimStatus', {
           socket: this.$socket,
           cStatus: this.statuses[this.cStatus].statCode,
@@ -150,7 +155,7 @@
         this.cPriority = this.claimRec.priority
         this.noteObj.note = null
         this.noteObj.header = DEFAULT_HEADER
-        this.$q.events.$once('app:nextpoints:got', this.setStatusOptions)
+        this.$q.events.$once(AE_CLAIMS_REC_NEXTPOINTS_FOUND, this.setStatusOptions)
         void this.$store.dispatch('claimGetNextPoints', { socket: this.$socket })
         this.$refs.relTo && this.$refs.relTo.$on('change', this.onRelChange)
       },
@@ -174,7 +179,7 @@
         this.cRelTo = this.claimRec.relTo
         this.cBldTo = this.claimRec.buildTo
         this.cPriority = this.claimRec.priority
-        this.$q.events.$once('app:nextexecs:got', this.setExecsOptions)
+        this.$q.events.$once(AE_CLAIMS_REC_NEXTEXECS_FOUND, this.setExecsOptions)
         void this.$store.dispatch('claimGetNextExecs', { socket: this.$socket, pointId: val })
       },
       onRelChange () {

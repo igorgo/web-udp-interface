@@ -39,6 +39,10 @@
   import { AfLoadCover, AfEventsMapper } from '../base'
   import { mapState } from 'vuex'
   import {ClaimNew} from './actions'
+  import {
+    AE_CLAIMS_PAGE_LOADED,
+    AE_CLAIMS_PAGE_SCROLL_TO_REC
+  } from '../../app-events'
 
   export default {
     components: {
@@ -132,8 +136,8 @@
           'key:arrow:up': this.__onKeyArrowUp,
           'key:arrow:left:ctrl': this.__onPrevPage,
           'key:arrow:right:ctrl': this.__onNextPage,
-          'claims:new-portion': this.newPortionHandler,
-          'claims:list:scroll:to': this.scrollToRecord
+          [AE_CLAIMS_PAGE_LOADED]: this.newPortionHandler,
+          [AE_CLAIMS_PAGE_SCROLL_TO_REC]: this.scrollToRecord
         }
       }
     },

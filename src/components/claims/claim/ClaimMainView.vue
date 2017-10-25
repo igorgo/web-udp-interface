@@ -72,6 +72,10 @@
     MSG_CLAIM_DELETE_CONFIRM,
     MSG_CLAIM_ANNULL_CONFIRM
   } from '../../../constants'
+  import {
+    AE_CLAIMS_REC_DELETED,
+    AE_CLAIMS_REC_ANNULED
+  } from '../../../app-events'
 
   export default {
     components: {
@@ -207,13 +211,13 @@
       },
       __deleteClaim () {
         this.$store.dispatch('doClaimDelete', {socket: this.$socket})
-        this.$q.events.$once('app:clame:deleted', () => {
+        this.$q.events.$once(AE_CLAIMS_REC_DELETED, () => {
           this.goBackToList()
         })
       },
       __annulClaim () {
         this.$store.dispatch('doClaimAnnull', {socket: this.$socket})
-        this.$q.events.$once('app:clame:annulled', () => {
+        this.$q.events.$once(AE_CLAIMS_REC_ANNULED, () => {
           this.goBackToList()
         })
       },

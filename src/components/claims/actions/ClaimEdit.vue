@@ -100,6 +100,7 @@
   import {AfModalForm, AfFieldSet, AfInput, AfSelect, AfAutocomplete, AfMfMixin} from '../../base'
   import {mapGetters} from 'vuex'
   import {inclFilter} from '../../../routines'
+  import {AE_CLAIMS_REC_UPDATED} from '../../../app-events'
 
   export default {
     data () {
@@ -156,7 +157,7 @@
           (!this.$refs.relTo || this.$refs.relTo.isValid)
       },
       onOkClick () {
-        this.$q.events.$once('app:clame:updated', this.__onClaimUpdated)
+        this.$q.events.$once(AE_CLAIMS_REC_UPDATED, this.__onClaimUpdated)
         void this.$store.dispatch('doClaimUpdate', {
           socket: this.$socket,
           cId: this.$store.state.claims.claimRecord.id,
@@ -181,7 +182,6 @@
         this.$refs.form.open()
       },
       __onClaimUpdated () {
-        console.log('app:clame:updated')
         this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx: null })
         this.$refs.form.close()
       },

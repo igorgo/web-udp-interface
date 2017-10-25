@@ -29,6 +29,10 @@
   import {AfModalForm, AfMfMixin, AfFieldSet, AfSelect} from '../../base'
   import ClaimNoteFieldSet from './ClaimNoteFieldSet.vue'
   import {DEFAULT_HEADER} from '../../../constants'
+  import {
+    AE_CLAIMS_REC_CURREXECS_FOUND,
+    AE_CLAIMS_REC_SENT
+  } from '../../../app-events'
 
   export default {
     mixins: [AfMfMixin],
@@ -58,7 +62,7 @@
           this.$refs.comment.$refs.note.isValid
       },
       onOkClick () {
-        this.$q.events.$once('app:claim:send:done', () => {
+        this.$q.events.$once(AE_CLAIMS_REC_SENT, () => {
           this.$store.dispatch('getClaimRecord', { socket: this.$socket, idx: null })
           this.$refs.form.close()
         })
@@ -76,7 +80,7 @@
         this.cSend = null
         this.noteObj.note = null
         this.noteObj.header = DEFAULT_HEADER
-        this.$q.events.$once('app:claim:curr:execs:got', executors => {
+        this.$q.events.$once(AE_CLAIMS_REC_CURREXECS_FOUND, executors => {
           this.executors = executors
         })
         void this.$store.dispatch('claimGetCurrExecs', { socket: this.$socket })
