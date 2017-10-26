@@ -93,14 +93,3 @@
     }
   }
 </script>
-
-<style lang="stylus">
-  @import '~variables'
-  .sort-icon .q-checkbox-checked, .sort-icon .q-checkbox-unchecked
-    height 54px !important
-    width 30px !important
-    font-size 54px !important
-    margin-left 5px
-    color $secondary
-
-</style>

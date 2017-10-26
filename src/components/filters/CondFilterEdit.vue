@@ -24,6 +24,12 @@
             @input="updateFilter('claimNumb', $event)"
             label="Номер рекламації"
           />
+          <af-multi-select
+            label="Тип"
+            v-model="currentFilterEdit.claimType"
+            :options="typeOptions"
+            @change="updateFilter('claimType', $event)"
+          />
         </af-field-set>
         <af-field-set caption="Система">
           <af-autocomplete
@@ -151,6 +157,7 @@
   import {QCardTitle, QCheckbox, QBtn, QInput, QModal, Dialog} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {inclFilter} from '../../routines'
+  import {CLAIM_TYPE_OPTIONS} from '../../constants'
   import {
     AE_COND_CLAIMS_SAVED,
     AE_COND_CLAIMS_DELETED
@@ -177,7 +184,8 @@
         eventsMap: {
           [AE_COND_CLAIMS_SAVED]: this.onFilterSaved,
           [AE_COND_CLAIMS_DELETED]: this.onFilterDeleted
-        }
+        },
+        typeOptions: CLAIM_TYPE_OPTIONS
       }
     },
     methods: {

@@ -30,7 +30,8 @@ const emptyFilter = {
   claimApp: '',
   imInitiator: null,
   imExecutor: null,
-  claimContent: ''
+  claimContent: '',
+  claimType: ''
 }
 
 const state = {
@@ -64,7 +65,11 @@ const getters = {
     let cv = {...state.currentFilter}
     const ver = state.currentFilter.claimVersion ? state.currentFilter.claimVersion.split(';') : []
     const rel = state.currentFilter.claimRelease ? state.currentFilter.claimRelease.split(';') : []
+    console.log(state.currentFilter.claimType)
+    console.log(state.currentFilter.claimRelease)
+    const type = state.currentFilter.claimType ? state.currentFilter.claimType.split(';') : []
     cv.claimVersion = ver
+    cv.claimType = type
     cv.claimRelease = {
       disable: ver.length !== 1,
       value: rel
@@ -110,6 +115,7 @@ const mutations = {
       rn: filter['P_RN'],
       name: filter['P_FILTER_NAME'],
       claimNumb: filter['P_CLAIM_NUMB'],
+      claimType: filter['P_CLAIM_TYPE'],
       claimVersion: filter['P_CLAIM_VERS'],
       claimRelease: filter['P_CLAIM_RELEASE'],
       claimBuild: filter['P_CLAIM_BUILD'],
@@ -163,6 +169,9 @@ const mutations = {
         break
       case 'claimBuild':
         state.currentFilter.claimBuild = value.join(';')
+        break
+      case 'claimType':
+        state.currentFilter.claimType = value.join(';')
         break
       default:
         state.currentFilter[key] = value

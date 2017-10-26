@@ -38,7 +38,6 @@
             <div class="col-sm-6 col-xs-12" style="margin-bottom: 5px" v-if="claimRec.executor">
               <div v-if="claimRec.executor">Виконавець&nbsp;<span class="token bg-teal-14">{{claimRec.executor}}</span></div>
             </div>
-
           </div>
         </div>
       </q-card-main>
