@@ -9,6 +9,8 @@
       v-model="value.header"
       :options="headers"
       required
+      :disable="headerDisable"
+      @change="__change"
     />
     <af-input
       ref="note"
@@ -16,6 +18,9 @@
       :min-rows="5"
       v-model="value.note"
       fixed-font
+      :disable="noteDisable"
+      :required="required"
+      @change="__change"
     />
   </af-field-set>
 </template>
@@ -26,11 +31,28 @@
   export default {
     name: 'claim-note-field-set',
     props: {
-      value: Object
+      value: Object,
+      headerDisable: {
+        type: Boolean,
+        default: false
+      },
+      noteDisable: {
+        type: Boolean,
+        default: false
+      },
+      required: {
+        type: Boolean,
+        default: false
+      }
     },
     data () {
       return {
         headers: NOTES_HEADER_OPTIONS
+      }
+    },
+    methods: {
+      __change () {
+        this.$emit('change')
       }
     },
     components: {

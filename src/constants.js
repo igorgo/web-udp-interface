@@ -95,4 +95,11 @@ export const STABLE_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TY
 export const BETA_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3GHDWmeQWhUdmJSalV5WGc'
 
 export const MSG_CLAIM_DELETE_CONFIRM = 'Ви дійсно бажаєте видалити рекламацію?'
-export const MSG_CLAIM_ANNULL_CONFIRM = 'Ви дійсно бажаєте анулювати рекламацію?'
+export const MSG_CLAIM_ANNUL_CONFIRM = 'Ви дійсно бажаєте анулювати рекламацію?'
+
+export const FORM_EDIT_MODES = {
+  NEW: 0,
+  DUP: 1,
+  EDIT: 2,
+  VIEW: 3
+}

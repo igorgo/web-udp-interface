@@ -26,5 +26,6 @@ module.exports = {
   AE_CLAIMS_REC_RET_MESSAGE_FOUND: 'app:claims:rec:ret:message:found',
   AE_CLAIMS_REC_RETURNED: 'app:claims:rec:returned',
   AE_CLAIMS_REC_CURREXECS_FOUND: 'app:claims:rec:currexecs:found',
-  AE_CLAIMS_REC_SENT: 'app:claims:rec:sent'
+  AE_CLAIMS_REC_SENT: 'app:claims:rec:sent',
+  AE_CLAIMS_NOTE_EDIT_CLICK: 'app:claims:note:edit:click'
 }

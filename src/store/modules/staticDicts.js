@@ -45,8 +45,8 @@ const mutations = {
     state.unitsNames = unitsNames
     cache.set('unitsNames', unitsNames)
   },
-  [mutateSockOk(SE_STATDICT_ALL_APPS)] (state, pl) {
-    const appsNames = pl.map(i => i['APPNAME'])
+  [mutateSockOk(SE_STATDICT_ALL_APPS)] (state, {apps}) {
+    const appsNames = apps.map(i => i['APPNAME'])
     state.appsNames = appsNames
     cache.set('appsNames', appsNames)
   },

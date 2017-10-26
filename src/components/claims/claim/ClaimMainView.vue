@@ -39,6 +39,7 @@
     <claim-set-status ref="formStatus"/>
     <claim-return ref="formReturn"/>
     <claim-send ref="formSend"/>
+    <claim-note-edit ref="formNote"/>
     <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
@@ -50,7 +51,8 @@
     ClaimEdit,
     ClaimSetStatus,
     ClaimReturn,
-    ClaimSend
+    ClaimSend,
+    ClaimNoteEdit
   } from '../actions'
   import {
     ClaimCard,
@@ -70,11 +72,13 @@
   } from 'quasar-framework'
   import {
     MSG_CLAIM_DELETE_CONFIRM,
-    MSG_CLAIM_ANNULL_CONFIRM
+    MSG_CLAIM_ANNUL_CONFIRM,
+    FORM_EDIT_MODES
   } from '../../../constants'
   import {
     AE_CLAIMS_REC_DELETED,
-    AE_CLAIMS_REC_ANNULED
+    AE_CLAIMS_REC_ANNULED,
+    AE_CLAIMS_NOTE_EDIT_CLICK
   } from '../../../app-events'
 
   export default {
@@ -90,6 +94,7 @@
       ClaimSetStatus,
       ClaimReturn,
       ClaimSend,
+      ClaimNoteEdit,
       QFixedPosition,
       QBtn,
       QScrollArea,
@@ -221,6 +226,9 @@
           this.goBackToList()
         })
       },
+      noteEdit (id) {
+        this.$refs.formNote.open({mode: FORM_EDIT_MODES.EDIT, id})
+      },
       onAction (action) {
         switch (action) {
           case 'edit':
@@ -236,10 +244,10 @@
             this.$refs.formReturn.open()
             break
           case 'comment':
-            console.log('comment')
+            this.$refs.formNote.open({mode: FORM_EDIT_MODES.NEW})
             break
           case 'annul':
-            AfConfirmDialog.confirm(MSG_CLAIM_ANNULL_CONFIRM, this.__annulClaim)
+            AfConfirmDialog.confirm(MSG_CLAIM_ANNUL_CONFIRM, this.__annulClaim)
             break
           case 'prioritize':
             console.log('prioritize')
@@ -267,7 +275,8 @@
           'key:arrow:right:ctrl': this.onNextClaim,
           'key:arrow:up': this.scrollUp,
           'key:arrow:down': this.scrollDown,
-          'key:backspace': this.backToList
+          'key:backspace': this.backToList,
+          [AE_CLAIMS_NOTE_EDIT_CLICK]: this.noteEdit
         }
       }
     },

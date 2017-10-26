@@ -44,5 +44,8 @@ module.exports =
     SE_CLAIMS_RETURN: 'sock:claims:return',
     SE_CLAIMS_RETURN_MESSAGE: 'sock:claims:return:message',
     SE_CLAIMS_SEND: 'sock:claims:send',
-    SE_CLAIMS_CURREXECS_FIND: 'sock:claims:currexecs:find'
+    SE_CLAIMS_CURREXECS_FIND: 'sock:claims:currexecs:find',
+    SE_CLAIMS_NOTE_INSERT: 'sock:claims:note:insert',
+    SE_CLAIMS_NOTE_UPDATE: 'sock:claims:note:update',
+    SE_CLAIMS_NOTE_FIND_ONE: 'sock:claims:note:find:one'
   }

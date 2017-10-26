@@ -32,6 +32,7 @@ import {
 } from '../../app-events'
 import {
   mutateSockOk,
+  sockOk,
   SE_LINKFILES_FIND,
   SE_LINKFILES_UPLOAD,
   SE_CLAIMS_FIND,
@@ -49,7 +50,10 @@ import {
   SE_CLAIMS_RETURN_MESSAGE,
   SE_CLAIMS_SEND,
   SE_CLAIMS_CURREXECS_FIND,
-  SE_USER_DATA_SAVE_PARAM
+  SE_USER_DATA_SAVE_PARAM,
+  SE_CLAIMS_NOTE_UPDATE,
+  SE_CLAIMS_NOTE_INSERT,
+  SE_CLAIMS_NOTE_FIND_ONE
 } from '../../socket-events'
 
 const REQUEST_RECORD = 0b001
@@ -138,7 +142,8 @@ const getters = {
   isFirstRecord: state => (state.currentClaimPage === 1) && (state.claimRecordIndexActive === 0),
   isLastRecord: state => (state.currentClaimPage === state.claimListPages) &&
     (state.claimRecordIndexActive === (state.claimList.length - 1)),
-  isActionAvail: state => action => (state.claimActionsMask & actionsFlags[action]) === actionsFlags[action]
+  isActionAvail: state => action => (state.claimActionsMask & actionsFlags[action]) === actionsFlags[action],
+  claimRecord: state => state.claimRecord
 }
 
 const mutations = {
@@ -251,6 +256,18 @@ const mutations = {
   [mutateSockOk(SE_CLAIMS_SEND)] () {
     Events.$emit(AE_PROGRESS_RESET)
     Events.$emit(AE_CLAIMS_REC_SENT)
+  },
+  [mutateSockOk(SE_CLAIMS_NOTE_UPDATE)] () {
+    Events.$emit(AE_PROGRESS_RESET)
+    Events.$emit(sockOk(SE_CLAIMS_NOTE_UPDATE))
+  },
+  [mutateSockOk(SE_CLAIMS_NOTE_INSERT)] () {
+    Events.$emit(AE_PROGRESS_RESET)
+    Events.$emit(sockOk(SE_CLAIMS_NOTE_INSERT))
+  },
+  [mutateSockOk(SE_CLAIMS_NOTE_FIND_ONE)] (state, note) {
+    Events.$emit(AE_PROGRESS_RESET)
+    Events.$emit(sockOk(SE_CLAIMS_NOTE_FIND_ONE), note)
   }
 }
 

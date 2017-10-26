@@ -33,6 +33,7 @@
 <script>
   import {QBtn} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
+  import {AE_CLAIMS_NOTE_EDIT_CLICK} from '../../../app-events'
 
   export default {
     name: '',
@@ -44,7 +45,7 @@
     methods: {
       ...mapActions([]),
       editNote (id) {
-        console.log(id)
+        this.$q.events.$emit(AE_CLAIMS_NOTE_EDIT_CLICK, id)
       }
     },
     computed: {
