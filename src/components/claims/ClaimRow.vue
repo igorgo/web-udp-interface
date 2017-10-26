@@ -28,9 +28,6 @@
         </div>
         <div v-if="claimRec.executor || claimRec.hasBuildTo">
           <div class="claim-row-c">
-            <div class="col-sm-6 col-xs-12" style="margin-bottom: 5px" v-if="claimRec.executor">
-              Виконавець&nbsp;<span class="token bg-teal-14">{{claimRec.executor}}</span>
-            </div>
             <div
               class="col-sm-6 col-xs-12"
               v-if="claimRec.hasBuildTo || claimRec.hasReleaseTo"
@@ -38,6 +35,10 @@
               {{isClosed}}&nbsp;
               <span class="token bg-teal-14">{{claimRec.closedInBuild}}</span>
             </div>
+            <div class="col-sm-6 col-xs-12" style="margin-bottom: 5px" v-if="claimRec.executor">
+              <div v-if="claimRec.executor">Виконавець&nbsp;<span class="token bg-teal-14">{{claimRec.executor}}</span></div>
+            </div>
+
           </div>
         </div>
       </q-card-main>
