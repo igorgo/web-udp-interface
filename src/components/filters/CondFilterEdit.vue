@@ -30,6 +30,12 @@
             :options="typeOptions"
             @change="updateFilter('claimType', $event)"
           />
+          <af-multi-select
+            label="Поточний стан"
+            v-model="currentFilterEdit.claimStatus"
+            :options="statusesSelect"
+            @change="updateFilter('claimStatus', $event)"
+          />
         </af-field-set>
         <af-field-set caption="Система">
           <af-autocomplete
@@ -270,7 +276,8 @@
         'releaseSelectList',
         'buildsSelectList',
         'currentFilterEdit',
-        'isActionInProgress'
+        'isActionInProgress',
+        'statusesSelect'
       ]),
       nameEditModalValidator () {
         return this.filterName && this.filterName.trim().length > 0

@@ -13,7 +13,8 @@ import {
   SE_STATDICT_ALL_BUILDS,
   SE_STATDICT_ALL_PERSONS,
   SE_APPS_BY_UNIT,
-  SE_UNITFUNCS_BY_UNIT
+  SE_UNITFUNCS_BY_UNIT,
+  SE_STATDICT_ALL_STATUSES
 } from '../../socket-events'
 function array2AutoComplete (arr) {
   return {
@@ -35,6 +36,7 @@ const state = {
   allBuilds: cache.get('allBuilds', []),
   activeBuilds: cache.get('activeBuilds', []),
   allPersons: cache.get('allPersons', []),
+  allStatuses: cache.get('allStatuses', []),
   unitApps: [],
   unitFuncs: []
 }
@@ -85,6 +87,10 @@ const mutations = {
     state.allPersons = persons
     cache.set('allPersons', persons)
   },
+  [mutateSockOk(SE_STATDICT_ALL_STATUSES)] (state, {statuses}) {
+    state.allStatuses = statuses
+    cache.set('allStatuses', statuses)
+  },
   [mutateSockOk(SE_APPS_BY_UNIT)] (state, {apps}) {
     state.unitApps = apps
   },
@@ -110,6 +116,7 @@ const getters = {
     return r !== -1 ? state.allBuilds[v]['releases'][r]['builds'] : []
   },
   initiatorSelect: state => state.allPersons.map((pers, idx) => ({ label: pers.label, value: idx })),
+  statusesSelect: state => state.allStatuses.map(status => ({ label: status.code, value: status.code })),
   appsByUnits: state => state.unitApps.map(app => ({label: app.appName, value: app.appName})),
   funcsByUnits: state => state.unitFuncs.map(app => ({label: app.funcName, value: app.funcName})),
   activeReleasesForSelect: state => state.activeBuilds.map(r => ({label: r.release, value: r.release})),

@@ -21,6 +21,7 @@ module.exports =
     SE_STATDICT_ALL_APPS: 'sock:statdict:all:apps',
     SE_STATDICT_ALL_BUILDS: 'sock:statdict:all:builds',
     SE_STATDICT_ALL_PERSONS: 'sock:statdict:all:persons',
+    SE_STATDICT_ALL_STATUSES: 'sock:statdict:all:statuses',
     SE_APPS_BY_UNIT: 'sock:apps:by:unit',
     SE_UNITFUNCS_BY_UNIT: 'sock:unitfuncs:by:unit',
     SE_CONDITIONS_CLAIMS_LIST: 'sock:conditions:claims:list',
