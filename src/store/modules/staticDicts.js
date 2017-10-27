@@ -116,6 +116,7 @@ const getters = {
     return r !== -1 ? state.allBuilds[v]['releases'][r]['builds'] : []
   },
   initiatorSelect: state => state.allPersons.map((pers, idx) => ({ label: pers.label, value: idx })),
+  personSelect: state => state.allPersons.map((pers) => ({ label: pers.label, value: pers.code })),
   statusesSelect: state => state.allStatuses.map(status => ({ label: status.code, value: status.code })),
   appsByUnits: state => state.unitApps.map(app => ({label: app.appName, value: app.appName})),
   funcsByUnits: state => state.unitFuncs.map(app => ({label: app.funcName, value: app.funcName})),

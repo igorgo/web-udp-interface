@@ -32,6 +32,8 @@ const emptyFilter = {
   imExecutor: null,
   claimContent: '',
   claimStatus: '',
+  claimExecutor: '',
+  claimAuthor: '',
   claimType: ''
 }
 
@@ -81,6 +83,8 @@ const getters = {
     }
     cv.imInitiator = !!state.currentFilter.imInitiator
     cv.imExecutor = !!state.currentFilter.imExecutor
+    cv.claimExecutor = state.currentFilter.claimExecutor
+    cv.claimAuthor = state.currentFilter.claimAuthor
     return cv
   },
   versionSelectList: (state, getters, rootState) =>
@@ -123,7 +127,9 @@ const mutations = {
       claimBuild: filter['P_CLAIM_BUILD'],
       claimUnit: filter['P_CLAIM_UNIT'],
       claimApp: filter['P_CLAIM_APP'],
+      claimAuthor: filter['P_CLAIM_AUTHOR'],
       imInitiator: filter['P_CLAIM_IM_INIT'],
+      claimExecutor: filter['P_CLAIM_EXEC'],
       imExecutor: filter['P_CLAIM_IM_PERF'],
       claimContent: filter['P_CLAIM_CONTENT']
     }

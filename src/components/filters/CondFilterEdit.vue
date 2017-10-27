@@ -75,19 +75,47 @@
             @change="updateFilter('claimBuild', $event)"
           />
         </af-field-set>
-        <af-field-set caption="Власне">
-          <q-checkbox
-            :value="currentFilterEdit.imExecutor"
-            @input="updateFilter('imExecutor', $event)"
-            label="Я - виконавець"
-          />
-          <q-checkbox
-            :value="currentFilterEdit.imInitiator"
-            @input="updateFilter('imInitiator', $event)"
-            label="Я - автор"
-          />
+        <af-field-set caption="Персони">
+          <div class="row items-center">
+            <div class="col-sm-9 col-12">
+              <af-select
+                label="Виконавець"
+                :value="currentFilterEdit.claimExecutor"
+                @input="updateFilter('claimExecutor', $event)"
+                :options="personSelect"
+                clearable
+              />
+            </div>
+            <div class="col-sm-3 col-12">
+              <q-checkbox
+                :value="currentFilterEdit.imExecutor"
+                @input="updateFilter('imExecutor', $event)"
+                label="Я - виконавець"
+                class="on-right"
+              />
+            </div>
+          </div>
+          <div class="row items-center">
+            <div class="col-sm-9 col-12">
+              <af-select
+                label="Автор"
+                :value="currentFilterEdit.claimAuthor"
+                @input="updateFilter('claimAuthor', $event)"
+                :options="personSelect"
+                clearable
+              />
+            </div>
+            <div class="col-sm-3 col-12">
+              <q-checkbox
+                :value="currentFilterEdit.imInitiator"
+                @input="updateFilter('imInitiator', $event)"
+                label="Я - автор"
+                class="on-right"
+              />
+            </div>
+          </div>
         </af-field-set>
-        <af-field-set caption="Зміст">
+        <af-field-set caption="Зміст/Коментар">
           <af-input
             :value="currentFilterEdit.claimContent"
             @input="updateFilter('claimContent', $event)"
@@ -159,7 +187,7 @@
 </template>
 
 <script>
-  import {AfForm, AfFieldSet, AfLoadCover, AfInput, AfAutocomplete, AfMultiSelect} from '../base'
+  import {AfForm, AfFieldSet, AfLoadCover, AfInput, AfAutocomplete, AfMultiSelect, AfSelect} from '../base'
   import {QCardTitle, QCheckbox, QBtn, QInput, QModal, Dialog} from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import {inclFilter} from '../../routines'
@@ -181,7 +209,8 @@
       QInput,
       AfInput,
       AfAutocomplete,
-      AfMultiSelect
+      AfMultiSelect,
+      AfSelect
     },
     data () {
       return {
@@ -277,7 +306,8 @@
         'buildsSelectList',
         'currentFilterEdit',
         'isActionInProgress',
-        'statusesSelect'
+        'statusesSelect',
+        'personSelect'
       ]),
       nameEditModalValidator () {
         return this.filterName && this.filterName.trim().length > 0
