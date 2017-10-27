@@ -96,6 +96,7 @@ export const BETA_DOWNLOAD_URL = 'https://drive.google.com/drive/folders/0B0TYk3
 
 export const MSG_CLAIM_DELETE_CONFIRM = 'Ви дійсно бажаєте видалити рекламацію?'
 export const MSG_CLAIM_ANNUL_CONFIRM = 'Ви дійсно бажаєте анулювати рекламацію?'
+export const MSG_FILE_DELETE_CONFIRM = 'Ви дійсно бажаєте видалити файл?'
 
 export const FORM_EDIT_MODES = {
   NEW: 0,

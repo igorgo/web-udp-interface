@@ -53,7 +53,8 @@ import {
   SE_USER_DATA_SAVE_PARAM,
   SE_CLAIMS_NOTE_UPDATE,
   SE_CLAIMS_NOTE_INSERT,
-  SE_CLAIMS_NOTE_FIND_ONE
+  SE_CLAIMS_NOTE_FIND_ONE,
+  SE_LINKFILES_DELETE
 } from '../../socket-events'
 
 const REQUEST_RECORD = 0b001
@@ -245,9 +246,13 @@ const mutations = {
     Events.$emit(AE_PROGRESS_RESET)
     Events.$emit(AE_CLAIMS_REC_RET_MESSAGE_FOUND, message)
   },
-  [mutateSockOk(SE_CLAIMS_RETURN)] () {
+  [mutateSockOk(SE_CLAIMS_RETURN)] (state) {
     Events.$emit(AE_PROGRESS_RESET)
     Events.$emit(AE_CLAIMS_REC_RETURNED)
+  },
+  [mutateSockOk(SE_LINKFILES_DELETE)] (state, {id}) {
+    Events.$emit(AE_PROGRESS_RESET)
+    state.claimFiles = state.claimFiles.filter(f => f.id !== id)
   },
   [mutateSockOk(SE_CLAIMS_CURREXECS_FIND)] (state, {executors}) {
     Events.$emit(AE_PROGRESS_RESET)
@@ -422,6 +427,10 @@ const actions = {
   doClaimReturn ({state, getters}, {socket, cNoteHeader, cNote}) {
     Events.$emit(AE_PROGRESS_SET)
     socket.emit(SE_CLAIMS_RETURN, {sessionID: getters.sessionID, cId: state.claimRecord.id, cNoteHeader, cNote})
+  },
+  doFileDelete ({getters}, {socket, id}) {
+    Events.$emit(AE_PROGRESS_SET)
+    socket.emit(SE_LINKFILES_DELETE, {sessionID: getters.sessionID, id})
   },
   doClaimSend ({state, getters}, {socket, cSendTo, cNoteHeader, cNote}) {
     Events.$emit(AE_PROGRESS_SET)

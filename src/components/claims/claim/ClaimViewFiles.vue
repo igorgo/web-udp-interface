@@ -14,6 +14,8 @@
   import { QBtn } from 'quasar-framework'
   import {mapState, mapGetters, mapActions} from 'vuex'
   import { hrFileSize } from '../../../routines'
+  import { MSG_FILE_DELETE_CONFIRM } from '../../../constants'
+  import { AfConfirmDialog } from '../../base'
 
   export default {
     name: '',
@@ -31,7 +33,9 @@
         return hrFileSize(size)
       },
       deleteDoc (id) {
-        console.log(id)
+        AfConfirmDialog.confirm(MSG_FILE_DELETE_CONFIRM, () => {
+          void this.$store.dispatch('doFileDelete', { socket: this.$socket, id })
+        })
       }
     },
     computed: {

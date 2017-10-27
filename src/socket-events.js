@@ -31,6 +31,7 @@ module.exports =
     SE_LINKFILES_FIND: 'sock:linkfiles:get',
     SE_LINKFILES_DOWNLOAD: 'sock:linkfiles:download',
     SE_LINKFILES_UPLOAD: 'sock:linkfiles:upload',
+    SE_LINKFILES_DELETE: 'sock:linkfiles:delete',
     SE_CLAIMS_FIND: 'sock:claims:find',
     SE_CLAIMS_FIND_ONE: 'sock:claims:find:one',
     SE_CLAIMS_HISTORY_FIND: 'sock:claims:history:find',
