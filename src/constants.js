@@ -39,6 +39,56 @@ export const HELP_STATUS = {
   25: 'Включено в альбом'
 }
 
+export const HELP_NEED_OPTIONS = [
+  {
+    label: 'Не вирішено',
+    value: 0
+  },
+  {
+    label: 'Немає необхідності',
+    value: 1
+  },
+  {
+    label: 'Необхідно',
+    value: 2
+  },
+  {
+    label: 'Включити в альбом',
+    value: 3
+  },
+  {
+    label: 'Описано в іншій рекламації',
+    value: 4
+  },
+  {
+    label: 'Поки пропущу',
+    value: 5
+  }
+]
+
+export const HELP_STATUS_OPTIONS = [
+  {
+    label: 'Включено',
+    value: 21
+  },
+  {
+    label: 'Не включено',
+    value: 22
+  },
+  {
+    label: 'Відкладено',
+    value: 23
+  },
+  {
+    label: 'Не треба',
+    value: 24
+  },
+  {
+    label: 'Включено в альбом',
+    value: 25
+  }
+]
+
 export const CLAIM_TYPE_BY_ID = {
   4440: 'ПОМИЛКА',
   4412: 'ДОРОБКА',
@@ -103,4 +153,9 @@ export const FORM_EDIT_MODES = {
   DUP: 1,
   EDIT: 2,
   VIEW: 3
+}
+
+export const FORM_CLAIM_HELP_MODE = {
+  NEED: 1,
+  STATUS: 2
 }

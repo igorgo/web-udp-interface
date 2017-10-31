@@ -40,19 +40,23 @@
     <claim-return ref="formReturn"/>
     <claim-send ref="formSend"/>
     <claim-note-edit ref="formNote"/>
+    <claim-prioritize ref="formPrioritize"/>
+    <claim-help ref="formHelp"/>
     <af-load-cover :progress="isActionInProgress"/>
   </div>
 </template>
 
 <script>
-  import {mapState, mapGetters, mapActions} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   import {
     ClaimAttach,
     ClaimEdit,
     ClaimSetStatus,
     ClaimReturn,
     ClaimSend,
-    ClaimNoteEdit
+    ClaimNoteEdit,
+    ClaimPrioritize,
+    ClaimHelp
   } from '../actions'
   import {
     ClaimCard,
@@ -73,7 +77,8 @@
   import {
     MSG_CLAIM_DELETE_CONFIRM,
     MSG_CLAIM_ANNUL_CONFIRM,
-    FORM_EDIT_MODES
+    FORM_EDIT_MODES,
+    FORM_CLAIM_HELP_MODE
   } from '../../../constants'
   import {
     AE_CLAIMS_REC_DELETED,
@@ -95,6 +100,8 @@
       ClaimReturn,
       ClaimSend,
       ClaimNoteEdit,
+      ClaimPrioritize,
+      ClaimHelp,
       QFixedPosition,
       QBtn,
       QScrollArea,
@@ -180,7 +187,6 @@
       BackToTop
     },
     methods: {
-      ...mapActions([]),
       onPrevClaim () {
         if ((!this.progress) && (!this.isFirstRecord)) this.__stepRec(-1)
       },
@@ -250,7 +256,7 @@
             AfConfirmDialog.confirm(MSG_CLAIM_ANNUL_CONFIRM, this.__annulClaim)
             break
           case 'prioritize':
-            console.log('prioritize')
+            this.$refs.formPrioritize.open()
             break
           case 'attach':
             this.$refs.formAttach.open()
@@ -259,10 +265,10 @@
             AfConfirmDialog.confirm(MSG_CLAIM_DELETE_CONFIRM, this.__deleteClaim)
             break
           case 'setHelpNeed':
-            console.log('setHelpNeed')
+            this.$refs.formHelp.open(FORM_CLAIM_HELP_MODE.NEED)
             break
           case 'setHelpStatus':
-            console.log('setHelpStatus')
+            this.$refs.formHelp.open(FORM_CLAIM_HELP_MODE.STATUS)
             break
         }
         this.$refs.popover.close()

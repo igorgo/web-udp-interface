@@ -54,7 +54,10 @@ import {
   SE_CLAIMS_NOTE_UPDATE,
   SE_CLAIMS_NOTE_INSERT,
   SE_CLAIMS_NOTE_FIND_ONE,
-  SE_LINKFILES_DELETE
+  SE_LINKFILES_DELETE,
+  SE_CLAIMS_PRIRITIZE,
+  SE_CLAIMS_HELP_NEED,
+  SE_CLAIMS_HELP_STATUS
 } from '../../socket-events'
 
 const REQUEST_RECORD = 0b001
@@ -265,6 +268,20 @@ const mutations = {
   [mutateSockOk(SE_CLAIMS_NOTE_UPDATE)] () {
     Events.$emit(AE_PROGRESS_RESET)
     Events.$emit(sockOk(SE_CLAIMS_NOTE_UPDATE))
+  },
+  [mutateSockOk(SE_CLAIMS_PRIRITIZE)] () {
+    Events.$emit(AE_PROGRESS_RESET)
+    Events.$emit(sockOk(SE_CLAIMS_PRIRITIZE))
+  },
+  [mutateSockOk(SE_CLAIMS_HELP_NEED)] (state, {status}) {
+    Events.$emit(AE_PROGRESS_RESET)
+    state.claimRecord.helpSign = status
+    Events.$emit(sockOk(SE_CLAIMS_HELP_NEED))
+  },
+  [mutateSockOk(SE_CLAIMS_HELP_STATUS)] (state, {status}) {
+    Events.$emit(AE_PROGRESS_RESET)
+    state.claimRecord.helpSign = status
+    Events.$emit(sockOk(SE_CLAIMS_HELP_STATUS))
   },
   [mutateSockOk(SE_CLAIMS_NOTE_INSERT)] () {
     Events.$emit(AE_PROGRESS_RESET)
