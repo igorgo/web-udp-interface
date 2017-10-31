@@ -1,6 +1,6 @@
 {
   "name": "web-udp-interface",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Afina Sequel WebUDP frontend",
   "author": "Igor Gorodetskyy",
   "scripts": {
