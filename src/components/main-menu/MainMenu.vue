@@ -35,6 +35,11 @@
     />
     <q-item-separator v-if="authorized"/>
     <main-menu-item
+      icon="fa-bug"
+      label="Знайшли помилку!"
+      @click="toGitHub"
+    />
+    <main-menu-item
       v-if="authorized"
       @click="logoff"
       icon="fa-sign-out"
@@ -53,7 +58,14 @@
     methods: {
       logoff () {
         void this.$store.dispatch('authDoLogoff', { router: this.$router, socket: this.$socket })
+      },
+      toGitHub () {
+        window.open(
+          'https://github.com/igorgo/web-udp-interface/issues',
+          '_blank'
+        )
       }
+
     },
     computed: {
       ...mapState({
