@@ -7,6 +7,8 @@ import ClaimSetStatus from './ClaimSetStatus.vue'
 import ClaimReturn from './ClaimReturn.vue'
 import ClaimSend from './ClaimSend.vue'
 import ClaimNoteEdit from './ClaimNoteEdit.vue'
+import ClaimPrioritize from './ClaimPrioritize.vue'
+import ClaimHelp from './ClaimHelp.vue'
 
 export {
   ClaimAttach,
@@ -15,5 +17,7 @@ export {
   ClaimSetStatus,
   ClaimReturn,
   ClaimSend,
-  ClaimNoteEdit
+  ClaimNoteEdit,
+  ClaimPrioritize,
+  ClaimHelp
 }

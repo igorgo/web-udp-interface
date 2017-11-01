@@ -4,6 +4,7 @@
                  :valid="formValid"
                  :okHandle="onOkClick"
                  :scrollable="formMaxHeight"
+                 :maximized="false"
   >
     <claim-note-field-set
       ref="comment"

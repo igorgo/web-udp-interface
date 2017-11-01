@@ -43,11 +43,14 @@ module.exports =
     SE_CLAIMS_UPDATE: 'sock:claims:update',
     SE_CLAIMS_SET_STATUS: 'sock:claims:set:status',
     SE_CLAIMS_INSERT: 'sock:claims:insert',
+    SE_CLAIMS_PRIRITIZE: 'sock:claims:prioritize',
     SE_CLAIMS_RETURN: 'sock:claims:return',
     SE_CLAIMS_RETURN_MESSAGE: 'sock:claims:return:message',
     SE_CLAIMS_SEND: 'sock:claims:send',
     SE_CLAIMS_CURREXECS_FIND: 'sock:claims:currexecs:find',
     SE_CLAIMS_NOTE_INSERT: 'sock:claims:note:insert',
     SE_CLAIMS_NOTE_UPDATE: 'sock:claims:note:update',
-    SE_CLAIMS_NOTE_FIND_ONE: 'sock:claims:note:find:one'
+    SE_CLAIMS_NOTE_FIND_ONE: 'sock:claims:note:find:one',
+    SE_CLAIMS_HELP_NEED: 'sock:claims:help:need',
+    SE_CLAIMS_HELP_STATUS: 'sock:claims:help:status'
   }

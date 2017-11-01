@@ -1,5 +1,11 @@
 <template>
-  <q-modal maximized v-model="isOpen">
+  <q-modal
+    :maximized="maximized"
+    :minimized="minimized"
+    v-model="isOpen"
+    @close="close"
+    no-backdrop-dismiss
+  >
     <div class="row justify-center relative-position">
       <af-form
         :title="title"
@@ -68,6 +74,14 @@
       valid: {
         type: Boolean,
         default: true
+      },
+      maximized: {
+        type: Boolean,
+        default: true
+      },
+      minimized: {
+        type: Boolean,
+        default: false
       },
       okHandle: Function,
       okCaption: {
